@@ -1,0 +1,9 @@
+scenario: Demonstrate the Web Cog
+description: Proves that this Cog works.
+
+steps:
+- step: First, navigate to http://go.automatoninc.com/dev-qa-email-confirmation.html
+- step: Then enter Atoma into field input[name=FirstName]
+- step: And enter Tommy into field input[name=LastName]
+- step: And enter atommy@example.com into field input[name=Email]
+- step: Finally, submit the form by clicking button[type=submit]
