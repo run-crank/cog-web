@@ -13,20 +13,13 @@ describe('NavigateToPage', () => {
   const expect = chai.expect;
   let protoStep: ProtoStep;
   let stepUnderTest: Step;
-  let pageStub: any;
-  let browserStub: any;
+  let clientWrapperStub: any;
 
   beforeEach(() => {
     // Set up test stubs.
-    browserStub = sinon.stub();
-    browserStub.userAgent = sinon.stub();
-    pageStub = sinon.stub();
-    pageStub.goto = sinon.stub();
-    pageStub.setUserAgent = sinon.stub();
-    pageStub.browser = sinon.stub();
-    pageStub.browser.resolves(browserStub);
-
-    stepUnderTest = new Step(pageStub);
+    clientWrapperStub = sinon.stub();
+    clientWrapperStub.navigateToUrl = sinon.stub();
+    stepUnderTest = new Step(clientWrapperStub);
     protoStep = new ProtoStep();
   });
 
@@ -50,26 +43,9 @@ describe('NavigateToPage', () => {
     expect(pageUrl.type).to.equal(FieldDefinition.Type.URL);
   });
 
-  it('should set identifiable user agent', async () => {
-    const originalUserAgent = 'Mozilla/a.b HeadlessChrome/x.y.z';
-    const expectedUserAgent = 'Mozilla/a.b AutomatonHeadlessChrome/x.y.z';
-
-    // Stub a successful navigation, but unsuccessful form fill.
-    browserStub.userAgent.resolves(originalUserAgent);
-    pageStub.setUserAgent.resolves();
-    pageStub.goto.resolves();
-
-    protoStep.setData(Struct.fromJavaScript({webPageUrl: 'https://mayaswell.exist'}));
-
-    await stepUnderTest.executeStep(protoStep);
-    expect(pageStub.setUserAgent).to.have.been.calledWith(expectedUserAgent);
-  });
-
   it('should pass when puppeteer successfully navigates to page', async () => {
     // Stub a response that matches expectations.
-    browserStub.userAgent.resolves('');
-    pageStub.setUserAgent.resolves();
-    pageStub.goto.resolves();
+    clientWrapperStub.navigateToUrl.resolves();
 
     // Set step data corresponding to expectations
     protoStep.setData(Struct.fromJavaScript({webPageUrl: 'https://mayaswell.exist'}));
@@ -80,9 +56,7 @@ describe('NavigateToPage', () => {
 
   it('should respond with error if puppeteer is unable to navigate', async () => {
     // Stub a navigation that rejects.
-    browserStub.userAgent.resolves('');
-    pageStub.setUserAgent.resolves();
-    pageStub.goto.rejects();
+    clientWrapperStub.navigateToUrl.rejects();
 
     // Set step data corresponding to expectations
     protoStep.setData(Struct.fromJavaScript({webPageUrl: 'https://doesnot.exist'}));

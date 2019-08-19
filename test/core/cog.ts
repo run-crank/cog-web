@@ -4,9 +4,9 @@ import { default as sinon } from 'ts-sinon';
 import * as sinonChai from 'sinon-chai';
 import 'mocha';
 
-import { Step as ProtoStep, StepDefinition, FieldDefinition, RunStepResponse, RunStepRequest } from '../src/proto/cog_pb';
-import { Cog } from '../src/cog';
-import { CogManifest } from '../src/proto/cog_pb';
+import { Step as ProtoStep, StepDefinition, FieldDefinition, RunStepResponse, RunStepRequest } from '../../src/proto/cog_pb';
+import { Cog } from '../../src/core/cog';
+import { CogManifest } from '../../src/proto/cog_pb';
 import { Metadata } from 'grpc';
 import { Duplex } from 'stream';
 
@@ -15,12 +15,13 @@ chai.use(sinonChai);
 describe('Cog:GetManifest', () => {
   const expect = chai.expect;
   let cogUnderTest: Cog;
-  let apiClientStub: any;
+  let clusterStub: any;
+  let clientWrapperStub: any;
 
   beforeEach(() => {
-    apiClientStub = sinon.stub();
-    apiClientStub.launch = sinon.stub();
-    cogUnderTest = new Cog(apiClientStub);
+    clusterStub = sinon.stub();
+    clusterStub.launch = sinon.stub();
+    cogUnderTest = new Cog(clusterStub, clientWrapperStub);
   });
 
   it('should return expected cog metadata', (done) => {
@@ -74,6 +75,7 @@ describe('Cog:RunStep', () => {
   let cogUnderTest: Cog;
   let pageStub: any;
   let clusterStub: any;
+  let clientWrapperStub: any;
 
   beforeEach(() => {
     protoStep = new ProtoStep();
@@ -82,10 +84,18 @@ describe('Cog:RunStep', () => {
       metadata: null
     };
     pageStub = sinon.stub();
+    clientWrapperStub = sinon.stub();
     clusterStub = sinon.stub();
     clusterStub.queue = sinon.stub();
     clusterStub.queue.callsArgWith(0, {page: pageStub});
-    cogUnderTest = new Cog(clusterStub);
+    cogUnderTest = new Cog(clusterStub, clientWrapperStub);
+  });
+
+  it('"authenticates" client wrapper with page/metadata', (done) => {
+    cogUnderTest.runStep(grpcUnaryCall, (err, response: RunStepResponse) => {
+      expect(clientWrapperStub).to.have.been.calledWith(pageStub, grpcUnaryCall.metadata);
+      done();
+    });
   });
 
   it('responds with error when called with unknown stepId', (done) => {
@@ -105,7 +115,7 @@ describe('Cog:RunStep', () => {
     const mockTestStepMap: any = {TestStepId: sinon.stub()}
     mockTestStepMap.TestStepId.returns(mockStepExecutor);
 
-    cogUnderTest = new Cog(clusterStub, mockTestStepMap);
+    cogUnderTest = new Cog(clusterStub, clientWrapperStub, mockTestStepMap);
     protoStep.setStepId('TestStepId');
 
     cogUnderTest.runStep(grpcUnaryCall, (err, response: RunStepResponse) => {
@@ -122,7 +132,7 @@ describe('Cog:RunStep', () => {
     const mockTestStepMap: any = {TestStepId: sinon.stub()}
     mockTestStepMap.TestStepId.returns(mockStepExecutor);
 
-    cogUnderTest = new Cog(clusterStub, mockTestStepMap);
+    cogUnderTest = new Cog(clusterStub, clientWrapperStub, mockTestStepMap);
     protoStep.setStepId('TestStepId');
 
     cogUnderTest.runStep(grpcUnaryCall, (err, response: RunStepResponse) => {
@@ -141,6 +151,7 @@ describe('Cog:RunSteps', () => {
   let cogUnderTest: Cog;
   let clusterStub: any;
   let pageStub: any;
+  let clientWrapperStub: any;
 
   beforeEach(() => {
     protoStep = new ProtoStep();
@@ -150,10 +161,27 @@ describe('Cog:RunSteps', () => {
     grpcDuplexStream._read = sinon.stub();
     grpcDuplexStream.metadata = new Metadata();
     pageStub = sinon.stub();
+    clientWrapperStub = sinon.stub();
     clusterStub = sinon.stub();
     clusterStub.queue = sinon.stub();
     clusterStub.queue.callsArgWith(0, {page: pageStub});
-    cogUnderTest = new Cog(clusterStub);
+    cogUnderTest = new Cog(clusterStub, clientWrapperStub);
+  });
+
+  it('"authenticates" client wrapper with page/metadata', (done) => {
+    // Construct step request
+    protoStep.setStepId('AnyOldStep');
+    runStepRequest.setStep(protoStep);
+
+    // Open the stream and write a request.
+    cogUnderTest.runSteps(grpcDuplexStream);
+    grpcDuplexStream.emit('data', runStepRequest);
+
+    // Allow the event loop to continue, then make assertions.
+    setTimeout(() => {
+      expect(clientWrapperStub).to.have.been.calledWith(pageStub, grpcDuplexStream.metadata);
+      done();
+    }, 1)
   });
 
   it('responds with error when called with unknown stepId', (done) => {
@@ -181,7 +209,7 @@ describe('Cog:RunSteps', () => {
     mockStepExecutor.executeStep.resolves(expectedResponse);
     const mockTestStepMap: any = {TestStepId: sinon.stub()}
     mockTestStepMap.TestStepId.returns(mockStepExecutor);
-    cogUnderTest = new Cog(clusterStub, mockTestStepMap);
+    cogUnderTest = new Cog(clusterStub, clientWrapperStub, mockTestStepMap);
     protoStep.setStepId('TestStepId');
     runStepRequest.setStep(protoStep);
 
@@ -207,7 +235,7 @@ describe('Cog:RunSteps', () => {
     mockStepExecutor.executeStep.throws()
     const mockTestStepMap: any = {TestStepId: sinon.stub()}
     mockTestStepMap.TestStepId.returns(mockStepExecutor);
-    cogUnderTest = new Cog(clusterStub, mockTestStepMap);
+    cogUnderTest = new Cog(clusterStub, clientWrapperStub, mockTestStepMap);
     protoStep.setStepId('TestStepId');
     runStepRequest.setStep(protoStep);
 

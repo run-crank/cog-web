@@ -1,6 +1,5 @@
-import { BaseStep, Field, StepInterface } from '../base-step';
+import { BaseStep, Field, StepInterface } from '../core/base-step';
 import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../proto/cog_pb';
-import { Value } from 'google-protobuf/google/protobuf/struct_pb';
 
 export class NavigateToPage extends BaseStep implements StepInterface {
 
@@ -17,31 +16,14 @@ export class NavigateToPage extends BaseStep implements StepInterface {
   async executeStep(step: Step): Promise<RunStepResponse> {
     const stepData: any = step.getData().toJavaScript();
     const url: string = stepData.webPageUrl;
-    const response: RunStepResponse = new RunStepResponse();
 
     // Navigate to URL.
     try {
-      // Modify UA string to aid in identification as a friendly bot.
-      const browser = await this.page.browser();
-      const ua = await browser.userAgent();
-      await this.page.setUserAgent(ua.replace(' HeadlessChrome', ' AutomatonHeadlessChrome'));
-      await this.page.goto(url, { waitUntil: 'networkidle0' });
+      await this.client.navigateToUrl(url);
+      return this.pass('Successfully navigated to %s', [url]);
     } catch (e) {
-      response.setOutcome(RunStepResponse.Outcome.ERROR);
-      response.setMessageFormat('There was a problem navigating to %s: %s');
-      response.setMessageArgsList([
-        Value.fromJavaScript(url),
-        Value.fromJavaScript(e.toString()),
-      ]);
-      return response;
+      return this.error('There was a problem navigating to %s: %s', [url, e.toString()]);
     }
-
-    // Successfully navigated to the page.
-    response.setOutcome(RunStepResponse.Outcome.PASSED);
-    response.setMessageFormat('Successfully navigated to %s');
-    response.setMessageArgsList([Value.fromJavaScript(url)]);
-
-    return response;
   }
 
 }

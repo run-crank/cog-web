@@ -13,17 +13,13 @@ describe('SubmitFormByClickingButton', () => {
   const expect = chai.expect;
   let protoStep: ProtoStep;
   let stepUnderTest: Step;
-  let pageStub: any;
+  let clientWrapperStub: any;
 
   beforeEach(() => {
     // Set up test stubs.
-    pageStub = sinon.stub();
-    pageStub.waitForNavigation = sinon.stub();
-    pageStub.waitForFunction = sinon.stub();
-    pageStub.click = sinon.stub();
-    pageStub.waitFor = sinon.stub();
-
-    stepUnderTest = new Step(pageStub);
+    clientWrapperStub = sinon.stub();
+    clientWrapperStub.submitFormByClickingButton = sinon.stub();
+    stepUnderTest = new Step(clientWrapperStub);
     protoStep = new ProtoStep();
   });
 
@@ -47,32 +43,14 @@ describe('SubmitFormByClickingButton', () => {
     expect(selector.type).to.equal(FieldDefinition.Type.STRING);
   });
 
-  it('should pass when puppeteer submits form and page redirects', async () => {
+  it('should pass when puppeteer submits form successfully', async () => {
     const expectedButtonSelector = 'button[type=submit]';
 
     // Stub a response that matches expectations.
-    pageStub.click.resolves();
-    pageStub.waitForNavigation.resolves();
-    pageStub.waitForFunction.resolves();
-    pageStub.waitFor.rejects();
+    clientWrapperStub.submitFormByClickingButton.resolves();
 
     // Set step data corresponding to expectations
     protoStep.setData(Struct.fromJavaScript({domQuerySelector: expectedButtonSelector}));
-
-    const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
-    expect(pageStub.click).to.have.been.calledWith(expectedButtonSelector);
-  });
-
-  it('should pass when puppeteer submits form and button goes away', async () => {
-    // Stub a response that matches expectations.
-    pageStub.click.resolves();
-    pageStub.waitForNavigation.rejects();
-    pageStub.waitForFunction.resolves();
-    pageStub.waitFor.resolves();
-
-    // Set step data corresponding to expectations
-    protoStep.setData(Struct.fromJavaScript({domQuerySelector: 'button[type=submit]'}));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
@@ -80,24 +58,7 @@ describe('SubmitFormByClickingButton', () => {
 
   it('should result in error when puppeteer cannot detect successful submit', async () => {
     // Stub a response that matches expectations.
-    pageStub.click.resolves();
-    pageStub.waitForNavigation.rejects();
-    pageStub.waitForFunction.rejects();
-    pageStub.waitFor.resolves();
-
-    // Set step data corresponding to expectations
-    protoStep.setData(Struct.fromJavaScript({domQuerySelector: 'button[type=submit]'}));
-
-    const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
-  });
-
-  it('should result in error when puppeteer cannot click button', async () => {
-    // Stub a response that matches expectations.
-    pageStub.click.rejects();
-    pageStub.waitForNavigation.rejects();
-    pageStub.waitForFunction.rejects();
-    pageStub.waitFor.resolves();
+    clientWrapperStub.submitFormByClickingButton.rejects();
 
     // Set step data corresponding to expectations
     protoStep.setData(Struct.fromJavaScript({domQuerySelector: 'button[type=submit]'}));

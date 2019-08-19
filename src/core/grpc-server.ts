@@ -1,7 +1,8 @@
 import * as grpc from 'grpc';
 import { Cluster } from 'puppeteer-cluster';
-import { CogServiceService as CogService } from './proto/cog_grpc_pb';
+import { CogServiceService as CogService } from '../proto/cog_grpc_pb';
 import { Cog } from './cog';
+import { ClientWrapper } from '../client/client-wrapper';
 
 const server = new grpc.Server();
 const port = process.env.PORT || 28866;
@@ -39,7 +40,7 @@ async function instantiateCluster(): Promise<Cluster> {
 }
 
 instantiateCluster().then((cluster) => {
-  server.addService(CogService, new Cog(cluster));
+  server.addService(CogService, new Cog(cluster, ClientWrapper));
   server.bind(`${host}:${port}`, credentials);
   server.start();
   console.log(`Server started, listening: ${host}:${port}`);

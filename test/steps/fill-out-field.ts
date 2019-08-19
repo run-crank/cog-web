@@ -13,16 +13,13 @@ describe('EnterValueIntoField', () => {
   const expect = chai.expect;
   let protoStep: ProtoStep;
   let stepUnderTest: Step;
-  let pageStub: any;
+  let clientWrapperStub: any;
 
   beforeEach(() => {
     // Set up test stubs.
-    pageStub = sinon.stub();
-    pageStub.evaluate = sinon.stub();
-    pageStub.select = sinon.stub();
-    pageStub.type = sinon.stub();
-
-    stepUnderTest = new Step(pageStub);
+    clientWrapperStub = sinon.stub();
+    clientWrapperStub.fillOutField = sinon.stub();
+    stepUnderTest = new Step(clientWrapperStub);
     protoStep = new ProtoStep();
   });
 
@@ -30,6 +27,7 @@ describe('EnterValueIntoField', () => {
     const stepDef: StepDefinition = stepUnderTest.getDefinition();
     expect(stepDef.getStepId()).to.equal('EnterValueIntoField');
     expect(stepDef.getName()).to.equal('Enter value into field');
+    expect(stepDef.getType()).to.equal(StepDefinition.Type.ACTION);
     expect(stepDef.getExpression()).to.equal('enter (?<value>.+) into field (?<domQuerySelector>.+)');
   });
 
@@ -57,15 +55,13 @@ describe('EnterValueIntoField', () => {
     };
 
     // Stub a response that matches expectations.
-    pageStub.evaluate.onCall(0).resolves('choose');
-    pageStub.select.resolves();
+    clientWrapperStub.fillOutField.resolves();
 
     // Set step data corresponding to expectations
     protoStep.setData(Struct.fromJavaScript(expectedData));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
-    expect(pageStub.select).to.have.been.calledWith(expectedData.domQuerySelector, expectedData.value);
   });
 
   it('should respond with error when puppeteer cannot select value', async () => {
@@ -75,94 +71,7 @@ describe('EnterValueIntoField', () => {
     };
 
     // Stub a response that matches expectations.
-    pageStub.evaluate.onCall(0).resolves('choose');
-    pageStub.select.rejects();
-
-    // Set step data corresponding to expectations
-    protoStep.setData(Struct.fromJavaScript(expectedData));
-
-    const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
-  });
-
-  it('should pass when puppeteer successfully ticks checkbox', async () => {
-    const expectedData = {
-      value: 'yes',
-      domQuerySelector: 'input[type=checkbox]',
-    };
-
-    // Stub a response that matches expectations.
-    pageStub.evaluate.onCall(0).resolves('tick');
-    pageStub.evaluate.onCall(1).resolves();
-
-    // Set step data corresponding to expectations
-    protoStep.setData(Struct.fromJavaScript(expectedData));
-
-    const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
-    expect(pageStub.evaluate.secondCall).to.have.been.calledWith(sinon.match.any, expectedData.domQuerySelector);
-  });
-
-  it('should respond with error when puppeteer cannot tick checkbox', async () => {
-    const expectedData = {
-      value: 'yes',
-      domQuerySelector: 'input[type=checkbox]',
-    };
-
-    // Stub a response that matches expectations.
-    pageStub.evaluate.onCall(0).resolves('tick');
-    pageStub.evaluate.onCall(1).rejects();
-
-    // Set step data corresponding to expectations
-    protoStep.setData(Struct.fromJavaScript(expectedData));
-
-    const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
-  });
-
-  it('should pass when puppeteer successfully enters text into field', async () => {
-    const expectedData = {
-      value: 'atommy@example.com',
-      domQuerySelector: 'input[name=Email]',
-    };
-
-    // Stub a response that matches expectations.
-    pageStub.evaluate.onCall(0).resolves('type');
-    pageStub.type.resolves();
-
-    // Set step data corresponding to expectations
-    protoStep.setData(Struct.fromJavaScript(expectedData));
-
-    const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
-    expect(pageStub.type).to.have.been.calledWith(expectedData.domQuerySelector, expectedData.value);
-  });
-
-  it('should respond with error when puppeteer cannot enter text into field', async () => {
-    const expectedData = {
-      value: 'atommy@example.com',
-      domQuerySelector: 'input[name=Email]',
-    };
-
-    // Stub a response that matches expectations.
-    pageStub.evaluate.onCall(0).resolves('type');
-    pageStub.type.rejects();
-
-    // Set step data corresponding to expectations
-    protoStep.setData(Struct.fromJavaScript(expectedData));
-
-    const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
-  });
-
-  it('should respond with error if puppeteer is unable to find field', async () => {
-    const expectedData = {
-      value: 'atommy@example.com',
-      domQuerySelector: 'input[name=Email]',
-    };
-
-    // Stub a response that matches expectations.
-    pageStub.evaluate.onCall(0).rejects()
+    clientWrapperStub.fillOutField.rejects();
 
     // Set step data corresponding to expectations
     protoStep.setData(Struct.fromJavaScript(expectedData));
