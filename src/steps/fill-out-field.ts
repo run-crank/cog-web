@@ -1,14 +1,13 @@
 import { BaseStep, Field, StepInterface } from '../base-step';
-import { Step, RunStepResponse, FieldDefinition } from '../proto/cog_pb';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../proto/cog_pb';
 import { Value } from 'google-protobuf/google/protobuf/struct_pb';
 
 export class EnterValueIntoField extends BaseStep implements StepInterface {
 
   protected stepName: string = 'Enter value into field';
-
   // tslint:disable-next-line:max-line-length
   protected stepExpression: string = 'enter (?<value>.+) into field (?<domQuerySelector>.+)';
-
+  protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
   protected expectedFields: Field[] = [{
     field: 'value',
     type: FieldDefinition.Type.ANYSCALAR,

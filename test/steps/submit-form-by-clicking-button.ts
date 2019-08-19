@@ -32,6 +32,7 @@ describe('SubmitFormByClickingButton', () => {
     expect(stepDef.getStepId()).to.equal('SubmitFormByClickingButton');
     expect(stepDef.getName()).to.equal('Submit a form by clicking a button');
     expect(stepDef.getExpression()).to.equal('submit the form by clicking (?<domQuerySelector>.+)');
+    expect(stepDef.getType()).to.equal(StepDefinition.Type.ACTION);
   });
 
   it('should return expected step fields', () => {

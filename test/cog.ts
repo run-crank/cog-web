@@ -27,6 +27,7 @@ describe('Cog:GetManifest', () => {
     const version: string = JSON.parse(fs.readFileSync('package.json').toString('utf8')).version;
     cogUnderTest.getManifest(null, (err, manifest: CogManifest) => {
       expect(manifest.getName()).to.equal('automatoninc/web');
+      expect(manifest.getLabel()).to.equal('A Browser');
       expect(manifest.getVersion()).to.equal(version);
       done();
     });

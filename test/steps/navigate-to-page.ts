@@ -35,6 +35,7 @@ describe('NavigateToPage', () => {
     expect(stepDef.getStepId()).to.equal('NavigateToPage');
     expect(stepDef.getName()).to.equal('Navigate to a webpage');
     expect(stepDef.getExpression()).to.equal('navigate to (?<webPageUrl>.+)');
+    expect(stepDef.getType()).to.equal(StepDefinition.Type.ACTION);
   });
 
   it('should return expected step fields', () => {
@@ -46,7 +47,7 @@ describe('NavigateToPage', () => {
     // Web Page URL field
     const pageUrl: any = fields.filter(f => f.key === 'webPageUrl')[0];
     expect(pageUrl.optionality).to.equal(FieldDefinition.Optionality.REQUIRED);
-    expect(pageUrl.type).to.equal(FieldDefinition.Type.STRING);
+    expect(pageUrl.type).to.equal(FieldDefinition.Type.URL);
   });
 
   it('should set identifiable user agent', async () => {

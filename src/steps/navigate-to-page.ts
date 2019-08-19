@@ -1,17 +1,16 @@
 import { BaseStep, Field, StepInterface } from '../base-step';
-import { Step, RunStepResponse, FieldDefinition } from '../proto/cog_pb';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../proto/cog_pb';
 import { Value } from 'google-protobuf/google/protobuf/struct_pb';
 
 export class NavigateToPage extends BaseStep implements StepInterface {
 
   protected stepName: string = 'Navigate to a webpage';
-
   // tslint:disable-next-line:max-line-length
   protected stepExpression: string = 'navigate to (?<webPageUrl>.+)';
-
+  protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
   protected expectedFields: Field[] = [{
     field: 'webPageUrl',
-    type: FieldDefinition.Type.STRING,
+    type: FieldDefinition.Type.URL,
     description: 'Absolute URI of the web page to navigate to',
   }];
 

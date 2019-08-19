@@ -13,6 +13,7 @@ import { ManifestRequest, CogManifest, Step, RunStepRequest, RunStepResponse, Fi
 export class Cog implements ICogServiceServer {
 
   private cogName: string = 'automatoninc/web';
+  private cogLabel: string = 'A Browser';
   private cogVersion: string = JSON.parse(fs.readFileSync('package.json').toString('utf8')).version;
   private authFields: Field[] = [];
 
@@ -47,6 +48,7 @@ export class Cog implements ICogServiceServer {
     });
 
     manifest.setName(this.cogName);
+    manifest.setLabel(this.cogLabel);
     manifest.setVersion(this.cogVersion);
     manifest.setStepDefinitionsList(stepDefinitions);
 
