@@ -4,7 +4,9 @@
   "description": "Automaton cog for Web",
   "cog": {
     "name": "automatoninc/web",
-    "label": "A Browser"
+    "label": "A Browser",
+    "homepage": "",
+    "authHelpUrl": ""
   },
   "scripts": {
     "build-docker": "docker build -t automatoninc/web:$npm_package_version -t automatoninc/web:latest .",
