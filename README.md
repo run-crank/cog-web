@@ -28,26 +28,26 @@ This Cog does not require any authentication details.
 
 ### Steps
 <!-- stepDetails -->
-<h4 id="EnterValueIntoField">Enter value into field</h4>
+<h4 id="EnterValueIntoField">Fill out a form field</h4>
 
-- **Expression**: `enter (?<value>.+) into field (?<domQuerySelector>.+)`
+- **Expression**: `fill out (?<domQuerySelector>.+) with (?<value>.+)`
 - **Expected Data**:
-  - `value`: Field value to enter
-  - `domQuerySelector`: DOM query selector of the field
+  - `domQuerySelector`: Button's DOM Query Selector
+  - `value`: Field Value
 - **Step ID**: `EnterValueIntoField`
 
 <h4 id="NavigateToPage">Navigate to a webpage</h4>
 
 - **Expression**: `navigate to (?<webPageUrl>.+)`
 - **Expected Data**:
-  - `webPageUrl`: Absolute URI of the web page to navigate to
+  - `webPageUrl`: Page URL
 - **Step ID**: `NavigateToPage`
 
 <h4 id="SubmitFormByClickingButton">Submit a form by clicking a button</h4>
 
 - **Expression**: `submit the form by clicking (?<domQuerySelector>.+)`
 - **Expected Data**:
-  - `domQuerySelector`: DOM query selector of the button to click
+  - `domQuerySelector`: Button's DOM Query Selector
 - **Step ID**: `SubmitFormByClickingButton`
 <!-- stepDetailsEnd -->
 
