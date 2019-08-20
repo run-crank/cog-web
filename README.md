@@ -1,10 +1,10 @@
 # Web Cog
 
-This is an Automaton Cog for basic web interactions, providing steps and
-assertions for you to run against your website. This Cog leverages Chrome (via
-Puppeteer) to interact with websites. Puppeteer is configured in a headful
-manner in order to ensure the highest likelihood possible that websites behave
-in the same way they do for real humans.
+This is a [Crank][what-is-crank] Cog for basic web interactions, providing
+steps and assertions for you to run against your website. This Cog leverages
+Chrome (via Puppeteer) to interact with websites. Puppeteer is configured in a
+headful manner in order to ensure the highest likelihood possible that websites
+behave in the same way they do for real humans.
 
 * [Installation](#installation)
 * [Usage](#usage)
@@ -15,8 +15,8 @@ in the same way they do for real humans.
 Ensure you have the `crank` CLI and `docker` installed and running locally,
 then run the following.
 
-```bash
-crank cog:install automatoninc/web
+```shell-session
+$ crank cog:install automatoninc/web
 ```
 
 ## Usage
@@ -95,3 +95,5 @@ re-authenticate this Cog by running `crank cog:auth automatoninc/web`
 ### Tests and Housekeeping
 Tests can be found in the `test` directory and run like this: `npm test`.
 Ensure your code meets standards by running `npm run lint`.
+
+[what-is-crank]: https://crank.run?utm_medium=readme&utm_source=automatoninc%2Fweb

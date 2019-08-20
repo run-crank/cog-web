@@ -1,11 +1,11 @@
 {
   "name": "cog-web",
   "version": "0.1.0",
-  "description": "Automaton cog for Web",
+  "description": "A generic web browser Cog for Crank",
   "cog": {
     "name": "automatoninc/web",
     "label": "A Browser",
-    "homepage": "",
+    "homepage": "https://github.com/run-crank/cog-web",
     "authHelpUrl": ""
   },
   "scripts": {
