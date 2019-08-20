@@ -3,18 +3,18 @@ import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../proto
 
 export class EnterValueIntoField extends BaseStep implements StepInterface {
 
-  protected stepName: string = 'Enter value into field';
+  protected stepName: string = 'Fill out a form field';
   // tslint:disable-next-line:max-line-length
-  protected stepExpression: string = 'enter (?<value>.+) into field (?<domQuerySelector>.+)';
+  protected stepExpression: string = 'fill out (?<domQuerySelector>.+) with (?<value>.+)';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
   protected expectedFields: Field[] = [{
-    field: 'value',
-    type: FieldDefinition.Type.ANYSCALAR,
-    description: 'Field value to enter',
-  }, {
     field: 'domQuerySelector',
     type: FieldDefinition.Type.STRING,
-    description: 'DOM query selector of the field',
+    description: "Button's DOM Query Selector",
+  }, {
+    field: 'value',
+    type: FieldDefinition.Type.ANYSCALAR,
+    description: 'Field Value',
   }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
@@ -25,11 +25,11 @@ export class EnterValueIntoField extends BaseStep implements StepInterface {
     // Determine how to fill out the field, and then try.
     try {
       await this.client.fillOutField(selector, value);
-      return this.pass('Successfully entered %s into %s', [value, selector]);
+      return this.pass('Successfully filled out %s with %s', [selector, value]);
     } catch (e) {
-      return this.error('There was a problem entering %s into field %s: %s', [
-        value,
+      return this.error('There was a problem filling out %s with %s: %s', [
         selector,
+        value,
         e.toString(),
       ]);
     }

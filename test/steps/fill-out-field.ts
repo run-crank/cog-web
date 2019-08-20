@@ -26,9 +26,9 @@ describe('EnterValueIntoField', () => {
   it('should return expected step metadata', () => {
     const stepDef: StepDefinition = stepUnderTest.getDefinition();
     expect(stepDef.getStepId()).to.equal('EnterValueIntoField');
-    expect(stepDef.getName()).to.equal('Enter value into field');
+    expect(stepDef.getName()).to.equal('Fill out a form field');
     expect(stepDef.getType()).to.equal(StepDefinition.Type.ACTION);
-    expect(stepDef.getExpression()).to.equal('enter (?<value>.+) into field (?<domQuerySelector>.+)');
+    expect(stepDef.getExpression()).to.equal('fill out (?<domQuerySelector>.+) with (?<value>.+)');
   });
 
   it('should return expected step fields', () => {

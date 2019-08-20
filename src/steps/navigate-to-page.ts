@@ -10,7 +10,7 @@ export class NavigateToPage extends BaseStep implements StepInterface {
   protected expectedFields: Field[] = [{
     field: 'webPageUrl',
     type: FieldDefinition.Type.URL,
-    description: 'Absolute URI of the web page to navigate to',
+    description: 'Page URL',
   }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
