@@ -14,7 +14,7 @@
     "build-proto": "scripts/build-proto.sh",
     "build-ts": "tsc",
     "lint": "tslint -c tslint.json -p tsconfig.json",
-    "start": "ts-node src/core/grpc-server.ts",
+    "start": "check-engine package.json && ts-node src/core/grpc-server.ts",
     "test": "nyc mocha -r ts-node/register test/*.ts test/**/*.ts",
     "version": "crank cog:readme automatoninc/web && git add README.md"
   },
@@ -34,6 +34,9 @@
     ],
     "all": true
   },
+  "engines": {
+    "node": ">= 10.0.0"
+  },
   "devDependencies": {
     "@types/bluebird": "^3.5.27",
     "@types/chai": "^4.1.7",
@@ -45,6 +48,7 @@
     "@types/puppeteer": "^1.12.4",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
+    "check-engine": "^1.8.1",
     "grpc-tools": "^1.7.3",
     "grpc_tools_node_protoc_ts": "^2.5.1",
     "mocha": "^6.1.4",
