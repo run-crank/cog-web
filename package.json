@@ -37,7 +37,7 @@
   "devDependencies": {
     "@types/bluebird": "^3.5.27",
     "@types/chai": "^4.1.7",
-    "@types/chai-as-promised": "^7.1.2",
+    "@types/chai-as-promised": "7.1.1",
     "@types/google-protobuf": "^3.2.7",
     "@types/mocha": "^5.2.7",
     "@types/needle": "^2.0.4",
