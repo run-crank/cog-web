@@ -1,0 +1,135 @@
+version: 2.1
+executors:
+  docker-publisher:
+    environment:
+      IMAGE_NAME: automatoninc/web
+    docker:
+      - image: circleci/buildpack-deps:stretch
+
+jobs:
+  test:
+    docker:
+      - image: circleci/node:10
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            # Find a cache corresponding to this specific package-lock.json
+            - v1-npm-deps-{{ checksum "package-lock.json" }}
+            # Fallback cache to be used
+            - v1-npm-deps-
+      - run:
+          name: Install Dependencies
+          command: |
+            npm install
+      - save_cache:
+          key: v1-npm-deps-{{ checksum "package-lock.json" }}
+          paths:
+            - ./node_modules
+      - run:
+          name: Lint Code
+          command: |
+            npm run lint
+      - run:
+          name: Test Code
+          command: |
+            npm test
+
+  build:
+    executor: docker-publisher
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build Docker image
+          command: |
+            docker build -t $IMAGE_NAME:latest .
+      - run:
+          name: Archive Docker image
+          command: docker save -o image.tar $IMAGE_NAME
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./image.tar
+  publish-dev:
+    executor: docker-publisher
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - setup_remote_docker
+      - run:
+          name: Load archived Docker image
+          command: docker load -i /tmp/workspace/image.tar
+      - run:
+          name: Publish Docker Image to Docker Hub
+          command: |
+            echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+            IMAGE_TAG="dev-v${CIRCLE_BUILD_NUM}"
+            docker tag $IMAGE_NAME:latest $IMAGE_NAME:$IMAGE_TAG
+            docker push $IMAGE_NAME:$IMAGE_TAG
+  publish-tag:
+    executor: docker-publisher
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - setup_remote_docker
+      - run:
+          name: Load archived Docker image
+          command: docker load -i /tmp/workspace/image.tar
+      - run:
+          name: Publish Docker Image to Docker Hub
+          command: |
+            echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+            IMAGE_TAG=${CIRCLE_TAG/v/''}
+            docker tag $IMAGE_NAME:latest $IMAGE_NAME:$IMAGE_TAG
+            docker push $IMAGE_NAME:latest
+            docker push $IMAGE_NAME:$IMAGE_TAG
+
+workflows:
+  version: 2
+  test-all-branches:
+    jobs:
+      - test:
+          filters:
+            branches:
+              ignore:
+                - master
+            tags:
+              ignore: /.*/
+
+  build-master:
+    jobs:
+      - test:
+          filters:
+            branches:
+              only: master
+      - build:
+          filters:
+            branches:
+              only: master
+      - publish-dev:
+          context: docker-creds-to-publish-cogs
+          requires:
+            - test
+            - build
+          filters:
+            branches:
+              only: master
+
+  build-tags:
+    jobs:
+      - build:
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
+      - publish-tag:
+          context: docker-creds-to-publish-cogs
+          requires:
+            - build
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/

@@ -1,5 +1,7 @@
 # Web Cog
 
+[![CircleCI](https://circleci.com/gh/run-crank/cog-web/tree/master.svg?style=svg)](https://circleci.com/gh/run-crank/cog-web/tree/master)
+
 This is a [Crank][what-is-crank] Cog for basic web interactions, providing
 steps and assertions for you to run against your website. This Cog leverages
 Chrome (via Puppeteer) to interact with websites. Puppeteer is configured in a
