@@ -66,7 +66,7 @@ export class ClientWrapper {
 
       case 'type':
         try {
-          await this.client.waitForSelector(selector, {visible: true, timeout: 5000});
+          await this.client.waitForSelector(selector, { visible: true, timeout: 5000 });
           await this.client.type(selector, value);
         } catch (e) {
           try {
