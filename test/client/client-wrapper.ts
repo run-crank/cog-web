@@ -66,6 +66,7 @@ describe('ClientWrapper', () => {
     beforeEach(() => {
       pageStub = sinon.stub();
       pageStub.evaluate = sinon.stub();
+      pageStub.waitForSelector = sinon.stub();
       pageStub.select = sinon.stub();
       pageStub.type = sinon.stub();
     })
@@ -133,11 +134,29 @@ describe('ClientWrapper', () => {
       // Set up test instance.
       pageStub.evaluate.onCall(0).resolves('type');
       pageStub.type.resolves();
+      pageStub.waitForSelector.resolves();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
       // Call the method and make assertions.
       await clientWrapperUnderTest.fillOutField(expectedSelector, expectedValue);
       expect(pageStub.type).to.have.been.calledWith(expectedSelector, expectedValue);
+      expect(pageStub.waitForSelector).to.have.been.calledWith(expectedSelector);
+    });
+
+    it('textInput:happyPathHiddenField', async () => {
+      const expectedSelector = 'input[name=Email]';
+      const expectedValue = 'atommy@example.com';
+
+      // Set up test instance.
+      pageStub.evaluate.onCall(0).resolves('type');
+      pageStub.type.resolves();
+      pageStub.waitForSelector.rejects();
+      pageStub.evaluate.onCall(1).resolves();
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
+
+      // Call the method and make assertions.
+      await clientWrapperUnderTest.fillOutField(expectedSelector, expectedValue);
+      expect(pageStub.evaluate).to.have.been.calledWith(sinon.match.any, expectedSelector, expectedValue);
     });
 
     it('textInput:cannotTypeInField', () => {
@@ -147,6 +166,7 @@ describe('ClientWrapper', () => {
       // Set up test instance.
       pageStub.evaluate.onCall(0).resolves('type');
       pageStub.type.rejects();
+      pageStub.evaluate.onCall(1).rejects();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
       // Call the method and make assertions.
