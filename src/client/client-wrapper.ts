@@ -66,9 +66,22 @@ export class ClientWrapper {
 
       case 'type':
         try {
+          await this.client.waitForSelector(selector, {visible: true, timeout: 5000});
           await this.client.type(selector, value);
         } catch (e) {
-          throw Error("Field may not be visible or can't be typed in.");
+          try {
+            await this.client.evaluate(
+              (selector, value) => {
+                document.querySelector(selector).focus();
+                document.querySelector(selector).value = value;
+                document.querySelector(selector).blur();
+                return true;
+              },
+              selector, value,
+            );
+          } catch (e) {
+            throw Error("Field may not be visible, or exist, or it can't be typed in.");
+          }
         }
         break;
     }
