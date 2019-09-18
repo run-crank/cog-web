@@ -1,11 +1,11 @@
 import * as chai from 'chai';
+import { Metadata } from 'grpc';
 import { default as sinon } from 'ts-sinon';
 import * as sinonChai from 'sinon-chai';
 import * as justForIdeTypeHinting from 'chai-as-promised';
 import 'mocha';
 
 import { ClientWrapper } from '../../src/client/client-wrapper';
-import { Metadata } from 'grpc';
 
 chai.use(sinonChai);
 chai.use(require('chai-as-promised'));
@@ -33,17 +33,19 @@ describe('ClientWrapper', () => {
       const expectedUrl = 'https://example.com';
       const originalUserAgent = 'Mozilla/a.b HeadlessChrome/x.y.z';
       const expectedUserAgent = 'Mozilla/a.b AutomatonHeadlessChrome/x.y.z';
+      const expectedLastResponse = 'This would be a puppeteer response object';
 
       // Set up test instance.
       browserStub.userAgent.resolves(originalUserAgent);
       pageStub.setUserAgent.resolves();
-      pageStub.goto.resolves();
+      pageStub.goto.resolves(expectedLastResponse);
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
       // Call the method and make assertions.
       await clientWrapperUnderTest.navigateToUrl(expectedUrl);
       expect(pageStub.setUserAgent).to.have.been.calledWith(expectedUserAgent);
       expect(pageStub.goto).to.have.been.calledWith(expectedUrl, { waitUntil: 'networkidle0' });
+      expect(pageStub.___lastResponse).to.be.string(expectedLastResponse);
     });
 
     it('sadPath', () => {
@@ -257,6 +259,76 @@ describe('ClientWrapper', () => {
       // Call the method and make assertions.
       return expect(clientWrapperUnderTest.submitFormByClickingButton(expectedButtonSelector))
         .to.be.rejected;
+    });
+
+  });
+
+  describe('getCurrentPageDetails', () => {
+    let mainFrameStub: Record<string, any> = {};
+
+    beforeEach(() => {
+      pageStub = sinon.stub();
+      pageStub.___lastResponse = {
+        status: sinon.stub(),
+        url: sinon.stub(),
+        text: sinon.stub(),
+      };
+    });
+
+    it('sadPath:noPageContext', () => {
+      // Set up test instance.
+      delete pageStub.___lastResponse;
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
+
+      // Call the method and make assertions.
+      return expect(clientWrapperUnderTest.getCurrentPageInfo.bind(clientWrapperUnderTest, 'status'))
+        .to.throw;
+    });
+
+    it('sadPath:unknownDetail', () => {
+      // Set up test instance.
+      delete pageStub.___lastResponse;
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
+
+      // Call the method and make assertions.
+      return expect(clientWrapperUnderTest.getCurrentPageInfo.bind(clientWrapperUnderTest, 'unknown'))
+        .to.throw;
+    });
+
+    it('happyPath:url', async () => {
+      const expectedUrl = 'https://example.com';
+
+      // Set up test instance.
+      pageStub.___lastResponse.url.resolves(expectedUrl);
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
+
+      // Call the method and make assertions.
+      const actual = await clientWrapperUnderTest.getCurrentPageInfo('url');
+      expect(actual).to.be.string(expectedUrl);
+    });
+
+    it('happyPath:content', async () => {
+      const expectedContent = '<html><body>Example</body></html>';
+
+      // Set up test instance.
+      pageStub.___lastResponse.text.resolves(expectedContent);
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
+
+      // Call the method and make assertions.
+      const actual = await clientWrapperUnderTest.getCurrentPageInfo('text');
+      expect(actual).to.be.string(expectedContent);
+    });
+
+    it('happyPath:status', async () => {
+      const expectedStatus = '200';
+
+      // Set up test instance.
+      pageStub.___lastResponse.status.resolves(expectedStatus);
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
+
+      // Call the method and make assertions.
+      const actual = await clientWrapperUnderTest.getCurrentPageInfo('status');
+      expect(actual).to.be.string(expectedStatus);
     });
 
   });

@@ -1,6 +1,5 @@
 import * as grpc from 'grpc';
 import { Field } from '../core/base-step';
-import { FieldDefinition } from '../proto/cog_pb';
 import { Page } from 'puppeteer';
 import { Promise as Bluebird } from 'bluebird';
 
@@ -24,7 +23,12 @@ export class ClientWrapper {
     const browser = await this.client.browser();
     const ua = await browser.userAgent();
     await this.client.setUserAgent(ua.replace(' HeadlessChrome', ' AutomatonHeadlessChrome'));
-    await this.client.goto(url, { waitUntil: 'networkidle0' });
+    const response = await this.client.goto(url, { waitUntil: 'networkidle0' });
+
+    // Stash this response on the client. Adding the data to the client is the
+    // only way to persist this response object between steps.
+    // @see this.getCurrentPageDetails()
+    this.client['___lastResponse'] = response;
   }
 
   /**
@@ -142,6 +146,30 @@ export class ClientWrapper {
       ],
       3,
     );
+  }
+
+  /**
+   * Retrieves the last response object.
+   */
+  public async getCurrentPageInfo(detail: string): Promise<String> {
+    // Immediately throw an error if we don't have a response stashed.
+    if (!this.client['___lastResponse']) {
+      throw new Error('No page context. Ensure this step is preceded by a page navigation step.');
+    }
+
+    if (detail === 'url') {
+      return await this.client['___lastResponse']['url']();
+    }
+
+    if (detail === 'text') {
+      return await this.client['___lastResponse']['text']();
+    }
+
+    if (detail === 'status') {
+      return await this.client['___lastResponse']['status']();
+    }
+
+    throw new Error(`Unknown page detail: ${detail}. Should be one of: url, text, or status.`);
   }
 
   /**
