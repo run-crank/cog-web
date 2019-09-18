@@ -26,7 +26,7 @@ export class CheckCurrentPageMetaTag extends BaseStep implements StepInterface {
     const stepData: any = step.getData().toJavaScript();
     const tag: string = stepData.metaName;
     const operator: string = stepData.operator;
-    const expectation: any = stepData.expectation;
+    const expectation: any = stepData.expectation || null;
 
     // Retrieve meta tag content.
     try {

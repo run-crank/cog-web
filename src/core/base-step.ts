@@ -39,9 +39,14 @@ export abstract class BaseStep {
       const expectedField = new FieldDefinition();
       expectedField.setType(field.type);
       expectedField.setKey(field.field);
-      expectedField.setOptionality(field.optionality || FieldDefinition.Optionality.REQUIRED);
       expectedField.setDescription(field.description);
       stepDefinition.addExpectedFields(expectedField);
+
+      if (field.hasOwnProperty('optionality')) {
+        expectedField.setOptionality(field.optionality);
+      } else {
+        expectedField.setOptionality(FieldDefinition.Optionality.REQUIRED);
+      }
     });
 
     return stepDefinition;
