@@ -173,6 +173,42 @@ export class ClientWrapper {
   }
 
   /**
+   * Retrieves the content of a meta tag with the given name.
+   *
+   * @param metaName - The name (or property) attribute of the meta tag whose
+   *   contents to return.
+   */
+  public async getMetaTagContent(metaName: string): Promise<String> {
+    // Special case for title.
+    if (metaName === 'title') {
+      return await this.client.evaluate(() => {
+        try {
+          return document.querySelector('title').innerText;
+        } catch (e) {
+          return null;
+        }
+      });
+    }
+
+    return await this.client.evaluate(
+      (name) => {
+        try {
+          return document.querySelector(`meta[name="${name}"]`)['content'];
+        } catch (e) {
+          // If the meta[name] didn't exist, try [property] (open graph support).
+          try {
+            return document.querySelector(`meta[property="${name}"]`)['content'];
+          } catch (e) {
+            // Always resolve to null so the step can handle it.
+            return null;
+          }
+        }
+      },
+      metaName,
+    );
+  }
+
+  /**
    * Returns a method name representing how to enter a value into an element,
    * found using the given DOM Query Selector.
    *
