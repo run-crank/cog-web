@@ -67,6 +67,8 @@ export class CheckLastPageDetails extends BaseStep implements StepInterface {
       // tslint:disable-next-line:triple-equals
       return expected == actual;
     }
+
+    throw new Error(`Unknown check ${operator}. Should be one of: contain, not contain, or be`);
   }
 
 }
