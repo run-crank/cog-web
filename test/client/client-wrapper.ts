@@ -263,8 +263,7 @@ describe('ClientWrapper', () => {
 
   });
 
-  describe('getCurrentPageDetails', () => {
-    let mainFrameStub: Record<string, any> = {};
+  describe('getCurrentPageInfo', () => {
 
     beforeEach(() => {
       pageStub = sinon.stub();
@@ -329,6 +328,50 @@ describe('ClientWrapper', () => {
       // Call the method and make assertions.
       const actual = await clientWrapperUnderTest.getCurrentPageInfo('status');
       expect(actual).to.be.string(expectedStatus);
+    });
+
+  });
+
+  describe('getMetaTagContent', () => {
+
+    beforeEach(() => {
+      pageStub = sinon.stub();
+      pageStub.evaluate = sinon.stub();
+    });
+
+    it('sadPath:pageEvalThrows', () => {
+      // Set up test instance.
+      pageStub.evaluate.throws();
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
+
+      // Call the method and make assertions.
+      return expect(clientWrapperUnderTest.getMetaTagContent.bind(clientWrapperUnderTest, 'title'))
+        .to.throw;
+    });
+
+    it('happyPath:title', async () => {
+      const expectedTitle = 'Some Page Title';
+
+      // Set up test instance.
+      pageStub.evaluate.resolves(expectedTitle);
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
+
+      // Call the method and make assertions.
+      const actual = await clientWrapperUnderTest.getMetaTagContent('title');
+      expect(actual).to.be.string(expectedTitle);
+    });
+
+    it('happyPath:otherTag', async () => {
+      const expectedOgDescription = 'Some Open Graph Description';
+
+      // Set up test instance.
+      pageStub.evaluate.resolves(expectedOgDescription);
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
+
+      // Call the method and make assertions.
+      const actual = await clientWrapperUnderTest.getMetaTagContent('og:description');
+      expect(pageStub.evaluate).to.have.been.calledWith(sinon.match.any, 'og:description');
+      expect(actual).to.be.string(expectedOgDescription);
     });
 
   });
