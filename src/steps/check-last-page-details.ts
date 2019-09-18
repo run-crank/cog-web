@@ -3,14 +3,14 @@ import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../proto
 
 export class CheckLastPageDetails extends BaseStep implements StepInterface {
 
-  protected stepName: string = 'Check last page';
+  protected stepName: string = 'Check current page info';
   // tslint:disable-next-line:max-line-length
-  protected stepExpression: string = 'the (?<field>status|title|content|url) of the last page should (?<operator>contain|not contain|be) (?<expectation>.+)';
+  protected stepExpression: string = 'the (?<field>status|text|url) of the current page should (?<operator>contain|not contain|be) (?<expectation>.+)';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
   protected expectedFields: Field[] = [{
     field: 'field',
     type: FieldDefinition.Type.STRING,
-    description: 'Page Detail (status, title, content, or url)',
+    description: 'Page Detail (status, text, or url)',
   }, {
     field: 'operator',
     type: FieldDefinition.Type.STRING,
@@ -29,25 +29,25 @@ export class CheckLastPageDetails extends BaseStep implements StepInterface {
 
     // Navigate to URL.
     try {
-      const actual = await this.client.getCurrentPageDetails(field);
+      const actual = await this.client.getCurrentPageInfo(field);
       if (this.runComparison(operator, expectation, actual)) {
-        return this.pass('Page check passed: %s should %s %s', [field, operator, expectation]);
+        return this.pass('Page info check passed: %s should %s %s', [field, operator, expectation]);
       }
 
       let trimmedActual: string;
       if (String(actual).length > 4096) {
-        trimmedActual = `${String(actual).substring(0, 4096)} ... (Page Contents Trimmed)`;
+        trimmedActual = `${String(actual).substring(0, 4096)} ... (Contents Trimmed)`;
       } else {
         trimmedActual = String(actual);
       }
-      return this.fail('Page check failed: %s should %s %s, but it was actually %s', [
+      return this.fail('Page info check failed: %s should %s %s, but it was actually %s', [
         field,
         operator,
         expectation,
         trimmedActual,
       ]);
     } catch (e) {
-      return this.error('There was a problem checking last page %s: %s', [field, e.toString()]);
+      return this.error('There was a problem checking page info %s: %s', [field, e.toString()]);
     }
   }
 

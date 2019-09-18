@@ -151,31 +151,25 @@ export class ClientWrapper {
   /**
    * Retrieves the last response object.
    */
-  public async getCurrentPageDetails(detail: string): Promise<String> {
-    const mainFrame = this.client.mainFrame();
-
+  public async getCurrentPageInfo(detail: string): Promise<String> {
     // Immediately throw an error if we don't have a response stashed.
     if (!this.client['___lastResponse']) {
       throw new Error('No page context. Ensure this step is preceded by a page navigation step.');
     }
 
-    if (detail === 'title') {
-      return await mainFrame.title();
-    }
-
     if (detail === 'url') {
-      return await mainFrame.url();
+      return await this.client['___lastResponse']['url']();
     }
 
-    if (detail === 'content') {
-      return await mainFrame.content();
+    if (detail === 'text') {
+      return await this.client['___lastResponse']['text']();
     }
 
     if (detail === 'status') {
       return await this.client['___lastResponse']['status']();
     }
 
-    throw new Error(`Unknown response detail: ${detail}`);
+    throw new Error(`Unknown page detail: ${detail}. Should be one of: url, text, or status.`);
   }
 
   /**

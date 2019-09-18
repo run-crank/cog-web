@@ -18,7 +18,7 @@ describe('CheckLastPageDetails', () => {
   beforeEach(() => {
     // Set up test stubs.
     clientWrapperStub = sinon.stub();
-    clientWrapperStub.getCurrentPageDetails = sinon.stub();
+    clientWrapperStub.getCurrentPageInfo = sinon.stub();
     stepUnderTest = new Step(clientWrapperStub);
     protoStep = new ProtoStep();
   });
@@ -26,9 +26,9 @@ describe('CheckLastPageDetails', () => {
   it('should return expected step metadata', () => {
     const stepDef: StepDefinition = stepUnderTest.getDefinition();
     expect(stepDef.getStepId()).to.equal('CheckLastPageDetails');
-    expect(stepDef.getName()).to.equal('Check last page');
+    expect(stepDef.getName()).to.equal('Check current page info');
     expect(stepDef.getType()).to.equal(StepDefinition.Type.VALIDATION);
-    expect(stepDef.getExpression()).to.equal('the (?<field>status|title|content|url) of the last page should (?<operator>contain|not contain|be) (?<expectation>.+)');
+    expect(stepDef.getExpression()).to.equal('the (?<field>status|text|url) of the current page should (?<operator>contain|not contain|be) (?<expectation>.+)');
   });
 
   it('should return expected step fields', () => {
@@ -62,7 +62,7 @@ describe('CheckLastPageDetails', () => {
     };
 
     // Stub a response that matches expectations.
-    clientWrapperStub.getCurrentPageDetails.resolves(expectedResult);
+    clientWrapperStub.getCurrentPageInfo.resolves(expectedResult);
 
     // Set step data corresponding to expectations
     protoStep.setData(Struct.fromJavaScript(expectedData));
@@ -80,7 +80,7 @@ describe('CheckLastPageDetails', () => {
     };
 
     // Stub a response that matches expectations.
-    clientWrapperStub.getCurrentPageDetails.resolves(expectedResult);
+    clientWrapperStub.getCurrentPageInfo.resolves(expectedResult);
 
     // Set step data corresponding to expectations
     protoStep.setData(Struct.fromJavaScript(expectedData));
@@ -98,7 +98,7 @@ describe('CheckLastPageDetails', () => {
     };
 
     // Stub a response that matches expectations.
-    clientWrapperStub.getCurrentPageDetails.resolves(expectedResult);
+    clientWrapperStub.getCurrentPageInfo.resolves(expectedResult);
 
     // Set step data corresponding to expectations
     protoStep.setData(Struct.fromJavaScript(expectedData));
@@ -116,7 +116,7 @@ describe('CheckLastPageDetails', () => {
     };
 
     // Stub a response that matches expectations.
-    clientWrapperStub.getCurrentPageDetails.resolves(expectedResult);
+    clientWrapperStub.getCurrentPageInfo.resolves(expectedResult);
 
     // Set step data corresponding to expectations
     protoStep.setData(Struct.fromJavaScript(expectedData));
@@ -134,7 +134,7 @@ describe('CheckLastPageDetails', () => {
     };
 
     // Stub a response that matches expectations.
-    clientWrapperStub.getCurrentPageDetails.resolves(expectedResult);
+    clientWrapperStub.getCurrentPageInfo.resolves(expectedResult);
 
     // Set step data corresponding to expectations
     protoStep.setData(Struct.fromJavaScript(expectedData));
@@ -152,7 +152,7 @@ describe('CheckLastPageDetails', () => {
     };
 
     // Stub a response that matches expectations.
-    clientWrapperStub.getCurrentPageDetails.resolves(expectedResult);
+    clientWrapperStub.getCurrentPageInfo.resolves(expectedResult);
 
     // Set step data corresponding to expectations
     protoStep.setData(Struct.fromJavaScript(expectedData));
@@ -166,7 +166,7 @@ describe('CheckLastPageDetails', () => {
     const expectedResult = 'does not matter';
 
     // Stub a response that matches expectations.
-    clientWrapperStub.getCurrentPageDetails.resolves(expectedResult);
+    clientWrapperStub.getCurrentPageInfo.resolves(expectedResult);
 
     // Set step data corresponding to expectations
     protoStep.setData(Struct.fromJavaScript(expectedData));
@@ -179,7 +179,7 @@ describe('CheckLastPageDetails', () => {
     const expectedData = {field: 'status'};
 
     // Stub a response that matches expectations.
-    clientWrapperStub.getCurrentPageDetails.throws();
+    clientWrapperStub.getCurrentPageInfo.throws();
 
     // Set step data corresponding to expectations
     protoStep.setData(Struct.fromJavaScript(expectedData));
@@ -187,21 +187,5 @@ describe('CheckLastPageDetails', () => {
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
   });
-
-  /*it('should respond with error when puppeteer cannot select value', async () => {
-    const expectedData = {
-      value: 'CA',
-      domQuerySelector: 'select[name=Country]',
-    };
-
-    // Stub a response that matches expectations.
-    clientWrapperStub.fillOutField.rejects();
-
-    // Set step data corresponding to expectations
-    protoStep.setData(Struct.fromJavaScript(expectedData));
-
-    const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
-  });*/
 
 });

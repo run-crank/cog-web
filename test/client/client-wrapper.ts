@@ -268,9 +268,10 @@ describe('ClientWrapper', () => {
 
     beforeEach(() => {
       pageStub = sinon.stub();
-      pageStub.mainFrame = sinon.stub();
       pageStub.___lastResponse = {
         status: sinon.stub(),
+        url: sinon.stub(),
+        text: sinon.stub(),
       };
     });
 
@@ -280,7 +281,7 @@ describe('ClientWrapper', () => {
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
       // Call the method and make assertions.
-      return expect(clientWrapperUnderTest.getCurrentPageDetails.bind(clientWrapperUnderTest, 'status'))
+      return expect(clientWrapperUnderTest.getCurrentPageInfo.bind(clientWrapperUnderTest, 'status'))
         .to.throw;
     });
 
@@ -290,35 +291,19 @@ describe('ClientWrapper', () => {
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
       // Call the method and make assertions.
-      return expect(clientWrapperUnderTest.getCurrentPageDetails.bind(clientWrapperUnderTest, 'unknown'))
+      return expect(clientWrapperUnderTest.getCurrentPageInfo.bind(clientWrapperUnderTest, 'unknown'))
         .to.throw;
-    });
-
-    it('happyPath:title', async () => {
-      const expectedTitle = 'Some Page Title';
-
-      // Set up test instance.
-      mainFrameStub.title = sinon.stub();
-      mainFrameStub.title.resolves(expectedTitle);
-      pageStub.mainFrame.returns(mainFrameStub);
-      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
-
-      // Call the method and make assertions.
-      const actual = await clientWrapperUnderTest.getCurrentPageDetails('title');
-      expect(actual).to.be.string(expectedTitle);
     });
 
     it('happyPath:url', async () => {
       const expectedUrl = 'https://example.com';
 
       // Set up test instance.
-      mainFrameStub.url = sinon.stub();
-      mainFrameStub.url.resolves(expectedUrl);
-      pageStub.mainFrame.returns(mainFrameStub);
+      pageStub.___lastResponse.url.resolves(expectedUrl);
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
       // Call the method and make assertions.
-      const actual = await clientWrapperUnderTest.getCurrentPageDetails('url');
+      const actual = await clientWrapperUnderTest.getCurrentPageInfo('url');
       expect(actual).to.be.string(expectedUrl);
     });
 
@@ -326,13 +311,11 @@ describe('ClientWrapper', () => {
       const expectedContent = '<html><body>Example</body></html>';
 
       // Set up test instance.
-      mainFrameStub.content = sinon.stub();
-      mainFrameStub.content.resolves(expectedContent);
-      pageStub.mainFrame.returns(mainFrameStub);
+      pageStub.___lastResponse.text.resolves(expectedContent);
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
       // Call the method and make assertions.
-      const actual = await clientWrapperUnderTest.getCurrentPageDetails('content');
+      const actual = await clientWrapperUnderTest.getCurrentPageInfo('text');
       expect(actual).to.be.string(expectedContent);
     });
 
@@ -341,11 +324,10 @@ describe('ClientWrapper', () => {
 
       // Set up test instance.
       pageStub.___lastResponse.status.resolves(expectedStatus);
-      pageStub.mainFrame.returns();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
       // Call the method and make assertions.
-      const actual = await clientWrapperUnderTest.getCurrentPageDetails('status');
+      const actual = await clientWrapperUnderTest.getCurrentPageInfo('status');
       expect(actual).to.be.string(expectedStatus);
     });
 
