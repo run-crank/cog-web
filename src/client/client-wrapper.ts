@@ -1,6 +1,6 @@
 import * as grpc from 'grpc';
 import { Field } from '../core/base-step';
-import { Page, Response } from 'puppeteer';
+import { Page } from 'puppeteer';
 import { Promise as Bluebird } from 'bluebird';
 
 export class ClientWrapper {
@@ -28,7 +28,7 @@ export class ClientWrapper {
     // Stash this response on the client. Adding the data to the client is the
     // only way to persist this response object between steps.
     // @see this.getCurrentPageDetails()
-    this.client['___lastResponse']  = response;
+    this.client['___lastResponse'] = response;
   }
 
   /**
