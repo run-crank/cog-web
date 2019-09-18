@@ -1,0 +1,74 @@
+import { BaseStep, Field, StepInterface } from '../core/base-step';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../proto/cog_pb';
+
+export class CheckLastPageDetails extends BaseStep implements StepInterface {
+
+  protected stepName: string = 'Check last page';
+  // tslint:disable-next-line:max-line-length
+  protected stepExpression: string = 'the (?<field>status|title|content|url) of the last page should (?<operator>contain|not contain|be) (?<expectation>.+)';
+  protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
+  protected expectedFields: Field[] = [{
+    field: 'field',
+    type: FieldDefinition.Type.STRING,
+    description: 'Page Detail (status, title, content, or url)',
+  }, {
+    field: 'operator',
+    type: FieldDefinition.Type.STRING,
+    description: 'Check Logic (contain, not contain, or be)',
+  }, {
+    field: 'expectation',
+    type: FieldDefinition.Type.ANYSCALAR,
+    description: 'Expected Value',
+  }];
+
+  async executeStep(step: Step): Promise<RunStepResponse> {
+    const stepData: any = step.getData().toJavaScript();
+    const field: string = stepData.field;
+    const operator: string = stepData.operator;
+    const expectation: any = stepData.expectation;
+
+    // Navigate to URL.
+    try {
+      const actual = await this.client.getCurrentPageDetails(field);
+      if (this.runComparison(operator, expectation, actual)) {
+        return this.pass('Page check passed: %s should %s %s', [field, operator, expectation]);
+      }
+
+      let trimmedActual: string;
+      if (String(actual).length > 4096) {
+        trimmedActual = `${String(actual).substring(0, 4096)} ... (Page Contents Trimmed)`;
+      } else {
+        trimmedActual = String(actual);
+      }
+      return this.fail('Page check failed: %s should %s %s, but it was actually %s', [
+        field,
+        operator,
+        expectation,
+        trimmedActual,
+      ]);
+    } catch (e) {
+      return this.error('There was a problem checking last page %s: %s', [field, e.toString()]);
+    }
+  }
+
+/**
+ * Compare the expected and actual field values using the appropriate operator.
+ */
+  protected runComparison(operator, expected, actual): boolean {
+    if (operator === 'contain') {
+      return String(actual).toLowerCase().includes(String(expected).toLowerCase());
+    }
+
+    if (operator === 'not contain') {
+      return !String(actual).toLowerCase().includes(String(expected).toLowerCase());
+    }
+
+    if (operator === 'be') {
+      // tslint:disable-next-line:triple-equals
+      return expected == actual;
+    }
+  }
+
+}
+
+export { CheckLastPageDetails as Step };
