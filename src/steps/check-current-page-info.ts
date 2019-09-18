@@ -1,7 +1,7 @@
 import { BaseStep, Field, StepInterface } from '../core/base-step';
 import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../proto/cog_pb';
 
-export class CheckLastPageDetails extends BaseStep implements StepInterface {
+export class CheckCurrentPageInfo extends BaseStep implements StepInterface {
 
   protected stepName: string = 'Check current page info';
   // tslint:disable-next-line:max-line-length
@@ -73,4 +73,4 @@ export class CheckLastPageDetails extends BaseStep implements StepInterface {
 
 }
 
-export { CheckLastPageDetails as Step };
+export { CheckCurrentPageInfo as Step };

@@ -5,7 +5,7 @@ import * as sinonChai from 'sinon-chai';
 import 'mocha';
 
 import { Step as ProtoStep, StepDefinition, FieldDefinition, RunStepResponse } from '../../src/proto/cog_pb';
-import { Step } from '../../src/steps/check-last-page-details';
+import { Step } from '../../src/steps/check-current-page-info';
 
 chai.use(sinonChai);
 
@@ -25,7 +25,7 @@ describe('CheckLastPageDetails', () => {
 
   it('should return expected step metadata', () => {
     const stepDef: StepDefinition = stepUnderTest.getDefinition();
-    expect(stepDef.getStepId()).to.equal('CheckLastPageDetails');
+    expect(stepDef.getStepId()).to.equal('CheckCurrentPageInfo');
     expect(stepDef.getName()).to.equal('Check current page info');
     expect(stepDef.getType()).to.equal(StepDefinition.Type.VALIDATION);
     expect(stepDef.getExpression()).to.equal('the (?<field>status|text|url) of the current page should (?<operator>contain|not contain|be) (?<expectation>.+)');
