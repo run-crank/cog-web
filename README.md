@@ -30,6 +30,24 @@ This Cog does not require any authentication details.
 
 ### Steps
 <!-- stepDetails -->
+<h4 id="CheckCurrentPageInfo">Check current page info</h4>
+
+- **Expression**: `the (?<field>status|text|url) of the current page should (?<operator>contain|not contain|be) (?<expectation>.+)`
+- **Expected Data**:
+  - `field`: Page Detail (status, text, or url)
+  - `operator`: Check Logic (contain, not contain, or be)
+  - `expectation`: Expected Value
+- **Step ID**: `CheckCurrentPageInfo`
+
+<h4 id="CheckCurrentPageMetaTag">Check current page meta tag</h4>
+
+- **Expression**: `the (?<metaName>.+) meta tag on the current page should (?<operator>be|contain|not contain|not be longer than|exist) ?(?<expectation>.+)?`
+- **Expected Data**:
+  - `metaName`: Meta Tag name
+  - `operator`: Check Logic (be, contain, not contain, not be longer than, exist)
+  - `expectation`: Expected Value
+- **Step ID**: `CheckCurrentPageMetaTag`
+
 <h4 id="EnterValueIntoField">Fill out a form field</h4>
 
 - **Expression**: `fill out (?<domQuerySelector>.+) with (?<value>.+)`
