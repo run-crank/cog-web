@@ -1,237 +1,31 @@
 import * as grpc from 'grpc';
+import { BasicInteractionAware, DomAware, ResponseAware } from './mixins';
 import { Field } from '../core/base-step';
 import { Page } from 'puppeteer';
-import { Promise as Bluebird } from 'bluebird';
 
-export class ClientWrapper {
+class ClientWrapper {
 
   public static expectedAuthFields: Field[] = [];
 
-  private client: Page;
+  public client: Page;
 
   constructor (page: Page, auth: grpc.Metadata) {
     this.client = page;
   }
 
-  /**
-   * Attempts to navigate to the given URL. If an error occurred, this method
-   * throws an error. Otherwise, it will resolve on successful navigation.
-   *
-   * @param {String} url - The URL of the page to nagivate to.
-   */
-  public async navigateToUrl(url: string) {
-    const browser = await this.client.browser();
-    const ua = await browser.userAgent();
-    await this.client.setUserAgent(ua.replace(' HeadlessChrome', ' AutomatonHeadlessChrome'));
-    const response = await this.client.goto(url, { waitUntil: 'networkidle0' });
-
-    // Stash this response on the client. Adding the data to the client is the
-    // only way to persist this response object between steps.
-    // @see this.getCurrentPageDetails()
-    this.client['___lastResponse'] = response;
-  }
-
-  /**
-   * Attempts to fill in the given value into the field denoted by the given
-   * DOM query selector. If there was an error, this method throws an error.
-   * Otherwise, it will resolve on successful form field fill.
-   *
-   * @param {String} selector - The DOM Query Selector of the element.
-   * @param {*} value - The value to enter into the field.
-   */
-  public async fillOutField(selector: string, value: any) {
-    const fieldMethod = await this.getFieldMethod(selector);
-
-    // Based on type of field, fill out / click / select value.
-    switch (fieldMethod) {
-      case 'choose':
-        try {
-          await this.client.select(selector, value);
-        } catch (e) {
-          throw Error("Drop down may not be visible or isn't selectable.");
-        }
-        break;
-
-      case 'tick':
-        if (value) {
-          try {
-            await this.client.evaluate(
-              (selector) => {
-                document.querySelector(selector).checked = true;
-                return true;
-              },
-              selector,
-            );
-          } catch (e) {
-            throw Error("Checkbox may not be visible or isn't checkable.");
-          }
-        }
-        break;
-
-      case 'type':
-        try {
-          await this.client.waitForSelector(selector, { visible: true, timeout: 5000 });
-          await this.client.type(selector, value);
-        } catch (e) {
-          try {
-            await this.client.evaluate(
-              (selector, value) => {
-                document.querySelector(selector).focus();
-                document.querySelector(selector).value = value;
-                document.querySelector(selector).blur();
-                return true;
-              },
-              selector, value,
-            );
-          } catch (e) {
-            throw Error("Field may not be visible, or exist, or it can't be typed in.");
-          }
-        }
-        break;
-    }
-  }
-
-  /**
-   * Attempts to submit a form by clicking a button with a given DOM Query
-   * Selector. If there was a problem submitting the form, this method will
-   * throw an error. If the form was submitted successfully, it will resolve.
-   *
-   * @param {String} selector - DOM Query Selector of the button to click.
-   */
-  public async submitFormByClickingButton(selector: string) {
-    // Set up wait handlers and attempt to click the button. Uses Bluebird.some()
-    // set to 3/4 to catch as many cases as possible, including:
-    // - Click worked, redirected, and therefore button is gone.
-    // - Click worked, no redirect, but button is gone and it's been 10s
-    await Bluebird.some(
-      [
-        new Promise((res, rej) => {
-          this.client.waitForNavigation({ timeout: 15000 })
-            .then(res)
-            .catch(e => rej(Error('Page did not redirect')));
-        }),
-        new Promise((res, rej) => {
-          this.client.waitForFunction(
-            (selector) => {
-              const el = document.querySelector(selector);
-              return !el || el.offsetParent === null;
-            },
-            { timeout: 15000 },
-            selector,
-          )
-            .then(res)
-            .catch(e => rej(Error('Submit button still there')));
-        }),
-        new Promise((res, rej) => {
-          this.client.click(selector)
-            .then(res)
-            .catch((e) => {
-              this.client.waitForFunction(
-                (selector) => {
-                  document.querySelector(selector).click();
-                  return true;
-                },
-                {},
-                selector,
-              )
-                .then(res)
-                .catch(e => rej(Error('Unable to click submit button')));
-            });
-        }),
-        new Promise((res, rej) => {
-          this.client.waitFor(10000)
-            .then(res)
-            .catch(e => rej(Error('Waited for 10 seconds')));
-        }),
-      ],
-      3,
-    );
-  }
-
-  /**
-   * Retrieves the last response object.
-   */
-  public async getCurrentPageInfo(detail: string): Promise<String> {
-    // Immediately throw an error if we don't have a response stashed.
-    if (!this.client['___lastResponse']) {
-      throw new Error('No page context. Ensure this step is preceded by a page navigation step.');
-    }
-
-    if (detail === 'url') {
-      return await this.client['___lastResponse']['url']();
-    }
-
-    if (detail === 'text') {
-      return await this.client['___lastResponse']['text']();
-    }
-
-    if (detail === 'status') {
-      return await this.client['___lastResponse']['status']();
-    }
-
-    throw new Error(`Unknown page detail: ${detail}. Should be one of: url, text, or status.`);
-  }
-
-  /**
-   * Retrieves the content of a meta tag with the given name.
-   *
-   * @param metaName - The name (or property) attribute of the meta tag whose
-   *   contents to return.
-   */
-  public async getMetaTagContent(metaName: string): Promise<String> {
-    // Special case for title.
-    if (metaName === 'title') {
-      return await this.client.evaluate(() => {
-        try {
-          return document.querySelector('title').innerText;
-        } catch (e) {
-          return null;
-        }
-      });
-    }
-
-    return await this.client.evaluate(
-      (name) => {
-        try {
-          return document.querySelector(`meta[name="${name}"]`)['content'];
-        } catch (e) {
-          // If the meta[name] didn't exist, try [property] (open graph support).
-          try {
-            return document.querySelector(`meta[property="${name}"]`)['content'];
-          } catch (e) {
-            // Always resolve to null so the step can handle it.
-            return null;
-          }
-        }
-      },
-      metaName,
-    );
-  }
-
-  /**
-   * Returns a method name representing how to enter a value into an element,
-   * found using the given DOM Query Selector.
-   *
-   * @param {String} selector - The domQuerySelector of the element.
-   * @returns {String} - One of choose (for select elements), tick (for
-   *   checkbox inputs), or type (for any other input).
-   */
-  private async getFieldMethod(selector: string) {
-    return await this.client.evaluate(
-      (selector) => {
-        let method: string;
-        const element = document.querySelector(selector);
-        if (element.tagName === 'select') {
-          method = 'choose';
-        } else if (element.tagName === 'input' && element.type === 'checkbox') {
-          method = 'tick';
-        } else {
-          method = 'type';
-        }
-        return method;
-      },
-      selector,
-    );
-  }
-
 }
+
+interface ClientWrapper extends BasicInteractionAware, DomAware, ResponseAware {}
+
+applyMixins(ClientWrapper, [BasicInteractionAware, DomAware, ResponseAware]);
+
+function applyMixins(derivedCtor: any, baseCtors: any[]) {
+  baseCtors.forEach((baseCtor) => {
+    Object.getOwnPropertyNames(baseCtor.prototype).forEach((name) => {
+          // tslint:disable-next-line:max-line-length
+      Object.defineProperty(derivedCtor.prototype, name, Object.getOwnPropertyDescriptor(baseCtor.prototype, name));
+    });
+  });
+}
+
+export { ClientWrapper as ClientWrapper };
