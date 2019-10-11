@@ -11,6 +11,7 @@ export class BasicInteractionAware {
    * @param {String} url - The URL of the page to nagivate to.
    */
   public async navigateToUrl(url: string) {
+    this.client['__networkRequests'] = null;
     const browser = await this.client.browser();
     const ua = await browser.userAgent();
     await this.client.setUserAgent(ua.replace(' HeadlessChrome', ' AutomatonHeadlessChrome'));

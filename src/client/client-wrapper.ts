@@ -1,7 +1,7 @@
 import * as grpc from 'grpc';
 import { BasicInteractionAware, DomAware, ResponseAware } from './mixins';
 import { Field } from '../core/base-step';
-import { Page } from 'puppeteer';
+import { Page, Request } from 'puppeteer';
 
 class ClientWrapper {
 
@@ -11,6 +11,16 @@ class ClientWrapper {
 
   constructor (page: Page, auth: grpc.Metadata) {
     this.client = page;
+    this.client.addListener('requestfinished', (request: Request) => {
+      this.client['__networkRequests'] = [];
+      this.client['__networkRequests'].push({
+        rawRequest: request,
+        method: request.method(),
+        resourceType: request.resourceType(),
+        url: request.url(),
+        postData: request.postData(),
+      });
+    });
   }
 
 }
