@@ -4,6 +4,24 @@ import { Promise as Bluebird } from 'bluebird';
 export class BasicInteractionAware {
   public client: Page;
 
+  public async clickElement(selector: string) {
+    try {
+      await this.client.click(selector);
+    } catch (e) {
+      try {
+        await this.client.evaluate(
+          async (selector) => {
+            document.querySelector(selector).click();
+            return true;
+          },
+          selector,
+        );
+      } catch (e) {
+        throw Error('Element may not be visible or clickable');
+      }
+    }
+  }
+
   /**
    * Attempts to navigate to the given URL. If an error occurred, this method
    * throws an error. Otherwise, it will resolve on successful navigation.

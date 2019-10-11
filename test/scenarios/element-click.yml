@@ -1,0 +1,8 @@
+scenario: Element Click Test to Navigate pages
+description: This tests page navigation using the click element step
+
+steps:
+- step: navigate to https://crank.run/
+- step: click the page element [href="/discover-cogs"]
+- waitFor: 1
+  step: the title meta tag on the current page should be Crank - Discover Cogs
