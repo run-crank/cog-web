@@ -5,7 +5,7 @@ export class ClickOnElement extends BaseStep implements StepInterface {
 
   protected stepName: string = 'Click an element on a page';
   // tslint:disable-next-line:max-line-length
-  protected stepExpression: string = 'click on page element (?<domQuerySelector>.+)';
+  protected stepExpression: string = 'click the page element (?<domQuerySelector>.+)';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
   protected expectedFields: Field[] = [{
     field: 'domQuerySelector',

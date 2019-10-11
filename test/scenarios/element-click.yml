@@ -1,8 +1,8 @@
-scenario: Element Click Test
-description: This tests the element click step
+scenario: Element Click Test to Navigate pages
+description: This tests page navigation using the click element step
 
 steps:
-- step: navigate to http://go.automatoninc.com/Automatest-Live-Demo_Demo-Page-New-2019-Updated.html
-- step: click on page element button[type="submit"]
-- step: click on page element [id="Title"]
-- step: click on page element label[for="Title"]
+- step: navigate to https://crank.run/
+- step: click the page element [href="/discover-cogs"]
+- waitFor: 1
+  step: the title meta tag on the current page should be Crank - Discover Cogs
