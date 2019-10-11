@@ -9,7 +9,7 @@ import { Step } from '../../src/steps/click-on-element';
 
 chai.use(sinonChai);
 
-describe('NavigateToPage', () => {
+describe('ClickAnElement', () => {
   const expect = chai.expect;
   let protoStep: ProtoStep;
   let stepUnderTest: Step;
