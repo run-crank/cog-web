@@ -1,0 +1,10 @@
+scenario: Scroll Through Test
+description: This tests scrolling through X percentage of a page
+
+steps:
+- step: navigate to https://www.salesforce.com/
+- step: scroll through 70% of the page
+- waitFor: 5
+  step: click the page element a[href="/ap/customer-success-stories/?d=see-cust-stories"]
+- waitFor: 1
+  step: the title meta tag on the current page should contain Customer Success

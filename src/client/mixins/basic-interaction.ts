@@ -4,6 +4,19 @@ import { Promise as Bluebird } from 'bluebird';
 export class BasicInteractionAware {
   public client: Page;
 
+  public async scrollThrough(depth: number) {
+    try {
+      await this.client.evaluate(
+        (percent) => {
+          const floatValue = percent / 100;
+          window.scrollBy(0, document.body.scrollHeight * floatValue);
+        },
+        depth);
+    } catch (e) {
+      throw Error(`Unable to scroll through ${depth} percent depth`);
+    }
+  }
+
   public async clickElement(selector: string) {
     try {
       await this.client.click(selector);
