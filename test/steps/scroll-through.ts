@@ -45,7 +45,7 @@ describe('ClickAnElement', () => {
   });
 
   describe('ExecuteStep', () => {
-    describe('Element clicked', () => {
+    describe('Scrolled through', () => {
       const expectedDepth = 50;
       beforeEach(() => {
         clientWrapperStub.scrollThrough.returns(Promise.resolve());
