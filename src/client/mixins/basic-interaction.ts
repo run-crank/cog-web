@@ -13,7 +13,7 @@ export class BasicInteractionAware {
         },
         depth);
     } catch (e) {
-      throw Error(`Unable to scroll through ${depth} percent depth`);
+      throw Error(`Unable to scroll through ${depth} percent depth: ${e}`);
     }
   }
 
