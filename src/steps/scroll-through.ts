@@ -19,9 +19,9 @@ export class ScrollThrough extends BaseStep implements StepInterface {
 
     try {
       await this.client.scrollThrough(depth);
-      return this.pass('Successfully scrolled through: %s%% depth', [depth]);
+      return this.pass('Successfully scrolled through %s%% of the page', [depth]);
     } catch (e) {
-      return this.error('There was a problem scrolling through: %s%% depth', [
+      return this.error('There was a problem scrolling through %s%% of the page', [
         depth,
         e.toString(),
       ]);

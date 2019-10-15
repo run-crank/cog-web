@@ -9,7 +9,7 @@ import { Step } from '../../src/steps/scroll-through';
 
 chai.use(sinonChai);
 
-describe('ClickAnElement', () => {
+describe('ScrollThroughPage', () => {
   const expect = chai.expect;
   let protoStep: ProtoStep;
   let stepUnderTest: Step;
