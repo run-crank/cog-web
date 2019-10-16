@@ -3,7 +3,7 @@ import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../proto
 
 export class CheckMarketoMunchkin extends BaseStep implements StepInterface {
 
-  protected stepName: string = 'Check that Marketo Munchkin Tracking Loads';
+  protected stepName: string = 'Check that Marketo Munchkin tracking loads';
   protected stepExpression: string = 'the tracking code for munchkin account id (?<id>[a-zA-Z0-9\-]+) should load';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
   protected expectedFields: Field[] = [{
@@ -19,9 +19,9 @@ export class CheckMarketoMunchkin extends BaseStep implements StepInterface {
     // Navigate to URL.
     try {
       const actual = await this.client.getFinishedRequests();
-      if (!actual.map(request => request.url).includes('https://munchkin.marketo.net/munchkin.js')) {
+      if (!actual.map(request => request.url).find(url => url.includes('https://munchkin.marketo.net/munchkin.js'))) {
         return this.fail('The munchkin.js script was never requested.');
-      } else if (!actual.map(request => request.url).find(url => url.includes(`https://${id}.mktoresp.com/webevents/visitWebPage`))) {
+      } else if (!actual.map(request => request.url).find(url => url.includes(`https://${id.toLowerCase()}.mktoresp.com/webevents/visitWebPage`))) {
         return this.fail('No visit was logged for munchkin account %s', [id]);
       } else {
         return this.pass('Munchkin account %s has been loaded', [id]);

@@ -1,6 +1,5 @@
-import { MarketoAware } from './mixins/marketo';
 import * as grpc from 'grpc';
-import { BasicInteractionAware, DomAware, ResponseAware } from './mixins';
+import { BasicInteractionAware, DomAware, ResponseAware, MarketoAware } from './mixins';
 import { Field } from '../core/base-step';
 import { Page, Request } from 'puppeteer';
 
