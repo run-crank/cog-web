@@ -1,5 +1,5 @@
 import * as grpc from 'grpc';
-import { BasicInteractionAware, DomAware, ResponseAware } from './mixins';
+import { BasicInteractionAware, DomAware, ResponseAware, MarketoAware } from './mixins';
 import { Field } from '../core/base-step';
 import { Page, Request } from 'puppeteer';
 
@@ -22,17 +22,15 @@ class ClientWrapper {
       });
     });
   }
-
 }
 
-interface ClientWrapper extends BasicInteractionAware, DomAware, ResponseAware {}
+interface ClientWrapper extends BasicInteractionAware, DomAware, ResponseAware, MarketoAware {}
 
-applyMixins(ClientWrapper, [BasicInteractionAware, DomAware, ResponseAware]);
+applyMixins(ClientWrapper, [BasicInteractionAware, DomAware, ResponseAware, MarketoAware]);
 
 function applyMixins(derivedCtor: any, baseCtors: any[]) {
   baseCtors.forEach((baseCtor) => {
     Object.getOwnPropertyNames(baseCtor.prototype).forEach((name) => {
-          // tslint:disable-next-line:max-line-length
       Object.defineProperty(derivedCtor.prototype, name, Object.getOwnPropertyDescriptor(baseCtor.prototype, name));
     });
   });
