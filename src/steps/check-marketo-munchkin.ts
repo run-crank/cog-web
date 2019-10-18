@@ -16,9 +16,8 @@ export class CheckMarketoMunchkin extends BaseStep implements StepInterface {
     const stepData: any = step.getData().toJavaScript();
     const id: string = stepData.id;
 
-    // Navigate to URL.
     try {
-      const actual = await this.client.getFinishedRequests();
+      const actual = await this.client.getFinishedMarketoRequests();
       if (!actual.map(request => request.url).find(url => url.includes('https://munchkin.marketo.net/munchkin.js'))) {
         return this.fail('The munchkin.js script was never requested.');
       } else if (!actual.map(request => request.url).find(url => url.includes(`https://${id.toLowerCase()}.mktoresp.com/webevents/visitWebPage`))) {
