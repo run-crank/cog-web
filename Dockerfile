@@ -31,4 +31,4 @@ ENV DISPLAY :99
 EXPOSE 28866
 LABEL com.automatoninc.cog-for="Web"
 
-ENTRYPOINT ["/usr/local/bin/dumb-init", "--", "xvfb-run", "--server-num=99", "--server-args=-screen 0 1024x768x24", "node", "build/core/grpc-server.js"]
+ENTRYPOINT ["/usr/local/bin/dumb-init", "--", "xvfb-run", "--server-num=99", "--server-args=-screen 0 1280x960x24", "node", "build/core/grpc-server.js"]
