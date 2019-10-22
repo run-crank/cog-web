@@ -22,6 +22,10 @@ class ClientWrapper {
       });
     });
   }
+
+  public async getFinishedRequests(): Promise<any> {
+    return this.client['__networkRequests'];
+  }
 }
 
 interface ClientWrapper extends BasicInteractionAware, DomAware, ResponseAware, MarketoAware, GoogleAnalyticsAware {}
