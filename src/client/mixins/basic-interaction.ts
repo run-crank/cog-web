@@ -4,16 +4,32 @@ import { Promise as Bluebird } from 'bluebird';
 export class BasicInteractionAware {
   public client: Page;
 
-  public async scrollThrough(depth: number) {
+  public async scrollTo(depth: number) {
     try {
+      // Perform scroll.
       await this.client.evaluate(
         (percent) => {
           const floatValue = percent / 100;
-          window.scrollBy(0, document.body.scrollHeight * floatValue);
+          window.scroll({
+            left: 0,
+            top: document.body.scrollHeight * floatValue,
+            behavior: 'smooth',
+          });
         },
-        depth);
+        depth,
+      );
+
+      // Wait until scroll completes.
+      await this.client.waitFor(
+        (percent) => {
+          const floatValue = percent / 100;
+          return window.scrollY + window.innerHeight >= document.body.scrollHeight * floatValue;
+        },
+        {},
+        depth,
+      );
     } catch (e) {
-      throw Error(`Unable to scroll through ${depth} percent depth: ${e}`);
+      throw Error(`Unable to scroll to ${depth} percent depth: ${e}`);
     }
   }
 
