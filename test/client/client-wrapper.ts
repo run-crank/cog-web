@@ -28,6 +28,11 @@ describe('ClientWrapper', () => {
       pageStub.browser.resolves(browserStub);
       pageStub.setUserAgent = sinon.stub();
       pageStub.goto = sinon.stub();
+
+      // Stub out event emitter.
+      pageStub.listenerCount = sinon.stub()
+      pageStub.listenerCount.onFirstCall().returns(0);
+      pageStub.listenerCount.onSecondCall().returns(1);
     });
 
     it('happyPath', async () => {
@@ -73,6 +78,11 @@ describe('ClientWrapper', () => {
       pageStub.addListener = sinon.stub();
       pageStub.select = sinon.stub();
       pageStub.type = sinon.stub();
+
+      // Stub out event emitter.
+      pageStub.listenerCount = sinon.stub()
+      pageStub.listenerCount.onFirstCall().returns(0);
+      pageStub.listenerCount.onSecondCall().returns(1);
     });
 
     it('selectElement:happypath', async () => {
@@ -210,6 +220,11 @@ describe('ClientWrapper', () => {
       pageStub.waitForNavigation = sinon.stub();
       pageStub.waitForFunction = sinon.stub();
       pageStub.waitFor = sinon.stub();
+
+      // Stub out event emitter.
+      pageStub.listenerCount = sinon.stub()
+      pageStub.listenerCount.onFirstCall().returns(0);
+      pageStub.listenerCount.onSecondCall().returns(1);
     });
 
     it('happyPath:submitFormAndPageRedirects', async () => {
@@ -288,6 +303,11 @@ describe('ClientWrapper', () => {
         url: sinon.stub(),
         text: sinon.stub(),
       };
+
+      // Stub out event emitter.
+      pageStub.listenerCount = sinon.stub()
+      pageStub.listenerCount.onFirstCall().returns(0);
+      pageStub.listenerCount.onSecondCall().returns(1);
     });
 
     it('sadPath:noPageContext', () => {
@@ -359,6 +379,11 @@ describe('ClientWrapper', () => {
       pageStub = sinon.stub();
       pageStub.addListener = sinon.stub();
       pageStub.evaluate = sinon.stub();
+
+      // Stub out event emitter.
+      pageStub.listenerCount = sinon.stub()
+      pageStub.listenerCount.onFirstCall().returns(0);
+      pageStub.listenerCount.onSecondCall().returns(1);
     });
 
     it('sadPath:pageEvalThrows', () => {

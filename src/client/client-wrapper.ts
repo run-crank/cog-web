@@ -1,5 +1,5 @@
 import * as grpc from 'grpc';
-import { BasicInteractionAware, DomAware, ResponseAware, MarketoAware } from './mixins';
+import { BasicInteractionAware, DomAware, ResponseAware, MarketoAware, GoogleAnalyticsAware } from './mixins';
 import { Field } from '../core/base-step';
 import { Page, Request } from 'puppeteer';
 
@@ -11,22 +11,28 @@ class ClientWrapper {
 
   constructor (page: Page, auth: grpc.Metadata) {
     this.client = page;
-    this.client.addListener('requestfinished', (request: Request) => {
-      this.client['__networkRequests'] = this.client['__networkRequests'] || [];
-      this.client['__networkRequests'].push({
-        rawRequest: request,
-        method: request.method(),
-        resourceType: request.resourceType(),
-        url: request.url(),
-        postData: request.postData(),
+    if (this.client.listenerCount('requestfinished') === 0) {
+      this.client.addListener('requestfinished', (request: Request) => {
+        this.client['__networkRequests'] = this.client['__networkRequests'] || [];
+        this.client['__networkRequests'].push({
+          rawRequest: request,
+          method: request.method(),
+          resourceType: request.resourceType(),
+          url: request.url(),
+          postData: request.postData(),
+        });
       });
-    });
+    }
+  }
+
+  public async getFinishedRequests(): Promise<any> {
+    return this.client['__networkRequests'];
   }
 }
 
-interface ClientWrapper extends BasicInteractionAware, DomAware, ResponseAware, MarketoAware {}
+interface ClientWrapper extends BasicInteractionAware, DomAware, ResponseAware, MarketoAware, GoogleAnalyticsAware {}
 
-applyMixins(ClientWrapper, [BasicInteractionAware, DomAware, ResponseAware, MarketoAware]);
+applyMixins(ClientWrapper, [BasicInteractionAware, DomAware, ResponseAware, MarketoAware, GoogleAnalyticsAware]);
 
 function applyMixins(derivedCtor: any, baseCtors: any[]) {
   baseCtors.forEach((baseCtor) => {
