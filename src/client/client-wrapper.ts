@@ -11,7 +11,7 @@ class ClientWrapper {
 
   constructor (page: Page, auth: grpc.Metadata) {
     this.client = page;
-    if (this.client.listeners('requestfinished').length === 0) {
+    if (this.client.listenerCount('requestfinished') === 0) {
       this.client.addListener('requestfinished', (request: Request) => {
         this.client['__networkRequests'] = this.client['__networkRequests'] || [];
         this.client['__networkRequests'].push({
