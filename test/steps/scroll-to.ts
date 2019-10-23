@@ -5,11 +5,11 @@ import * as sinonChai from 'sinon-chai';
 import 'mocha';
 
 import { Step as ProtoStep, StepDefinition, FieldDefinition, RunStepResponse } from '../../src/proto/cog_pb';
-import { Step } from '../../src/steps/scroll-through';
+import { Step } from '../../src/steps/scroll-to';
 
 chai.use(sinonChai);
 
-describe('ScrollThroughPage', () => {
+describe('ScrollToPage', () => {
   const expect = chai.expect;
   let protoStep: ProtoStep;
   let stepUnderTest: Step;
@@ -18,7 +18,7 @@ describe('ScrollThroughPage', () => {
   beforeEach(() => {
     // Set up test stubs.
     clientWrapperStub = sinon.stub();
-    clientWrapperStub.scrollThrough = sinon.stub();
+    clientWrapperStub.scrollTo = sinon.stub();
     stepUnderTest = new Step(clientWrapperStub);
     protoStep = new ProtoStep();
   });
@@ -26,9 +26,9 @@ describe('ScrollThroughPage', () => {
   describe('Metadata', () => {
     it('should return expected step metadata', () => {
       const stepDef: StepDefinition = stepUnderTest.getDefinition();
-      expect(stepDef.getStepId()).to.equal('ScrollThrough');
-      expect(stepDef.getName()).to.equal('Scroll through a percentage of a web page');
-      expect(stepDef.getExpression()).to.equal('scroll through (?<depth>\\d+)% of the page');
+      expect(stepDef.getStepId()).to.equal('ScrollTo');
+      expect(stepDef.getName()).to.equal('Scroll to a percentage depth of a web page');
+      expect(stepDef.getExpression()).to.equal('scroll to (?<depth>\\d+)% of the page');
       expect(stepDef.getType()).to.equal(StepDefinition.Type.ACTION);
     });
 
@@ -45,10 +45,10 @@ describe('ScrollThroughPage', () => {
   });
 
   describe('ExecuteStep', () => {
-    describe('Scrolled through', () => {
+    describe('Scrolled to', () => {
       const expectedDepth = 50;
       beforeEach(() => {
-        clientWrapperStub.scrollThrough.returns(Promise.resolve());
+        clientWrapperStub.scrollTo.returns(Promise.resolve());
         protoStep.setData(
           Struct.fromJavaScript(
             {
@@ -58,9 +58,9 @@ describe('ScrollThroughPage', () => {
         );
       });
 
-      it('should call scroll through with expectedArgs', async () => {
+      it('should call scroll to with expectedArgs', async () => {
         await stepUnderTest.executeStep(protoStep);
-        expect(clientWrapperStub.scrollThrough).to.have.been.calledWith(expectedDepth);
+        expect(clientWrapperStub.scrollTo).to.have.been.calledWith(expectedDepth);
       });
 
       it('should respond with pass', async () => {
@@ -69,10 +69,10 @@ describe('ScrollThroughPage', () => {
       });
     });
 
-    describe('Scroll through did not occur', () => {
+    describe('Scroll to did not occur', () => {
       const expectedDepth = 50;
       beforeEach(() => {
-        clientWrapperStub.scrollThrough.throws();
+        clientWrapperStub.scrollTo.throws();
         protoStep.setData(
             Struct.fromJavaScript(
               {
