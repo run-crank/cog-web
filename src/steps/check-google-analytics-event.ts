@@ -44,12 +44,14 @@ export class CheckGoogleAnalyticsEvent extends BaseStep implements StepInterface
                                     && r.url.includes('https://www.google-analytics.com')
                                     && r.url.includes('/collect')
                                     && r.url.includes('t=event')).map(r => decodeURIComponent(r.url));
-      const actual = urls.filter(url => url.includes(`tid=${id}`)
+      let actual = urls.filter(url => url.includes(`tid=${id}`)
                                     && url.toLowerCase().includes(`ea=${eventAction.toLowerCase()}`)
                                     && url.toLowerCase().includes(`ec=${eventCategory.toLowerCase()}`));
+      if (expectedParams) {
+        actual = actual.filter(u => this.includesParameters(u, expectedParams));
+      }
       if (actual[0]) {
         params = querystring.parse(actual[0]);
-        console.log(params);
       }
       if (actual.length !== 1) {
         return this.fail('expected to track 1 GA event, but there were actually %d', [actual.length]);
@@ -57,11 +59,29 @@ export class CheckGoogleAnalyticsEvent extends BaseStep implements StepInterface
         const paramResponse = this.validateParams(expectedParams, params);
         return this.fail('Expected %s parameter on event to be %s, but it was actually %s', [paramResponse.parameter, paramResponse.expectedValue, paramResponse.actualValue]);
       } else {
-        return this.pass('GA pageview url with id %s has been loaded', [id]);
+        return this.pass('Successfully detected GA event with category %s, and action %s for tracking id %s.', [
+          stepData.ec,
+          stepData.ea,
+          stepData.id,
+        ]);
       }
     } catch (e) {
-      return this.error('There was a problem checking GA event with id %s: %s', [id, e.toString()]);
+      return this.error('There was a problem checking GA event with category %s, action %s, and tracking id %s: %s', [
+        stepData.ec,
+        stepData.ea,
+        stepData.id,
+        e,
+      ]);
     }
+  }
+
+  private includesParameters(url, expectedParams) {
+    for (const p in expectedParams) {
+      if (!url.includes(expectedParams[p])) {
+        return false;
+      }
+    }
+    return true;
   }
 
   private validateParams(expectedParams, actualParams): any {
