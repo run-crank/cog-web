@@ -28,6 +28,7 @@ export class CheckGoogleAnalyticsPageView extends BaseStep implements StepInterf
     const expectedParams: any = stepData.withParameters || {};
     let params;
     try {
+      await this.client.waitForNetworkIdle(5000);
       const requests = await this.client.getFinishedRequests();
       const urls = requests.filter(r => r.method == 'GET'
                                         && r.url.includes('https://www.google-analytics.com')
@@ -38,7 +39,7 @@ export class CheckGoogleAnalyticsPageView extends BaseStep implements StepInterf
         params = querystring.parse(actual[0]);
       }
       if (actual.length !== 1) {
-        return this.fail('expected to track 1 GA pageview, but there were actually %d', [actual.length]);
+        return this.fail('Expected to track 1 GA pageview, but there were actually %d', [actual.length]);
       } else if (!this.validateParams(expectedParams, params).isValid) {
         const paramResponse = this.validateParams(expectedParams, params);
         return this.fail('Expected %s parameter on pageview to be %s, but it was actually %s', [paramResponse.parameter, paramResponse.expectedValue, paramResponse.actualValue]);
@@ -46,7 +47,7 @@ export class CheckGoogleAnalyticsPageView extends BaseStep implements StepInterf
         return this.pass('GA pageview url with id %s has been loaded', [id]);
       }
     } catch (e) {
-      return this.error('There was a problem checking munchkin with id %s: %s', [id, e.toString()]);
+      return this.error('There was a problem checking GA pageview with id %s: %s', [id, e.toString()]);
     }
   }
 

@@ -11,8 +11,30 @@ class ClientWrapper {
 
   constructor (page: Page, auth: grpc.Metadata) {
     this.client = page;
+
+    // Keeps track of the number of inflight requests. @see this.waitForNetworkIdle()
+    this.client['__networkRequestsInflight'] = this.client['__networkRequestsInflight'] || 0;
+
+    if (this.client.listenerCount('request') === 0) {
+      this.client.addListener('request', () => {
+        // Used to support this.waitForNetworkIdle() method.
+        this.client['__networkRequestsInflight'] = this.client['__networkRequestsInflight'] + 1;
+      });
+    }
+
+    if (this.client.listenerCount('requestfailed') === 0) {
+      this.client.addListener('requestfailed', () => {
+        // Used to support this.waitForNetworkIdle() method.
+        this.client['__networkRequestsInflight'] = this.client['__networkRequestsInflight'] - 1;
+      });
+    }
+
     if (this.client.listenerCount('requestfinished') === 0) {
       this.client.addListener('requestfinished', (request: Request) => {
+        // Used to support this.waitForNetworkIdle() method.
+        this.client['__networkRequestsInflight'] = this.client['__networkRequestsInflight'] - 1;
+
+        // Used to support this.getFinishedRequests() method.
         this.client['__networkRequests'] = this.client['__networkRequests'] || [];
         this.client['__networkRequests'].push({
           rawRequest: request,
@@ -28,6 +50,30 @@ class ClientWrapper {
   public async getFinishedRequests(): Promise<any> {
     return this.client['__networkRequests'];
   }
+
+  public async waitForNetworkIdle(timeout: number, maxInflightRequests = 0): Promise<undefined> {
+    return new Promise((resolve, reject) => {
+      const attempts = 10;
+      let callCount = 0;
+
+      // Otherwise, set a max timeout and interval.
+      const interval = setInterval(
+        () => {
+          callCount = callCount + 1;
+
+          if (this.client['__networkRequestsInflight'] <= maxInflightRequests) {
+            clearInterval(interval);
+            return resolve();
+          } else if (callCount >= attempts) {
+            clearInterval(interval);
+            return reject(Error(`Waited ${timeout}ms for network requests to finish, but there was still network activity.`));
+          }
+        },
+        timeout / attempts,
+      );
+    });
+  }
+
 }
 
 interface ClientWrapper extends BasicInteractionAware, DomAware, ResponseAware, MarketoAware, GoogleAnalyticsAware {}
