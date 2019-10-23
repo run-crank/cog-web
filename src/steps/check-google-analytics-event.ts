@@ -39,6 +39,7 @@ export class CheckGoogleAnalyticsEvent extends BaseStep implements StepInterface
     const expectedParams: any = stepData.withParameters || {};
     let params;
     try {
+      await this.client.waitForNetworkIdle(5000);
       const requests = await this.client.getFinishedRequests();
       const urls = requests.filter(r => r.method == 'GET'
                                     && r.url.includes('https://www.google-analytics.com')
