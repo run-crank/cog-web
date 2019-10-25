@@ -24,6 +24,7 @@ describe('ClientWrapper', () => {
       browserStub.userAgent = sinon.stub();
       pageStub = sinon.stub();
       pageStub.addListener = sinon.stub();
+      pageStub.listeners = sinon.stub();
       pageStub.browser = sinon.stub();
       pageStub.browser.resolves(browserStub);
       pageStub.setUserAgent = sinon.stub();
@@ -44,6 +45,7 @@ describe('ClientWrapper', () => {
       // Set up test instance.
       browserStub.userAgent.resolves(originalUserAgent);
       pageStub.setUserAgent.resolves();
+      pageStub.listeners.resolves();
       pageStub.goto.resolves(expectedLastResponse);
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
@@ -60,6 +62,7 @@ describe('ClientWrapper', () => {
       // Set up test instance.
       browserStub.userAgent.resolves('AnyUser/Agent x.y.z');
       pageStub.setUserAgent.resolves();
+      pageStub.listeners.resolves();
       pageStub.goto.rejects();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
@@ -76,6 +79,7 @@ describe('ClientWrapper', () => {
       pageStub.evaluate = sinon.stub();
       pageStub.waitForSelector = sinon.stub();
       pageStub.addListener = sinon.stub();
+      pageStub.listeners = sinon.stub();
       pageStub.select = sinon.stub();
       pageStub.type = sinon.stub();
 
@@ -92,6 +96,7 @@ describe('ClientWrapper', () => {
       // Set up test instance.
       pageStub.evaluate.onCall(0).resolves('choose');
       pageStub.select.resolves();
+      pageStub.listeners.resolves([]);
       pageStub.addListener.resolves();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
@@ -107,6 +112,7 @@ describe('ClientWrapper', () => {
       // Set up test instance.
       pageStub.evaluate.onCall(0).resolves('choose');
       pageStub.select.rejects();
+      pageStub.listeners.resolves()
       pageStub.addListener.resolves();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
@@ -123,6 +129,7 @@ describe('ClientWrapper', () => {
       pageStub.evaluate.onCall(0).resolves('tick');
       pageStub.evaluate.onCall(1).resolves();
       pageStub.addListener.resolves();
+      pageStub.listeners.resolves([]);
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
       // Call the method and make assertions.
@@ -138,6 +145,7 @@ describe('ClientWrapper', () => {
       pageStub.evaluate.onCall(0).resolves('tick');
       pageStub.evaluate.onCall(1).rejects();
       pageStub.addListener.resolves();
+      pageStub.listeners.resolves([]);
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
       // Call the method and make assertions.
@@ -153,6 +161,7 @@ describe('ClientWrapper', () => {
       pageStub.evaluate.onCall(0).resolves('type');
       pageStub.type.resolves();
       pageStub.waitForSelector.resolves();
+      pageStub.listeners.resolves([]);
       pageStub.addListener.resolves();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
@@ -171,6 +180,7 @@ describe('ClientWrapper', () => {
       pageStub.type.resolves();
       pageStub.waitForSelector.rejects();
       pageStub.evaluate.onCall(1).resolves();
+      pageStub.listeners.resolves([]);
       pageStub.addListener.resolves();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
@@ -187,6 +197,7 @@ describe('ClientWrapper', () => {
       pageStub.evaluate.onCall(0).resolves('type');
       pageStub.type.rejects();
       pageStub.evaluate.onCall(1).rejects();
+      pageStub.listeners.resolves([]);
       pageStub.addListener.resolves();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
@@ -201,6 +212,7 @@ describe('ClientWrapper', () => {
 
       // Set up test instance.
       pageStub.evaluate.onCall(0).rejects();
+      pageStub.listeners.resolves([]);
       pageStub.addListener.resolves();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
@@ -217,6 +229,7 @@ describe('ClientWrapper', () => {
       pageStub = sinon.stub();
       pageStub.click = sinon.stub();
       pageStub.addListener = sinon.stub();
+      pageStub.listeners = sinon.stub();
       pageStub.waitForNavigation = sinon.stub();
       pageStub.waitForFunction = sinon.stub();
       pageStub.waitFor = sinon.stub();
@@ -235,6 +248,7 @@ describe('ClientWrapper', () => {
       pageStub.waitForNavigation.resolves();
       pageStub.waitForFunction.resolves();
       pageStub.waitFor.rejects();
+      pageStub.listeners.resolves([]);
       pageStub.addListener.resolves();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
@@ -251,6 +265,7 @@ describe('ClientWrapper', () => {
       pageStub.waitForNavigation.rejects();
       pageStub.waitForFunction.resolves();
       pageStub.waitFor.resolves();
+      pageStub.listeners.resolves([]);
       pageStub.addListener.resolves();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
@@ -267,6 +282,7 @@ describe('ClientWrapper', () => {
       pageStub.waitForNavigation.rejects();
       pageStub.waitForFunction.rejects();
       pageStub.waitFor.resolves();
+      pageStub.listeners.resolves([]);
       pageStub.addListener.resolves();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
@@ -283,6 +299,7 @@ describe('ClientWrapper', () => {
       pageStub.waitForNavigation.rejects();
       pageStub.waitForFunction.rejects();
       pageStub.waitFor.resolves();
+      pageStub.listeners.resolves([]);
       pageStub.addListener.resolves();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
@@ -297,6 +314,7 @@ describe('ClientWrapper', () => {
 
     beforeEach(() => {
       pageStub = sinon.stub();
+      pageStub.listeners = sinon.stub();
       pageStub.addListener = sinon.stub();
       pageStub.___lastResponse = {
         status: sinon.stub(),
@@ -315,6 +333,7 @@ describe('ClientWrapper', () => {
       delete pageStub.___lastResponse;
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
       pageStub.addListener.resolves();
+      pageStub.listeners.resolves();
 
       // Call the method and make assertions.
       return expect(clientWrapperUnderTest.getCurrentPageInfo.bind(clientWrapperUnderTest, 'status'))
@@ -325,6 +344,7 @@ describe('ClientWrapper', () => {
       // Set up test instance.
       delete pageStub.___lastResponse;
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
+      pageStub.listeners.resolves();
       pageStub.addListener.resolves();
 
       // Call the method and make assertions.
@@ -337,6 +357,7 @@ describe('ClientWrapper', () => {
 
       // Set up test instance.
       pageStub.___lastResponse.url.resolves(expectedUrl);
+      pageStub.listeners.resolves([]);
       pageStub.addListener.resolves();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
@@ -350,6 +371,7 @@ describe('ClientWrapper', () => {
 
       // Set up test instance.
       pageStub.___lastResponse.text.resolves(expectedContent);
+      pageStub.listeners.resolves([]);
       pageStub.addListener.resolves();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
@@ -363,6 +385,7 @@ describe('ClientWrapper', () => {
 
       // Set up test instance.
       pageStub.___lastResponse.status.resolves(expectedStatus);
+      pageStub.listeners.resolves([]);
       pageStub.addListener.resolves();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
@@ -377,6 +400,7 @@ describe('ClientWrapper', () => {
 
     beforeEach(() => {
       pageStub = sinon.stub();
+      pageStub.listeners = sinon.stub();
       pageStub.addListener = sinon.stub();
       pageStub.evaluate = sinon.stub();
 
@@ -389,6 +413,7 @@ describe('ClientWrapper', () => {
     it('sadPath:pageEvalThrows', () => {
       // Set up test instance.
       pageStub.evaluate.throws();
+      pageStub.listeners.resolves([]);
       pageStub.addListener.resolves();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
@@ -402,6 +427,7 @@ describe('ClientWrapper', () => {
 
       // Set up test instance.
       pageStub.evaluate.resolves(expectedTitle);
+      pageStub.listeners.resolves([]);
       pageStub.addListener.resolves();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
@@ -415,6 +441,7 @@ describe('ClientWrapper', () => {
 
       // Set up test instance.
       pageStub.evaluate.resolves(expectedOgDescription);
+      pageStub.listeners.resolves([]);
       pageStub.addListener.resolves();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
