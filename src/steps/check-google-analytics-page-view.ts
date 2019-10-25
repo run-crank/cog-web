@@ -34,15 +34,15 @@ export class CheckGoogleAnalyticsPageView extends BaseStep implements StepInterf
                                         && r.url.includes('https://www.google-analytics.com')
                                         && r.url.includes('/collect')
                                         && r.url.includes('t=pageview')).map(r => decodeURIComponent(r.url));
-      const actual = urls.filter(url => url.includes(`tid=${id}`));
+      let actual = urls.filter(url => url.includes(`tid=${id}`));
+
+      actual = actual.filter(u => this.includesParameters(u, expectedParams));
+
       if (actual[0]) {
         params = querystring.parse(actual[0]);
       }
       if (actual.length !== 1) {
         return this.fail('expected to track 1 GA pageview, but there were actually %d: %s', [actual.length, urls]);
-      } else if (!this.validateParams(expectedParams, params).isValid) {
-        const paramResponse = this.validateParams(expectedParams, params);
-        return this.fail('Expected %s parameter on pageview to be %s, but it was actually %s', [paramResponse.parameter, paramResponse.expectedValue, paramResponse.actualValue]);
       } else {
         return this.pass('GA pageview url with id %s has been loaded', [id]);
       }
@@ -51,13 +51,13 @@ export class CheckGoogleAnalyticsPageView extends BaseStep implements StepInterf
     }
   }
 
-  private validateParams(expectedParams, actualParams): any {
-    for (const prop in expectedParams) {
-      if (expectedParams[prop] != actualParams[prop]) {
-        return { isValid: false, parameter: prop, expectedValue: expectedParams[prop], actualValue: actualParams[prop] };
+  private includesParameters(url, expectedParams) {
+    for (const p in expectedParams) {
+      if (!url.includes(expectedParams[p])) {
+        return false;
       }
     }
-    return { isValid: true };
+    return true;
   }
 }
 

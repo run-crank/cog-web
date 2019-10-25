@@ -127,9 +127,9 @@ describe('CheckGoogleAnalyticsPageView', () => {
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.FAILED);
   });
 
-  it('should respond with fail if the client returns result with paramteres that doesnt match', async () => {
+  it('should respond with fail if the client returns result with a parameter that doesnt match', async () => {
     const sampleId = 'someId';
-    const expectedMessage = 'Expected %s parameter on pageview to be %s, but it was actually %s';
+    const expectedMessage = 'expected to track 1 GA pageview, but there were actually %d: %s';
     const expectedResult = [
       {
         url: `https://www.google-analytics.com/collect?t=pageview&tid=${sampleId}&someKey=someOtherValue`,
