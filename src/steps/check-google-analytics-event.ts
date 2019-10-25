@@ -49,7 +49,6 @@ export class CheckGoogleAnalyticsEvent extends BaseStep implements StepInterface
       let actual = urls.filter(url => url.includes(`tid=${id}`)
                                     && url.toLowerCase().includes(`ea=${eventAction.toLowerCase()}`)
                                     && url.toLowerCase().includes(`ec=${eventCategory.toLowerCase()}`));
-
       actual = actual.filter(u => this.includesParameters(u, expectedParams));
 
       if (actual[0]) {

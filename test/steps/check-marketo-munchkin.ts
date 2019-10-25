@@ -19,6 +19,7 @@ describe('CheckMarketoMunchkin', () => {
     // Set up test stubs.
     clientWrapperStub = sinon.stub();
     clientWrapperStub.getFinishedRequests = sinon.stub();
+    clientWrapperStub.waitForNetworkIdle = sinon.stub();
     stepUnderTest = new Step(clientWrapperStub);
     protoStep = new ProtoStep();
   });
@@ -58,6 +59,7 @@ describe('CheckMarketoMunchkin', () => {
     };
 
     // Stub a response that matches expectations.
+    clientWrapperStub.waitForNetworkIdle.resolves();
     clientWrapperStub.getFinishedRequests.resolves(expectedResult);
 
     // Set step data corresponding to expectations
@@ -83,6 +85,7 @@ describe('CheckMarketoMunchkin', () => {
     };
 
     // Stub a response that matches expectations.
+    clientWrapperStub.waitForNetworkIdle.resolves();
     clientWrapperStub.getFinishedRequests.resolves(expectedResult);
 
     // Set step data corresponding to expectations
@@ -109,6 +112,7 @@ describe('CheckMarketoMunchkin', () => {
     };
 
     // Stub a response that matches expectations.
+    clientWrapperStub.waitForNetworkIdle.resolves();
     clientWrapperStub.getFinishedRequests.resolves(expectedResult);
 
     // Set step data corresponding to expectations
