@@ -16,23 +16,25 @@ class ClientWrapper {
     this.client['__networkRequestsInflight'] = this.client['__networkRequestsInflight'] || 0;
 
     if (this.client.listenerCount('request') === 0) {
-      this.client.addListener('request', () => {
-        // Used to support this.waitForNetworkIdle() method.
-        this.client['__networkRequestsInflight'] = this.client['__networkRequestsInflight'] + 1;
+      this.client.addListener('request', (request: Request) => {
+        if (!request.isNavigationRequest()) {
+          // Used to support this.waitForNetworkIdle() method.
+          this.client['__networkRequestsInflight'] = this.client['__networkRequestsInflight'] + 1;
+        }
       });
     }
 
     if (this.client.listenerCount('requestfailed') === 0) {
       this.client.addListener('requestfailed', () => {
         // Used to support this.waitForNetworkIdle() method.
-        this.client['__networkRequestsInflight'] = this.client['__networkRequestsInflight'] - 1;
+        this.client['__networkRequestsInflight'] = Math.max(0, this.client['__networkRequestsInflight'] - 1);
       });
     }
 
     if (this.client.listenerCount('requestfinished') === 0) {
       this.client.addListener('requestfinished', (request: Request) => {
         // Used to support this.waitForNetworkIdle() method.
-        this.client['__networkRequestsInflight'] = this.client['__networkRequestsInflight'] - 1;
+        this.client['__networkRequestsInflight'] = Math.max(0, this.client['__networkRequestsInflight'] - 1);
 
         // Used to support this.getFinishedRequests() method.
         this.client['__networkRequests'] = this.client['__networkRequests'] || [];
