@@ -25,6 +25,7 @@ export class CheckGoogleAnalyticsEvent extends BaseStep implements StepInterface
     {
       field: 'withParameters',
       type: FieldDefinition.Type.MAP,
+      optionality: FieldDefinition.Optionality.OPTIONAL,
       description: 'Parameter Checks, an optional map of Google Analytics Measurement Protocol Parameters and their expected values.',
     },
   ];
@@ -47,17 +48,15 @@ export class CheckGoogleAnalyticsEvent extends BaseStep implements StepInterface
       let actual = urls.filter(url => url.includes(`tid=${id}`)
                                     && url.toLowerCase().includes(`ea=${eventAction.toLowerCase()}`)
                                     && url.toLowerCase().includes(`ec=${eventCategory.toLowerCase()}`));
-      if (expectedParams) {
-        actual = actual.filter(u => this.includesParameters(u, expectedParams));
-      }
+
+      actual = actual.filter(u => this.includesParameters(u, expectedParams));
+
       if (actual[0]) {
         params = querystring.parse(actual[0]);
       }
+
       if (actual.length !== 1) {
-        return this.fail('expected to track 1 GA event, but there were actually %d', [actual.length]);
-      } else if (!this.validateParams(expectedParams, params).isValid) {
-        const paramResponse = this.validateParams(expectedParams, params);
-        return this.fail('Expected %s parameter on event to be %s, but it was actually %s', [paramResponse.parameter, paramResponse.expectedValue, paramResponse.actualValue]);
+        return this.fail('expected to track 1 GA event, but there were actually %d: %s', [actual.length, urls]);
       } else {
         return this.pass('Successfully detected GA event with category %s, and action %s for tracking id %s.', [
           stepData.ec,
@@ -82,15 +81,6 @@ export class CheckGoogleAnalyticsEvent extends BaseStep implements StepInterface
       }
     }
     return true;
-  }
-
-  private validateParams(expectedParams, actualParams): any {
-    for (const prop in expectedParams) {
-      if (expectedParams[prop] != actualParams[prop]) {
-        return { isValid: false, parameter: prop, expectedValue: expectedParams[prop], actualValue: actualParams[prop] };
-      }
-    }
-    return { isValid: true };
   }
 }
 
