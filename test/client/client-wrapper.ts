@@ -28,6 +28,7 @@ describe('ClientWrapper', () => {
       pageStub.browser = sinon.stub();
       pageStub.browser.resolves(browserStub);
       pageStub.setUserAgent = sinon.stub();
+      pageStub.setViewport = sinon.stub();
       pageStub.goto = sinon.stub();
 
       // Stub out event emitter.
@@ -52,6 +53,8 @@ describe('ClientWrapper', () => {
       // Call the method and make assertions.
       await clientWrapperUnderTest.navigateToUrl(expectedUrl);
       expect(pageStub.setUserAgent).to.have.been.calledWith(expectedUserAgent);
+      expect(pageStub.setViewport).to.have.been.calledWith(sinon.match.has('width', 1280));
+      expect(pageStub.setViewport).to.have.been.calledWith(sinon.match.has('height', 960));
       expect(pageStub.goto).to.have.been.calledWith(expectedUrl, { waitUntil: 'networkidle0' });
       expect(pageStub.___lastResponse).to.be.string(expectedLastResponse);
     });
