@@ -63,7 +63,7 @@ export class BasicInteractionAware {
     const ua = await browser.userAgent();
 
     // Make ourselves identifiable and set a more realistic desktop browser size.
-    await this.client.setUserAgent(ua.replace(' HeadlessChrome', ' AutomatonHeadlessChrome'));
+    await this.client.setUserAgent(ua.replace(' Chrome', ' AutomatonHeadlessChrome'));
     await this.client.setViewport({ width: 1280, height: 960 });
     const response = await this.client.goto(url, { waitUntil: 'networkidle0' });
 
