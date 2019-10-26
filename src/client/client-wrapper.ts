@@ -63,6 +63,7 @@ class ClientWrapper {
         () => {
           callCount = callCount + 1;
 
+          console.log(`Still ${this.client['__networkRequestsInflight']} requests inflight`);
           if (this.client['__networkRequestsInflight'] <= maxInflightRequests) {
             clearInterval(interval);
             return resolve();

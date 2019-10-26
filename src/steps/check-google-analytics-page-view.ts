@@ -29,7 +29,7 @@ export class CheckGoogleAnalyticsPageView extends BaseStep implements StepInterf
     const expectedParams: any = stepData.withParameters || {};
     let params;
     try {
-      await this.client.waitForNetworkIdle(5000);
+      await this.client.waitForNetworkIdle(10000, 1);
       const requests = await this.client.getFinishedRequests();
       const urls = requests.filter(r => r.method == 'GET'
                                         && r.url.includes('https://www.google-analytics.com')
@@ -43,18 +43,21 @@ export class CheckGoogleAnalyticsPageView extends BaseStep implements StepInterf
         params = querystring.parse(actual[0]);
       }
       if (actual.length !== 1) {
-        return this.fail('expected to track 1 GA pageview, but there were actually %d: %s', [actual.length, urls]);
+        return this.fail('Expected 1 matching GA pageview, but there were %d. Logged events include:\n\n%s', [
+          actual.length,
+          actual.length > 0 ? urls.join('\n\n') : '',
+        ]);
       } else {
-        return this.pass('GA pageview url with id %s has been loaded', [id]);
+        return this.pass('Successfuly detected GA pageview for tracking id %s.', [id]);
       }
     } catch (e) {
-      return this.error('There was a problem checking GA pageview with category %s, action %s, and tracking id %s: %s', [id, e.toString()]);
+      return this.error('There was a problem checking for a GA pageview for tracking id %s: %s', [id, e.toString()]);
     }
   }
 
   private includesParameters(url, expectedParams) {
     for (const p in expectedParams) {
-      if (!url.includes(expectedParams[p])) {
+      if (!url.toLowerCase().includes(expectedParams[p].toLowerCase())) {
         return false;
       }
     }
