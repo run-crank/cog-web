@@ -120,7 +120,6 @@ describe('CheckGoogleAnalyticsEvent', () => {
     const sampleId = 'someId';
     const sampleCategory = 'someCategory';
     const sampleAction = 'someAction';
-    const expectedMessage = 'expected to track 1 GA event, but there were actually %d: %s';
     const expectedResult = [
     ];
     const dataInput = {
@@ -140,7 +139,6 @@ describe('CheckGoogleAnalyticsEvent', () => {
     protoStep.setData(Struct.fromJavaScript(dataInput));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(response.getMessageFormat()).to.equal(expectedMessage);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.FAILED);
   });
 
@@ -148,7 +146,6 @@ describe('CheckGoogleAnalyticsEvent', () => {
     const sampleId = 'someId';
     const sampleCategory = 'someCategory';
     const sampleAction = 'someAction';
-    const expectedMessage = 'expected to track 1 GA event, but there were actually %d: %s';
     const expectedResult = [
       {
         url: `https://www.google-analytics.com/collect?t=event&tid=${sampleId}&someKey=someOtherValue&ec=${sampleCategory.toLowerCase()}&ea=${sampleAction.toLowerCase()}`,
@@ -172,7 +169,6 @@ describe('CheckGoogleAnalyticsEvent', () => {
     protoStep.setData(Struct.fromJavaScript(dataInput));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(response.getMessageFormat()).to.equal(expectedMessage);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.FAILED);
   });
 
@@ -180,7 +176,6 @@ describe('CheckGoogleAnalyticsEvent', () => {
     const sampleId = 'someId';
     const sampleCategory = 'someCategory';
     const sampleAction = 'someAction';
-    const expectedMessage = 'expected to track 1 GA event, but there were actually %d: %s';
     const expectedResult = [
       {
         url: `https://www.google-analytics.com/collect?t=event&tid=${sampleId}&someKey=someValue&ec=${sampleCategory.toLowerCase()}&ea=${sampleAction.toLowerCase()}`,
@@ -208,7 +203,6 @@ describe('CheckGoogleAnalyticsEvent', () => {
     protoStep.setData(Struct.fromJavaScript(dataInput));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(response.getMessageFormat()).to.equal(expectedMessage);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.FAILED);
   });
 

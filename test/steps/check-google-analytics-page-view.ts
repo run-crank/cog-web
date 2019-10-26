@@ -77,7 +77,6 @@ describe('CheckGoogleAnalyticsPageView', () => {
 
   it('should respond with fail if the client returns result with no request', async () => {
     const sampleId = 'someId';
-    const expectedMessage = 'expected to track 1 GA pageview, but there were actually %d: %s';
     const expectedResult = [
     ];
     const dataInput = {
@@ -95,13 +94,11 @@ describe('CheckGoogleAnalyticsPageView', () => {
     protoStep.setData(Struct.fromJavaScript(dataInput));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(response.getMessageFormat()).to.equal(expectedMessage);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.FAILED);
   });
 
   it('should respond with fail if the client returns result with multiple matching requests', async () => {
     const sampleId = 'someId';
-    const expectedMessage = 'expected to track 1 GA pageview, but there were actually %d: %s';
     const expectedResult = [
       {
         url: `https://www.google-analytics.com/collect?t=pageview&tid=${sampleId}&someKey=someValue`,
@@ -127,13 +124,11 @@ describe('CheckGoogleAnalyticsPageView', () => {
     protoStep.setData(Struct.fromJavaScript(dataInput));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(response.getMessageFormat()).to.equal(expectedMessage);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.FAILED);
   });
 
   it('should respond with fail if the client returns result with a parameter that doesnt match', async () => {
     const sampleId = 'someId';
-    const expectedMessage = 'expected to track 1 GA pageview, but there were actually %d: %s';
     const expectedResult = [
       {
         url: `https://www.google-analytics.com/collect?t=pageview&tid=${sampleId}&someKey=someOtherValue`,
@@ -155,7 +150,6 @@ describe('CheckGoogleAnalyticsPageView', () => {
     protoStep.setData(Struct.fromJavaScript(dataInput));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(response.getMessageFormat()).to.equal(expectedMessage);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.FAILED);
   });
 
