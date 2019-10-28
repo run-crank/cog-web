@@ -34,10 +34,10 @@ export class CheckGoogleAnalyticsPageView extends BaseStep implements StepInterf
       const urls = requests.filter(r => r.method == 'GET'
                                         && r.url.includes('https://www.google-analytics.com')
                                         && r.url.includes('/collect')
-                                        && r.url.includes('t=pageview')).map(r => decodeURIComponent(r.url));
+                                        && r.url.includes('t=pageview')).map(r => r.url);
       let actual = urls.filter(url => url.includes(`tid=${id}`));
 
-      actual = actual.filter(u => this.includesParameters(u, expectedParams));
+      actual = actual.filter(u => this.includesParameters(decodeURIComponent(u), expectedParams));
 
       if (actual[0]) {
         params = querystring.parse(actual[0]);
