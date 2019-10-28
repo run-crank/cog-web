@@ -53,7 +53,19 @@ class ClientWrapper {
     return this.client['__networkRequests'];
   }
 
-  public async waitForNetworkIdle(timeout: number, maxInflightRequests = 0): Promise<undefined> {
+  /**
+   * Helper method that waits for an idle network before proceeding.
+   *
+   * @param {number} timeout - Number of milliseconds to wait for an idle
+   *   network.
+   * @param {boolean} shouldThrow - Whether or not to throw an error if the
+   *   network does not become idle within the given timeout. Defaults to
+   *   true.
+   * @param {number} maxInflightRequests - Threshold for number of requests in
+   *   flight to consider as "idle." Defaults to 0, which emulates Puppeteer's
+   *   networkidle0 option on page navigation methods.
+   */
+  public async waitForNetworkIdle(timeout: number, shouldThrow = true, maxInflightRequests = 0): Promise<undefined> {
     return new Promise((resolve, reject) => {
       const attempts = 10;
       let callCount = 0;
@@ -69,7 +81,12 @@ class ClientWrapper {
             return resolve();
           } else if (callCount >= attempts) {
             clearInterval(interval);
-            return reject(Error(`Waited ${timeout}ms for network requests to finish, but there was still network activity.`));
+            if (shouldThrow) {
+              return reject(Error(`Waited ${timeout}ms for network requests to finish, but there was still network activity.`));
+            } else {
+              // We tried our best.
+              return resolve();
+            }
           }
         },
         timeout / attempts,
