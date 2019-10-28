@@ -34,13 +34,13 @@ export class CheckGoogleAnalyticsEvent extends BaseStep implements StepInterface
     const querystring = require('querystring');
 
     const stepData: any = step.getData().toJavaScript();
-    const eventCategory: any = stepData.ec;
-    const eventAction: any = stepData.ea;
+    const eventCategory: any = encodeURIComponent(stepData.ec);
+    const eventAction: any = encodeURIComponent(stepData.ea);
     const id: any = stepData.id;
     const expectedParams: any = stepData.withParameters || {};
     let params;
     try {
-      await this.client.waitForNetworkIdle(10000, 1);
+      await this.client.waitForNetworkIdle(10000, false);
       const requests = await this.client.getFinishedRequests();
       const urls = requests.filter(r => r.method == 'GET'
                                     && r.url.includes('https://www.google-analytics.com')
@@ -49,8 +49,8 @@ export class CheckGoogleAnalyticsEvent extends BaseStep implements StepInterface
       let actual = urls.filter(url => url.includes(`tid=${id}`)
                                     && url.toLowerCase().includes(`ea=${eventAction.toLowerCase()}`)
                                     && url.toLowerCase().includes(`ec=${eventCategory.toLowerCase()}`));
-      if (expectedParams !== {}) {
-        actual = actual.filter(u => this.includesParameters(decodeURIComponent(u), expectedParams));
+      if (Object.keys(expectedParams).length > 0) {
+        actual = actual.filter(u => this.includesParameters(u, expectedParams));
       }
 
       if (actual[0]) {
@@ -60,7 +60,7 @@ export class CheckGoogleAnalyticsEvent extends BaseStep implements StepInterface
       if (actual.length !== 1) {
         return this.fail('Expected 1 matching GA event, but %d matched. Logged events include:\n\n%s', [
           actual.length,
-          urls.join('\n\n'),
+          actual.length > 0 ? urls.join('\n\n') : '(no network requests captured)',
         ]);
       } else {
         return this.pass('Successfully detected GA event with category %s, and action %s for tracking id %s.', [
@@ -81,7 +81,7 @@ export class CheckGoogleAnalyticsEvent extends BaseStep implements StepInterface
 
   private includesParameters(url, expectedParams) {
     for (const p in expectedParams) {
-      if (!url.toLowerCase().includes(expectedParams[p].toLowerCase())) {
+      if (!url.toLowerCase().includes(`${p.toLowerCase()}=${encodeURIComponent(expectedParams[p]).toLowerCase()}`)) {
         return false;
       }
     }

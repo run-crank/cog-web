@@ -29,7 +29,7 @@ export class CheckCurrentPageInfo extends BaseStep implements StepInterface {
 
     // Navigate to URL.
     try {
-      await this.client.waitForNetworkIdle(10000, 1);
+      await this.client.waitForNetworkIdle(10000, false);
       const actual = await this.client.getCurrentPageInfo(field);
       if (this.runComparison(operator, expectation, actual)) {
         return this.pass('Page info check passed: %s should %s %s', [field, operator, expectation]);

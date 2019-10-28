@@ -53,7 +53,7 @@ describe('CheckGoogleAnalyticsPageView', () => {
     const sampleId = 'someId';
     const expectedResult = [
       {
-        url: `https://www.google-analytics.com/collect?t=pageview&tid=${sampleId}&someKey=someValue`,
+        url: `https://www.google-analytics.com/collect?t=pageview&tid=${sampleId}&someKey=someValue&numericVal=1&another=${encodeURIComponent('can also include & and @!: symbols')}`,
         method: 'GET',
       },
     ];
@@ -61,6 +61,8 @@ describe('CheckGoogleAnalyticsPageView', () => {
       id: sampleId,
       withParameters: {
         someKey: 'someValue',
+        numericVal: 1,
+        another: 'can also include & and @!: symbols'
       },
     };
 
