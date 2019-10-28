@@ -37,17 +37,17 @@ export class CheckGoogleAnalyticsPageView extends BaseStep implements StepInterf
                                         && r.url.includes('t=pageview')).map(r => r.url);
       let actual = urls.filter(url => url.includes(`tid=${id}`));
 
-      if (expectedParams !== {}) {
-        actual = actual.filter(u => this.includesParameters(decodeURIComponent(u), expectedParams));
+      if (Object.keys(expectedParams).length > 0) {
+        actual = actual.filter(u => this.includesParameters(u, expectedParams));
       }
 
       if (actual[0]) {
         params = querystring.parse(actual[0]);
       }
       if (actual.length !== 1) {
-        return this.fail('Expected 1 matching GA pageview, but there were %d. Logged events include:\n\n%s', [
+        return this.fail('Expected 1 matching GA pageview, but there were %d. Logged pageviews include:\n\n%s', [
           actual.length,
-          actual.length > 0 ? urls.join('\n\n') : '',
+          actual.length > 0 ? urls.join('\n\n') : '(no network requests captured)',
         ]);
       } else {
         return this.pass('Successfuly detected GA pageview for tracking id %s.', [id]);
@@ -59,7 +59,7 @@ export class CheckGoogleAnalyticsPageView extends BaseStep implements StepInterf
 
   private includesParameters(url, expectedParams) {
     for (const p in expectedParams) {
-      if (!url.toLowerCase().includes(expectedParams[p].toLowerCase())) {
+      if (!url.toLowerCase().includes(`${p.toLowerCase()}=${encodeURIComponent(expectedParams[p]).toLowerCase()}`)) {
         return false;
       }
     }

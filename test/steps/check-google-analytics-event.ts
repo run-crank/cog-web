@@ -61,11 +61,11 @@ describe('CheckGoogleAnalyticsEvent', () => {
 
   it('should respond with success if the client executes succesfully', async () => {
     const sampleId = 'someId';
-    const sampleCategory = 'someCategory';
+    const sampleCategory = 'category can contain &';
     const sampleAction = 'someAction';
     const expectedResult = [
       {
-        url: `https://www.google-analytics.com/collect?t=event&tid=${sampleId}&someKey=someValue&ec=${sampleCategory.toLowerCase()}&ea=${sampleAction.toLowerCase()}`,
+        url: `https://www.google-analytics.com/collect?t=event&tid=${sampleId}&someKey=someValue&ec=${encodeURIComponent(sampleCategory)}&ea=${sampleAction}&numericVal=1&another=${encodeURIComponent('can also include & and @!: symbols')}`,
         method: 'GET',
       },
     ];
@@ -75,6 +75,8 @@ describe('CheckGoogleAnalyticsEvent', () => {
       ea: sampleAction,
       withParameters: {
         someKey: 'someValue',
+        numericVal: 1,
+        another: 'can also include & and @!: symbols',
       },
     };
 
