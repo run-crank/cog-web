@@ -37,7 +37,9 @@ export class CheckGoogleAnalyticsPageView extends BaseStep implements StepInterf
                                         && r.url.includes('t=pageview')).map(r => r.url);
       let actual = urls.filter(url => url.includes(`tid=${id}`));
 
-      actual = actual.filter(u => this.includesParameters(decodeURIComponent(u), expectedParams));
+      if (expectedParams !== {}) {
+        actual = actual.filter(u => this.includesParameters(decodeURIComponent(u), expectedParams));
+      }
 
       if (actual[0]) {
         params = querystring.parse(actual[0]);
