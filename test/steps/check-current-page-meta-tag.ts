@@ -19,6 +19,7 @@ describe('CheckCurrentPageMetaTag', () => {
     // Set up test stubs.
     clientWrapperStub = sinon.stub();
     clientWrapperStub.getMetaTagContent = sinon.stub();
+    clientWrapperStub.waitForNetworkIdle = sinon.stub();
     stepUnderTest = new Step(clientWrapperStub);
     protoStep = new ProtoStep();
   });
@@ -62,6 +63,7 @@ describe('CheckCurrentPageMetaTag', () => {
     };
 
     // Stub a response that matches expectations.
+    clientWrapperStub.waitForNetworkIdle.resolves();
     clientWrapperStub.getMetaTagContent.resolves(expectedResult);
 
     // Set step data corresponding to expectations
@@ -80,6 +82,7 @@ describe('CheckCurrentPageMetaTag', () => {
     };
 
     // Stub a response that matches expectations.
+    clientWrapperStub.waitForNetworkIdle.resolves();
     clientWrapperStub.getMetaTagContent.resolves(expectedResult);
 
     // Set step data corresponding to expectations
@@ -98,6 +101,7 @@ describe('CheckCurrentPageMetaTag', () => {
     };
 
     // Stub a response that matches expectations.
+    clientWrapperStub.waitForNetworkIdle.resolves();
     clientWrapperStub.getMetaTagContent.resolves(expectedResult);
 
     // Set step data corresponding to expectations
@@ -115,6 +119,7 @@ describe('CheckCurrentPageMetaTag', () => {
     };
 
     // Stub a response that matches expectations.
+    clientWrapperStub.waitForNetworkIdle.resolves();
     clientWrapperStub.getMetaTagContent.resolves(expectedResult);
 
     // Set step data corresponding to expectations
@@ -133,6 +138,7 @@ describe('CheckCurrentPageMetaTag', () => {
     };
 
     // Stub a response that matches expectations.
+    clientWrapperStub.waitForNetworkIdle.resolves();
     clientWrapperStub.getMetaTagContent.resolves(expectedResult);
 
     // Set step data corresponding to expectations
@@ -151,6 +157,7 @@ describe('CheckCurrentPageMetaTag', () => {
     };
 
     // Stub a response that matches expectations.
+    clientWrapperStub.waitForNetworkIdle.resolves();
     clientWrapperStub.getMetaTagContent.resolves(expectedResult);
 
     // Set step data corresponding to expectations
@@ -169,6 +176,7 @@ describe('CheckCurrentPageMetaTag', () => {
     };
 
     // Stub a response that matches expectations.
+    clientWrapperStub.waitForNetworkIdle.resolves();
     clientWrapperStub.getMetaTagContent.resolves(expectedResult);
 
     // Set step data corresponding to expectations
@@ -187,6 +195,7 @@ describe('CheckCurrentPageMetaTag', () => {
     };
 
     // Stub a response that matches expectations.
+    clientWrapperStub.waitForNetworkIdle.resolves();
     clientWrapperStub.getMetaTagContent.resolves(expectedResult);
 
     // Set step data corresponding to expectations
@@ -204,6 +213,7 @@ describe('CheckCurrentPageMetaTag', () => {
     };
 
     // Stub a response that matches expectations.
+    clientWrapperStub.waitForNetworkIdle.resolves();
     clientWrapperStub.getMetaTagContent.resolves(expectedResult);
 
     // Set step data corresponding to expectations
@@ -222,6 +232,7 @@ describe('CheckCurrentPageMetaTag', () => {
     };
 
     // Stub a response that matches expectations.
+    clientWrapperStub.waitForNetworkIdle.resolves();
     clientWrapperStub.getMetaTagContent.resolves(expectedResult);
 
     // Set step data corresponding to expectations
@@ -236,6 +247,7 @@ describe('CheckCurrentPageMetaTag', () => {
     const expectedResult = 'does not matter';
 
     // Stub a response that matches expectations.
+    clientWrapperStub.waitForNetworkIdle.resolves();
     clientWrapperStub.getMetaTagContent.resolves(expectedResult);
 
     // Set step data corresponding to expectations

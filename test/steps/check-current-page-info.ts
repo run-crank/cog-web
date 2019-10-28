@@ -19,6 +19,7 @@ describe('CheckCurrentPageInfo', () => {
     // Set up test stubs.
     clientWrapperStub = sinon.stub();
     clientWrapperStub.getCurrentPageInfo = sinon.stub();
+    clientWrapperStub.waitForNetworkIdle = sinon.stub();
     stepUnderTest = new Step(clientWrapperStub);
     protoStep = new ProtoStep();
   });
@@ -62,6 +63,7 @@ describe('CheckCurrentPageInfo', () => {
     };
 
     // Stub a response that matches expectations.
+    clientWrapperStub.waitForNetworkIdle.resolves();
     clientWrapperStub.getCurrentPageInfo.resolves(expectedResult);
 
     // Set step data corresponding to expectations
@@ -80,6 +82,7 @@ describe('CheckCurrentPageInfo', () => {
     };
 
     // Stub a response that matches expectations.
+    clientWrapperStub.waitForNetworkIdle.resolves();
     clientWrapperStub.getCurrentPageInfo.resolves(expectedResult);
 
     // Set step data corresponding to expectations
@@ -98,6 +101,7 @@ describe('CheckCurrentPageInfo', () => {
     };
 
     // Stub a response that matches expectations.
+    clientWrapperStub.waitForNetworkIdle.resolves();
     clientWrapperStub.getCurrentPageInfo.resolves(expectedResult);
 
     // Set step data corresponding to expectations
@@ -116,6 +120,7 @@ describe('CheckCurrentPageInfo', () => {
     };
 
     // Stub a response that matches expectations.
+    clientWrapperStub.waitForNetworkIdle.resolves();
     clientWrapperStub.getCurrentPageInfo.resolves(expectedResult);
 
     // Set step data corresponding to expectations
@@ -134,6 +139,7 @@ describe('CheckCurrentPageInfo', () => {
     };
 
     // Stub a response that matches expectations.
+    clientWrapperStub.waitForNetworkIdle.resolves();
     clientWrapperStub.getCurrentPageInfo.resolves(expectedResult);
 
     // Set step data corresponding to expectations
@@ -152,6 +158,7 @@ describe('CheckCurrentPageInfo', () => {
     };
 
     // Stub a response that matches expectations.
+    clientWrapperStub.waitForNetworkIdle.resolves();
     clientWrapperStub.getCurrentPageInfo.resolves(expectedResult);
 
     // Set step data corresponding to expectations
@@ -166,6 +173,7 @@ describe('CheckCurrentPageInfo', () => {
     const expectedResult = 'does not matter';
 
     // Stub a response that matches expectations.
+    clientWrapperStub.waitForNetworkIdle.resolves();
     clientWrapperStub.getCurrentPageInfo.resolves(expectedResult);
 
     // Set step data corresponding to expectations
