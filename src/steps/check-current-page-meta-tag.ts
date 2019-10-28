@@ -30,6 +30,7 @@ export class CheckCurrentPageMetaTag extends BaseStep implements StepInterface {
 
     // Retrieve meta tag content.
     try {
+      await this.client.waitForNetworkIdle(10000, 1);
       const actual = await this.client.getMetaTagContent(tag);
       if (this.runComparison(operator, expectation, actual)) {
         return this.pass('Meta tag check passed: %s should %s %s', [tag, operator, expectation]);
