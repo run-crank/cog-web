@@ -58,9 +58,9 @@ export class CheckGoogleAnalyticsEvent extends BaseStep implements StepInterface
       }
 
       if (actual.length !== 1) {
-        return this.fail('Expected 1 matching GA event, but %d matched. Logged events include:\n\n%s', [
+        return this.fail('Expected 1 matching GA event, but %d matched. Logged GA requests include:\n\n%s', [
           actual.length,
-          actual.length > 0 ? urls.join('\n\n') : '(no network requests captured)',
+          urls.length > 0 ? urls.join('\n\n') : '(no network requests captured)',
         ]);
       } else {
         return this.pass('Successfully detected GA event with category %s, and action %s for tracking id %s.', [
