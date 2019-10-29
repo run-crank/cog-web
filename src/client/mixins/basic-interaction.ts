@@ -1,5 +1,5 @@
 import { Page } from 'puppeteer';
-import { Promise as Bluebird, reject } from 'bluebird';
+import { Promise as Bluebird } from 'bluebird';
 
 export class BasicInteractionAware {
   public client: Page;
