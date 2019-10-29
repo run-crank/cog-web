@@ -45,9 +45,9 @@ export class CheckGoogleAnalyticsPageView extends BaseStep implements StepInterf
         params = querystring.parse(actual[0]);
       }
       if (actual.length !== 1) {
-        return this.fail('Expected 1 matching GA pageview, but there were %d. Logged pageviews include:\n\n%s', [
+        return this.fail('Expected 1 matching GA pageview, but there were %d. Logged GA requests include:\n\n%s', [
           actual.length,
-          actual.length > 0 ? urls.join('\n\n') : '(no network requests captured)',
+          urls.length > 0 ? urls.join('\n\n') : '(no network requests captured)',
         ]);
       } else {
         return this.pass('Successfuly detected GA pageview for tracking id %s.', [id]);
