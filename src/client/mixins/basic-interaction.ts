@@ -1,5 +1,5 @@
 import { Page } from 'puppeteer';
-import { Promise as Bluebird } from 'bluebird';
+import { Promise as Bluebird, reject } from 'bluebird';
 
 export class BasicInteractionAware {
   public client: Page;
@@ -19,15 +19,39 @@ export class BasicInteractionAware {
         depth,
       );
 
-      // Wait until scroll completes.
-      await this.client.waitFor(
-        (percent) => {
-          const floatValue = percent / 100;
-          return window.scrollY + window.innerHeight >= document.body.scrollHeight * floatValue;
-        },
-        {},
-        depth,
-      );
+      // Wait until scroll completes. @see https://stackoverflow.com/a/57867348/12064302
+      await this.client.evaluate(() => {
+        return new Promise((resolve) => {
+          let lastPos = null;
+          let sameCount = 0;
+          window.requestAnimationFrame(checkScrollY);
+
+          // This function will be called every painting frame for the duration
+          // of the smooth scroll operation.
+          function checkScrollY() {
+            // Check our current position
+            const newPos = window.scrollY;
+
+            // If the current position is the same as the last, and it was the
+            // same as the last for two frames in a row, then scroll completed.
+            if (newPos === lastPos) {
+              sameCount = sameCount + 1;
+              if (sameCount > 2) {
+                // Once a scroll completes, regardless of if it landed at the
+                // exact right location, we can consider the scroll complete.
+                return resolve();
+              }
+            } else {
+              // Otherwise, reset our counter and set our current position.
+              sameCount = 0;
+              lastPos = newPos;
+            }
+
+            // Check again during next painting frame
+            window.requestAnimationFrame(checkScrollY);
+          }
+        });
+      });
     } catch (e) {
       throw Error(`Unable to scroll to ${depth} percent depth: ${e}`);
     }
