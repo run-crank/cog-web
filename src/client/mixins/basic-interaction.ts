@@ -86,6 +86,17 @@ export class BasicInteractionAware {
     const browser = await this.client.browser();
     const ua = await browser.userAgent();
 
+    // Connect to Chrome DevTools and set throttling. Consider making this its
+    // own step in the future.
+    // @see https://fdalvi.github.io/blog/2018-02-05-puppeteer-network-throttle/
+    // const devTools = await this.client.target().createCDPSession();
+    // await devTools.send('Network.emulateNetworkConditions', {
+    //   'offline': false,
+    //   'downloadThroughput': 1.5 * 1024 * 1024 / 8,
+    //   'uploadThroughput': 750 * 1024 / 8,
+    //   'latency': 40
+    // });
+
     // Make ourselves identifiable and set a more realistic desktop browser size.
     await this.client.setUserAgent(ua.replace(' Chrome', ' AutomatonHeadlessChrome'));
     await this.client.setViewport({ width: 1280, height: 960 });
