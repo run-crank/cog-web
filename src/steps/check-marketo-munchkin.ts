@@ -19,15 +19,15 @@ export class CheckMarketoMunchkin extends BaseStep implements StepInterface {
     try {
       await this.client.waitForNetworkIdle(10000, false);
       const actual = await this.client.getFinishedRequests();
-      if (!actual.map(request => request.url).find(url => url.includes('https://munchkin.marketo.net') && url.includes('munchkin.js'))) {
+      if (!actual.map(request => request.url).find(url => url.includes('://munchkin.marketo.net') && url.includes('munchkin.js'))) {
         return this.fail('The munchkin.js script was never requested.');
-      } else if (!actual.map(request => request.url).find(url => url.includes(`https://${id.toLowerCase()}.mktoresp.com/webevents/visitWebPage`))) {
+      } else if (!actual.map(request => request.url).find(url => url.includes(`://${id.toLowerCase()}.mktoresp.com/webevents/visitWebPage`))) {
         return this.fail('No visit was logged for munchkin account %s', [id]);
       } else {
-        return this.pass('Munchkin account %s has been loaded', [id]);
+        return this.pass('Munchkin tracking successfully logged a page visit for munchkin id %s', [id]);
       }
     } catch (e) {
-      return this.error('There was a problem checking munchkin with id %s: %s', [id, e.toString()]);
+      return this.error('There was a problem checking tracking for munchkin id %s: %s', [id, e.toString()]);
     }
   }
 }
