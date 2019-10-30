@@ -40,7 +40,7 @@ describe('ClientWrapper', () => {
     it('happyPath', async () => {
       const expectedUrl = 'https://example.com';
       const originalUserAgent = 'Mozilla/a.b Chrome/x.y.z';
-      const expectedUserAgent = 'Mozilla/a.b AutomatonHeadlessChrome/x.y.z';
+      const expectedUserAgent = 'Mozilla/a.b AutomatonChrome/x.y.z';
       const expectedLastResponse = 'This would be a puppeteer response object';
 
       // Set up test instance.

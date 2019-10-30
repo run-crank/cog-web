@@ -98,7 +98,9 @@ export class BasicInteractionAware {
     // });
 
     // Make ourselves identifiable and set a more realistic desktop browser size.
-    await this.client.setUserAgent(ua.replace(' Chrome', ' AutomatonHeadlessChrome'));
+    // Note: We do not use "Headless" in our UA name, because Marketo's Cloudfront
+    // configuration blocks requests from UAs matching that pattern.
+    await this.client.setUserAgent(ua.replace(' Chrome', ' AutomatonChrome'));
     await this.client.setViewport({ width: 1280, height: 960 });
     const response = await this.client.goto(url, { waitUntil: 'networkidle0' });
 
