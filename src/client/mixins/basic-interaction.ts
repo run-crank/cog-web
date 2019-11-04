@@ -136,7 +136,10 @@ export class BasicInteractionAware {
           try {
             await this.client.evaluate(
               (selector) => {
-                document.querySelector(selector).checked = true;
+                document.querySelector(selector).click();
+                if (!document.querySelector(selector).checked) {
+                  document.querySelector(selector).checked = true;
+                }
                 return true;
               },
               selector,
@@ -240,9 +243,10 @@ export class BasicInteractionAware {
       (selector) => {
         let method: string;
         const element = document.querySelector(selector);
-        if (element.tagName === 'select') {
+        const tagName = (element.tagName || '').toLowerCase();
+        if (tagName === 'select') {
           method = 'choose';
-        } else if (element.tagName === 'input' && element.type === 'checkbox') {
+        } else if (tagName === 'input' && element.type === 'checkbox') {
           method = 'tick';
         } else {
           method = 'type';
