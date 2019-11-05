@@ -1,0 +1,8 @@
+scenario: Element Click Test to Navigate pages
+description: This tests page navigation using the click element step
+
+steps:
+- step: navigate to https://instapage.com/
+- step: click the page element .v7-btn-copy
+- waitFor: 1
+  step: the description meta tag on the current page should contain Sign up for a 14-day trial

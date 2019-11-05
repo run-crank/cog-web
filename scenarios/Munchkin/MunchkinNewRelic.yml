@@ -1,0 +1,6 @@
+scenario: Check that Marketo Munchkin Tracking Loads
+description: This tests checks that the tracking code is loading correctly in New Relic.
+
+steps:
+- step: When I navigate to https://newrelic.com/
+- step: Then the tracking code for munchkin account id 412-mzs-894 should load
