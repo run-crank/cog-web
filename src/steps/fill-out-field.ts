@@ -10,7 +10,7 @@ export class EnterValueIntoField extends BaseStep implements StepInterface {
   protected expectedFields: Field[] = [{
     field: 'domQuerySelector',
     type: FieldDefinition.Type.STRING,
-    description: "Button's DOM Query Selector",
+    description: "Field's DOM Query Selector",
   }, {
     field: 'value',
     type: FieldDefinition.Type.ANYSCALAR,

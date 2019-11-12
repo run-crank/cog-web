@@ -79,6 +79,7 @@ describe('ClientWrapper', () => {
 
     beforeEach(() => {
       pageStub = sinon.stub();
+      pageStub.click = sinon.stub();
       pageStub.evaluate = sinon.stub();
       pageStub.waitForSelector = sinon.stub();
       pageStub.addListener = sinon.stub();
@@ -146,6 +147,56 @@ describe('ClientWrapper', () => {
 
       // Set up test instance.
       pageStub.evaluate.onCall(0).resolves('tick');
+      pageStub.evaluate.onCall(1).rejects();
+      pageStub.addListener.resolves();
+      pageStub.listeners.resolves([]);
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
+
+      // Call the method and make assertions.
+      return expect(clientWrapperUnderTest.fillOutField(expectedSelector, expectedValue))
+        .to.be.rejected;
+    });
+
+    it('radio:happyPath', async () => {
+      const expectedSelector = 'input[type=radio]';
+      const expectedValue = 'someValue';
+
+      // Set up test instance.
+      pageStub.evaluate.resolves('radio');
+      pageStub.click.resolves();
+      pageStub.addListener.resolves();
+      pageStub.listeners.resolves([]);
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
+
+      // Call the method and make assertions.
+      await clientWrapperUnderTest.fillOutField(expectedSelector, expectedValue);
+      expect(pageStub.click).to.have.been.calledWith(`${expectedSelector}[value="${expectedValue}"]`);
+    });
+
+    it('radio:happyPathViaEvaluation', async () => {
+      const expectedSelector = 'input[type=radio]';
+      const expectedValue = 'someValue';
+
+      // Set up test instance.
+      pageStub.evaluate.onCall(0).resolves('radio');
+      pageStub.click.rejects();
+      pageStub.evaluate.onCall(1).resolves();
+      pageStub.addListener.resolves();
+      pageStub.listeners.resolves([]);
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
+
+      // Call the method and make assertions.
+      await clientWrapperUnderTest.fillOutField(expectedSelector, expectedValue);
+      expect(pageStub.evaluate.secondCall).to.have.been.calledWith(sinon.match.any, `${expectedSelector}[value="${expectedValue}"]`);
+    });
+
+    it('radio:cannotSelectRadioButton', async () => {
+      const expectedSelector = 'input[type=radio]';
+      const expectedValue = 'someValue';
+
+      // Set up test instance.
+      pageStub.evaluate.resolves('radio');
+      pageStub.click.rejects();
       pageStub.evaluate.onCall(1).rejects();
       pageStub.addListener.resolves();
       pageStub.listeners.resolves([]);

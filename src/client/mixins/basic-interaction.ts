@@ -150,6 +150,26 @@ export class BasicInteractionAware {
         }
         break;
 
+      case 'radio':
+        try {
+          await this.client.click(`${selector}[value="${value}"]`);
+        } catch (e) {
+          try {
+            await this.client.evaluate(
+              (selector) => {
+                document.querySelector(selector).click();
+                if (!document.querySelector(selector).checked) {
+                  document.querySelector(selector).checked = true;
+                }
+                return true;
+              },
+              `${selector}[value="${value}"]`,
+            );
+          } catch (e) {
+            throw Error("Radio button may not be visible or isn't selectable.");
+          }
+        }
+
       case 'type':
         try {
           await this.client.waitForSelector(selector, { visible: true, timeout: 5000 });
@@ -248,6 +268,8 @@ export class BasicInteractionAware {
           method = 'choose';
         } else if (tagName === 'input' && element.type === 'checkbox') {
           method = 'tick';
+        } else if (tagName === 'input' && element.type === 'radio') {
+          method = 'radio';
         } else {
           method = 'type';
         }
