@@ -169,7 +169,7 @@ export class BasicInteractionAware {
           await this.client['___currentFrame'].type(selector, value);
         } catch (e) {
           try {
-            await this.client.evaluate(
+            await this.client['___currentFrame'].evaluate(
               (selector, value) => {
                 document.querySelector(selector).focus();
                 document.querySelector(selector).value = value;
