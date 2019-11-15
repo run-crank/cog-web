@@ -1,0 +1,14 @@
+scenario: Test page with an Iframe form
+description: This tests if an Iframe is interactable using the focus step.
+  
+steps:
+- step: Navigate to http://www.automatoninc.com/hubspot-test/
+- waitFor: 5
+  step: Click the page element [id=cookie_action_close_header]
+- step: focus on the iframe[id=hs-form-iframe-0] frame
+- step: Fill out input[name=firstname] with Test
+- step: Fill out input[name=lastname] with IFrame
+- step: Fill out input[name=email] with formtest@automatoninc.com
+- step: submit the form by clicking input[type=submit]
+- step: Then the email field on hubspot contact formtest@automatoninc.com should be formtest@automatoninc.com
+- step: Finally delete the formtest@automatoninc.com hubspot contact

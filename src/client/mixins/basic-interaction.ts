@@ -4,10 +4,20 @@ import { Promise as Bluebird } from 'bluebird';
 export class BasicInteractionAware {
   public client: Page;
 
+  public async focusFrame(domQuerySelector: string) {
+    if (domQuerySelector === 'main') {
+      this.client['___currentFrame'] = this.client.mainFrame();
+    } else {
+      await this.client.waitForSelector(domQuerySelector);
+      const elementHandle = await this.client.$(domQuerySelector);
+      this.client['___currentFrame'] = await elementHandle.contentFrame();
+    }
+  }
+
   public async scrollTo(depth: number) {
     try {
       // Perform scroll.
-      await this.client.evaluate(
+      await this.client['___currentFrame'].evaluate(
         (percent) => {
           const floatValue = percent / 100;
           window.scroll({
@@ -20,7 +30,7 @@ export class BasicInteractionAware {
       );
 
       // Wait until scroll completes. @see https://stackoverflow.com/a/57867348/12064302
-      await this.client.evaluate(() => {
+      await this.client['___currentFrame'].evaluate(() => {
         return new Promise((resolve) => {
           let lastPos = null;
           let sameCount = 0;
@@ -59,10 +69,10 @@ export class BasicInteractionAware {
 
   public async clickElement(selector: string) {
     try {
-      await this.client.click(selector);
+      await this.client['___currentFrame'].click(selector);
     } catch (e) {
       try {
-        await this.client.evaluate(
+        await this.client['___currentFrame'].evaluate(
           async (selector) => {
             document.querySelector(selector).click();
             return true;
@@ -108,6 +118,9 @@ export class BasicInteractionAware {
     // only way to persist this response object between steps.
     // @see this.getCurrentPageDetails()
     this.client['___lastResponse'] = response;
+
+    // Set the current active frame by:
+    this.client['___currentFrame'] = this.client.mainFrame();
   }
 
   /**
@@ -125,7 +138,7 @@ export class BasicInteractionAware {
     switch (fieldMethod) {
       case 'choose':
         try {
-          await this.client.select(selector, value);
+          await this.client['___currentFrame'].select(selector, value);
         } catch (e) {
           throw Error("Drop down may not be visible or isn't selectable.");
         }
@@ -134,7 +147,7 @@ export class BasicInteractionAware {
       case 'tick':
         if (value) {
           try {
-            await this.client.evaluate(
+            await this.client['___currentFrame'].evaluate(
               (selector) => {
                 document.querySelector(selector).click();
                 if (!document.querySelector(selector).checked) {
@@ -172,11 +185,11 @@ export class BasicInteractionAware {
 
       case 'type':
         try {
-          await this.client.waitForSelector(selector, { visible: true, timeout: 5000 });
-          await this.client.type(selector, value);
+          await this.client['___currentFrame'].waitForSelector(selector, { visible: true, timeout: 5000 });
+          await this.client['___currentFrame'].type(selector, value);
         } catch (e) {
           try {
-            await this.client.evaluate(
+            await this.client['___currentFrame'].evaluate(
               (selector, value) => {
                 document.querySelector(selector).focus();
                 document.querySelector(selector).value = value;
@@ -205,15 +218,16 @@ export class BasicInteractionAware {
     // set to 3/4 to catch as many cases as possible, including:
     // - Click worked, redirected, and therefore button is gone.
     // - Click worked, no redirect, but button is gone and it's been 10s
+    await this.client['___currentFrame'].waitForSelector(selector);
     await Bluebird.some(
       [
         new Promise((res, rej) => {
-          this.client.waitForNavigation({ timeout: 15000 })
+          this.client['___currentFrame'].waitForNavigation({ timeout: 15000 })
             .then(res)
             .catch(e => rej(Error('Page did not redirect')));
         }),
         new Promise((res, rej) => {
-          this.client.waitForFunction(
+          this.client['___currentFrame'].waitForFunction(
             (selector) => {
               const el = document.querySelector(selector);
               return !el || el.offsetParent === null;
@@ -225,7 +239,7 @@ export class BasicInteractionAware {
             .catch(e => rej(Error('Submit button still there')));
         }),
         new Promise((res, rej) => {
-          this.client.click(selector)
+          this.client['___currentFrame'].click(selector)
             .then(res)
             .catch((e) => {
               this.client.waitForFunction(
@@ -241,7 +255,7 @@ export class BasicInteractionAware {
             });
         }),
         new Promise((res, rej) => {
-          this.client.waitFor(10000)
+          this.client['___currentFrame'].waitFor(10000)
             .then(res)
             .catch(e => rej(Error('Waited for 10 seconds')));
         }),
@@ -259,7 +273,7 @@ export class BasicInteractionAware {
    *   checkbox inputs), or type (for any other input).
    */
   private async getFieldMethod(selector: string) {
-    return await this.client.evaluate(
+    return await this.client['___currentFrame'].evaluate(
       (selector) => {
         let method: string;
         const element = document.querySelector(selector);

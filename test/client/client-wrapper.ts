@@ -30,9 +30,10 @@ describe('ClientWrapper', () => {
       pageStub.setUserAgent = sinon.stub();
       pageStub.setViewport = sinon.stub();
       pageStub.goto = sinon.stub();
+      pageStub.mainFrame = sinon.stub();
 
       // Stub out event emitter.
-      pageStub.listenerCount = sinon.stub()
+      pageStub.listenerCount = sinon.stub();
       pageStub.listenerCount.onFirstCall().returns(0);
       pageStub.listenerCount.onSecondCall().returns(1);
     });
@@ -88,9 +89,22 @@ describe('ClientWrapper', () => {
       pageStub.type = sinon.stub();
 
       // Stub out event emitter.
-      pageStub.listenerCount = sinon.stub()
+      pageStub.listenerCount = sinon.stub();
       pageStub.listenerCount.onFirstCall().returns(0);
       pageStub.listenerCount.onSecondCall().returns(1);
+
+      pageStub['___currentFrame'] = sinon.stub();
+      pageStub['___currentFrame'].evaluate = sinon.stub();
+      pageStub['___currentFrame'].waitForSelector = sinon.stub();
+      pageStub['___currentFrame'].addListener = sinon.stub();
+      pageStub['___currentFrame'].listeners = sinon.stub();
+      pageStub['___currentFrame'].select = sinon.stub();
+      pageStub['___currentFrame'].type = sinon.stub();
+
+      // Stub out event emitter.
+      pageStub['___currentFrame'].listenerCount = sinon.stub();
+      pageStub['___currentFrame'].listenerCount.onFirstCall().returns(0);
+      pageStub['___currentFrame'].listenerCount.onSecondCall().returns(1);
     });
 
     it('selectElement:happypath', async () => {
@@ -98,15 +112,15 @@ describe('ClientWrapper', () => {
       const expectedValue = 'CA';
 
       // Set up test instance.
-      pageStub.evaluate.onCall(0).resolves('choose');
-      pageStub.select.resolves();
-      pageStub.listeners.resolves([]);
-      pageStub.addListener.resolves();
+      pageStub['___currentFrame'].evaluate.onCall(0).resolves('choose');
+      pageStub['___currentFrame'].select.resolves();
+      pageStub['___currentFrame'].listeners.resolves([]);
+      pageStub['___currentFrame'].addListener.resolves();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
       // Call the method and make assertions.
       await clientWrapperUnderTest.fillOutField(expectedSelector, expectedValue);
-      expect(pageStub.select).to.have.been.calledWith(expectedSelector, expectedValue);
+      expect(pageStub['___currentFrame'].select).to.have.been.calledWith(expectedSelector, expectedValue);
     });
 
     it('selectElement:cannotSelectValue', () => {
@@ -114,10 +128,10 @@ describe('ClientWrapper', () => {
       const expectedValue = 'CA';
 
       // Set up test instance.
-      pageStub.evaluate.onCall(0).resolves('choose');
-      pageStub.select.rejects();
-      pageStub.listeners.resolves()
-      pageStub.addListener.resolves();
+      pageStub['___currentFrame'].evaluate.onCall(0).resolves('choose');
+      pageStub['___currentFrame'].select.rejects();
+      pageStub['___currentFrame'].listeners.resolves();
+      pageStub['___currentFrame'].addListener.resolves();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
       // Call the method and make assertions.
@@ -130,15 +144,15 @@ describe('ClientWrapper', () => {
       const expectedValue = 'yes';
 
       // Set up test instance.
-      pageStub.evaluate.onCall(0).resolves('tick');
-      pageStub.evaluate.onCall(1).resolves();
-      pageStub.addListener.resolves();
-      pageStub.listeners.resolves([]);
+      pageStub['___currentFrame'].evaluate.onCall(0).resolves('tick');
+      pageStub['___currentFrame'].evaluate.onCall(1).resolves();
+      pageStub['___currentFrame'].addListener.resolves();
+      pageStub['___currentFrame'].listeners.resolves([]);
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
       // Call the method and make assertions.
       await clientWrapperUnderTest.fillOutField(expectedSelector, expectedValue);
-      expect(pageStub.evaluate.secondCall).to.have.been.calledWith(sinon.match.any, expectedSelector);
+      expect(pageStub['___currentFrame'].evaluate.secondCall).to.have.been.calledWith(sinon.match.any, expectedSelector);
     });
 
     it('checkBox:cannotTickInput', () => {
@@ -146,10 +160,10 @@ describe('ClientWrapper', () => {
       const expectedValue = 'yes';
 
       // Set up test instance.
-      pageStub.evaluate.onCall(0).resolves('tick');
-      pageStub.evaluate.onCall(1).rejects();
-      pageStub.addListener.resolves();
-      pageStub.listeners.resolves([]);
+      pageStub['___currentFrame'].evaluate.onCall(0).resolves('tick');
+      pageStub['___currentFrame'].evaluate.onCall(1).rejects();
+      pageStub['___currentFrame'].addListener.resolves();
+      pageStub['___currentFrame'].listeners.resolves([]);
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
       // Call the method and make assertions.
@@ -212,17 +226,17 @@ describe('ClientWrapper', () => {
       const expectedValue = 'atommy@example.com';
 
       // Set up test instance.
-      pageStub.evaluate.onCall(0).resolves('type');
-      pageStub.type.resolves();
-      pageStub.waitForSelector.resolves();
-      pageStub.listeners.resolves([]);
-      pageStub.addListener.resolves();
+      pageStub['___currentFrame'].evaluate.onCall(0).resolves('type');
+      pageStub['___currentFrame'].type.resolves();
+      pageStub['___currentFrame'].waitForSelector.resolves();
+      pageStub['___currentFrame'].listeners.resolves([]);
+      pageStub['___currentFrame'].addListener.resolves();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
       // Call the method and make assertions.
       await clientWrapperUnderTest.fillOutField(expectedSelector, expectedValue);
-      expect(pageStub.type).to.have.been.calledWith(expectedSelector, expectedValue);
-      expect(pageStub.waitForSelector).to.have.been.calledWith(expectedSelector);
+      expect(pageStub['___currentFrame'].type).to.have.been.calledWith(expectedSelector, expectedValue);
+      expect(pageStub['___currentFrame'].waitForSelector).to.have.been.calledWith(expectedSelector);
     });
 
     it('textInput:happyPathHiddenField', async () => {
@@ -230,17 +244,17 @@ describe('ClientWrapper', () => {
       const expectedValue = 'atommy@example.com';
 
       // Set up test instance.
-      pageStub.evaluate.onCall(0).resolves('type');
-      pageStub.type.resolves();
-      pageStub.waitForSelector.rejects();
-      pageStub.evaluate.onCall(1).resolves();
-      pageStub.listeners.resolves([]);
-      pageStub.addListener.resolves();
+      pageStub['___currentFrame'].evaluate.onCall(0).resolves('type');
+      pageStub['___currentFrame'].type.resolves();
+      pageStub['___currentFrame'].waitForSelector.rejects();
+      pageStub['___currentFrame'].evaluate.onCall(1).resolves();
+      pageStub['___currentFrame'].listeners.resolves([]);
+      pageStub['___currentFrame'].addListener.resolves();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
       // Call the method and make assertions.
       await clientWrapperUnderTest.fillOutField(expectedSelector, expectedValue);
-      expect(pageStub.evaluate).to.have.been.calledWith(sinon.match.any, expectedSelector, expectedValue);
+      expect(pageStub['___currentFrame'].evaluate).to.have.been.calledWith(sinon.match.any, expectedSelector, expectedValue);
     });
 
     it('textInput:cannotTypeInField', () => {
@@ -248,11 +262,11 @@ describe('ClientWrapper', () => {
       const expectedValue = 'atommy@example.com';
 
       // Set up test instance.
-      pageStub.evaluate.onCall(0).resolves('type');
-      pageStub.type.rejects();
-      pageStub.evaluate.onCall(1).rejects();
-      pageStub.listeners.resolves([]);
-      pageStub.addListener.resolves();
+      pageStub['___currentFrame'].evaluate.onCall(0).resolves('type');
+      pageStub['___currentFrame'].type.rejects();
+      pageStub['___currentFrame'].evaluate.onCall(1).rejects();
+      pageStub['___currentFrame'].listeners.resolves([]);
+      pageStub['___currentFrame'].addListener.resolves();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
       // Call the method and make assertions.
@@ -265,9 +279,9 @@ describe('ClientWrapper', () => {
       const expectedValue = 'anyValue';
 
       // Set up test instance.
-      pageStub.evaluate.onCall(0).rejects();
-      pageStub.listeners.resolves([]);
-      pageStub.addListener.resolves();
+      pageStub['___currentFrame'].evaluate.onCall(0).rejects();
+      pageStub['___currentFrame'].listeners.resolves([]);
+      pageStub['___currentFrame'].addListener.resolves();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
       // Call the method and make assertions.
@@ -281,6 +295,7 @@ describe('ClientWrapper', () => {
 
     beforeEach(() => {
       pageStub = sinon.stub();
+      pageStub = sinon.stub();
       pageStub.click = sinon.stub();
       pageStub.addListener = sinon.stub();
       pageStub.listeners = sinon.stub();
@@ -288,56 +303,69 @@ describe('ClientWrapper', () => {
       pageStub.waitForFunction = sinon.stub();
       pageStub.waitFor = sinon.stub();
 
-      // Stub out event emitter.
-      pageStub.listenerCount = sinon.stub()
+      pageStub.listenerCount = sinon.stub();
       pageStub.listenerCount.onFirstCall().returns(0);
       pageStub.listenerCount.onSecondCall().returns(1);
+
+      pageStub['___currentFrame'] = sinon.stub();
+      pageStub['___currentFrame'].click = sinon.stub();
+      pageStub['___currentFrame'].addListener = sinon.stub();
+      pageStub['___currentFrame'].listeners = sinon.stub();
+      pageStub['___currentFrame'].waitForNavigation = sinon.stub();
+      pageStub['___currentFrame'].waitForSelector = sinon.stub();
+      pageStub['___currentFrame'].waitForFunction = sinon.stub();
+      pageStub['___currentFrame'].waitFor = sinon.stub();
+
+      // Stub out event emitter.
+      pageStub['___currentFrame'].listenerCount = sinon.stub();
+      pageStub['___currentFrame'].listenerCount.onFirstCall().returns(0);
+      pageStub['___currentFrame'].listenerCount.onSecondCall().returns(1);
     });
 
     it('happyPath:submitFormAndPageRedirects', async () => {
       const expectedButtonSelector = 'button[type=submit]';
 
       // Set up test instance.
-      pageStub.click.resolves();
-      pageStub.waitForNavigation.resolves();
-      pageStub.waitForFunction.resolves();
-      pageStub.waitFor.rejects();
-      pageStub.listeners.resolves([]);
-      pageStub.addListener.resolves();
+      pageStub['___currentFrame'].click.resolves();
+      pageStub['___currentFrame'].waitForNavigation.resolves();
+      pageStub['___currentFrame'].waitForFunction.resolves();
+      pageStub['___currentFrame'].waitFor.rejects();
+      pageStub['___currentFrame'].listeners.resolves([]);
+      pageStub['___currentFrame'].addListener.resolves();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
       // Call the method and make assertions.
       await clientWrapperUnderTest.submitFormByClickingButton(expectedButtonSelector);
-      expect(pageStub.click).to.have.been.calledWith(expectedButtonSelector);
+      expect(pageStub['___currentFrame'].click).to.have.been.calledWith(expectedButtonSelector);
     });
 
     it('happyPath:submitFormAndButtonDisappears', async () => {
       const expectedButtonSelector = 'button[type=submit]';
 
       // Set up test instance.
-      pageStub.click.resolves();
-      pageStub.waitForNavigation.rejects();
-      pageStub.waitForFunction.resolves();
-      pageStub.waitFor.resolves();
-      pageStub.listeners.resolves([]);
-      pageStub.addListener.resolves();
+      pageStub['___currentFrame'].click.resolves();
+      pageStub['___currentFrame'].waitForNavigation.rejects();
+      pageStub['___currentFrame'].waitForFunction.resolves();
+      pageStub['___currentFrame'].waitFor.resolves();
+      pageStub['___currentFrame'].listeners.resolves([]);
+      pageStub['___currentFrame'].addListener.resolves();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
       // Call the method and make assertions.
       await clientWrapperUnderTest.submitFormByClickingButton(expectedButtonSelector);
-      expect(pageStub.click).to.have.been.calledWith(expectedButtonSelector);
+      expect(pageStub['___currentFrame'].click).to.have.been.calledWith(expectedButtonSelector);
     });
 
     it('sadPath:cannotDetectSuccessfulSubmit', () => {
       const expectedButtonSelector = 'button[type=submit]';
 
       // Set up test instance.
-      pageStub.click.resolves();
-      pageStub.waitForNavigation.rejects();
-      pageStub.waitForFunction.rejects();
-      pageStub.waitFor.resolves();
-      pageStub.listeners.resolves([]);
-      pageStub.addListener.resolves();
+      pageStub['___currentFrame'].click.resolves();
+      pageStub['___currentFrame'].waitForNavigation.rejects();
+      pageStub['___currentFrame'].waitForFunction.rejects();
+      pageStub['___currentFrame'].waitFor.resolves();
+      pageStub['___currentFrame'].listeners.resolves([]);
+      pageStub['___currentFrame'].addListener.resolves();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
       // Call the method and make assertions.
@@ -349,12 +377,12 @@ describe('ClientWrapper', () => {
       const expectedButtonSelector = 'button[type=submit]';
 
       // Set up test instance.
-      pageStub.click.rejects();
-      pageStub.waitForNavigation.rejects();
-      pageStub.waitForFunction.rejects();
-      pageStub.waitFor.resolves();
-      pageStub.listeners.resolves([]);
-      pageStub.addListener.resolves();
+      pageStub['___currentFrame'].click.rejects();
+      pageStub['___currentFrame'].waitForNavigation.rejects();
+      pageStub['___currentFrame'].waitForFunction.rejects();
+      pageStub['___currentFrame'].waitFor.resolves();
+      pageStub['___currentFrame'].listeners.resolves([]);
+      pageStub['___currentFrame'].addListener.resolves();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
       // Call the method and make assertions.
@@ -458,15 +486,18 @@ describe('ClientWrapper', () => {
       pageStub.addListener = sinon.stub();
       pageStub.evaluate = sinon.stub();
 
+      pageStub['___currentFrame'] = sinon.stub();
+      pageStub['___currentFrame'].evaluate = sinon.stub();
+
       // Stub out event emitter.
-      pageStub.listenerCount = sinon.stub()
+      pageStub.listenerCount = sinon.stub();
       pageStub.listenerCount.onFirstCall().returns(0);
       pageStub.listenerCount.onSecondCall().returns(1);
     });
 
     it('sadPath:pageEvalThrows', () => {
       // Set up test instance.
-      pageStub.evaluate.throws();
+      pageStub['___currentFrame'].evaluate.throws();
       pageStub.listeners.resolves([]);
       pageStub.addListener.resolves();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
@@ -480,7 +511,7 @@ describe('ClientWrapper', () => {
       const expectedTitle = 'Some Page Title';
 
       // Set up test instance.
-      pageStub.evaluate.resolves(expectedTitle);
+      pageStub['___currentFrame'].evaluate.resolves(expectedTitle);
       pageStub.listeners.resolves([]);
       pageStub.addListener.resolves();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
@@ -494,17 +525,124 @@ describe('ClientWrapper', () => {
       const expectedOgDescription = 'Some Open Graph Description';
 
       // Set up test instance.
-      pageStub.evaluate.resolves(expectedOgDescription);
+      pageStub['___currentFrame'].evaluate.resolves(expectedOgDescription);
       pageStub.listeners.resolves([]);
       pageStub.addListener.resolves();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
       // Call the method and make assertions.
       const actual = await clientWrapperUnderTest.getMetaTagContent('og:description');
-      expect(pageStub.evaluate).to.have.been.calledWith(sinon.match.any, 'og:description');
+      expect(pageStub['___currentFrame'].evaluate).to.have.been.calledWith(sinon.match.any, 'og:description');
       expect(actual).to.be.string(expectedOgDescription);
     });
 
   });
 
+  describe('clickElement', () => {
+    beforeEach(() => {
+      pageStub = sinon.stub();
+      pageStub.listeners = sinon.stub();
+      pageStub.addListener = sinon.stub();
+      pageStub.evaluate = sinon.stub();
+      pageStub['___currentFrame'] = sinon.stub();
+      pageStub['___currentFrame'].click = sinon.stub();
+      pageStub['___currentFrame'].evaluate = sinon.stub();
+
+      // Stub out event emitter.
+      pageStub.listenerCount = sinon.stub();
+      pageStub.listenerCount.onFirstCall().returns(0);
+      pageStub.listenerCount.onSecondCall().returns(1);
+
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
+    });
+
+    describe('happyPath:selectorClicked', () => {
+      const expectedSelector = 'button';
+
+      beforeEach(() => {
+        pageStub['___currentFrame'].click.resolves();
+      });
+
+      it('should call with expectedArgs', async () => {
+        await clientWrapperUnderTest.clickElement(expectedSelector);
+        expect(pageStub['___currentFrame'].click).to.have.been.calledWith(expectedSelector);
+      });
+    });
+
+    describe('happyPath:javascriptFallback:successful', () => {
+      const expectedSelector = 'button';
+
+      beforeEach(() => {
+        pageStub['___currentFrame'].click.rejects();
+        pageStub['___currentFrame'].evaluate.resolves();
+      });
+
+      it('should call with expectedArgs', async () => {
+        await clientWrapperUnderTest.clickElement(expectedSelector);
+        expect(pageStub['___currentFrame'].evaluate).to.have.been.calledWith(sinon.match.any, expectedSelector);
+      });
+    });
+
+    describe('sadPath:everythingFailed', () => {
+      const expectedSelector = 'button';
+
+      beforeEach(() => {
+        pageStub['___currentFrame'].click.throws();
+        pageStub['___currentFrame'].evaluate.throws();
+      });
+
+      it('should throw', () => {
+        return expect(clientWrapperUnderTest.clickElement.bind(clientWrapperUnderTest, expectedSelector))
+        .to.throw;
+      });
+    });
+  });
+
+  describe('focusFrame', () => {
+    beforeEach(() => {
+      pageStub = sinon.stub();
+      pageStub.listeners = sinon.stub();
+      pageStub.addListener = sinon.stub();
+
+      pageStub.$ = sinon.stub();
+      pageStub.waitForSelector = sinon.stub();
+
+      // Stub out event emitter.
+      pageStub.listenerCount = sinon.stub();
+      pageStub.listenerCount.onFirstCall().returns(0);
+      pageStub.listenerCount.onSecondCall().returns(1);
+
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
+    });
+
+    describe('main', () => {
+      const selector = 'main';
+      const frame = 'mainFrame';
+      beforeEach(() => {
+        pageStub.mainFrame = sinon.stub();
+        pageStub.mainFrame.returns(frame);
+      });
+      it('should set the ___currentFrame of the page', async () => {
+        await clientWrapperUnderTest.focusFrame(selector);
+        expect(pageStub['___currentFrame']).to.equal(frame);
+      });
+    });
+
+    describe('any selector', () => {
+      const selector = 'iframe';
+      const frame = 'contentFrame';
+      beforeEach(() => {
+        const elementHandleStub: any = sinon.stub();
+        elementHandleStub.contentFrame = sinon.stub();
+        elementHandleStub.contentFrame.resolves(frame);
+        pageStub.waitForSelector.resolves();
+        pageStub.$.resolves(elementHandleStub);
+      });
+
+      it('should set ___currentFrame of the page', async () => {
+        await clientWrapperUnderTest.focusFrame(selector);
+        expect(pageStub['___currentFrame']).to.equal(frame);
+      });
+    });
+  });
 });
