@@ -435,6 +435,9 @@ describe('ClientWrapper', () => {
       pageStub.addListener = sinon.stub();
       pageStub.evaluate = sinon.stub();
 
+      pageStub['___currentFrame'] = sinon.stub();
+      pageStub['___currentFrame'].evaluate = sinon.stub();
+
       // Stub out event emitter.
       pageStub.listenerCount = sinon.stub();
       pageStub.listenerCount.onFirstCall().returns(0);
@@ -443,7 +446,7 @@ describe('ClientWrapper', () => {
 
     it('sadPath:pageEvalThrows', () => {
       // Set up test instance.
-      pageStub.evaluate.throws();
+      pageStub['___currentFrame'].evaluate.throws();
       pageStub.listeners.resolves([]);
       pageStub.addListener.resolves();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
@@ -457,7 +460,7 @@ describe('ClientWrapper', () => {
       const expectedTitle = 'Some Page Title';
 
       // Set up test instance.
-      pageStub.evaluate.resolves(expectedTitle);
+      pageStub['___currentFrame'].evaluate.resolves(expectedTitle);
       pageStub.listeners.resolves([]);
       pageStub.addListener.resolves();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
@@ -471,14 +474,14 @@ describe('ClientWrapper', () => {
       const expectedOgDescription = 'Some Open Graph Description';
 
       // Set up test instance.
-      pageStub.evaluate.resolves(expectedOgDescription);
+      pageStub['___currentFrame'].evaluate.resolves(expectedOgDescription);
       pageStub.listeners.resolves([]);
       pageStub.addListener.resolves();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
       // Call the method and make assertions.
       const actual = await clientWrapperUnderTest.getMetaTagContent('og:description');
-      expect(pageStub.evaluate).to.have.been.calledWith(sinon.match.any, 'og:description');
+      expect(pageStub['___currentFrame'].evaluate).to.have.been.calledWith(sinon.match.any, 'og:description');
       expect(actual).to.be.string(expectedOgDescription);
     });
 
