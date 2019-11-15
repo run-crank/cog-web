@@ -165,10 +165,10 @@ export class BasicInteractionAware {
 
       case 'radio':
         try {
-          await this.client.click(`${selector}[value="${value}"]`);
+          await this.client['___currentFrame'].click(`${selector}[value="${value}"]`);
         } catch (e) {
           try {
-            await this.client.evaluate(
+            await this.client['___currentFrame'].evaluate(
               (selector) => {
                 document.querySelector(selector).click();
                 if (!document.querySelector(selector).checked) {
