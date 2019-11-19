@@ -30,45 +30,19 @@ This Cog does not require any authentication details.
 
 ### Steps
 <!-- stepDetails -->
-<h4 id="CheckCurrentPageInfo">Check current page info</h4>
-
-- **Expression**: `the (?<field>status|text|url) of the current page should (?<operator>contain|not contain|be) (?<expectation>.+)`
-- **Expected Data**:
-  - `field`: Page Detail (status, text, or url)
-  - `operator`: Check Logic (contain, not contain, or be)
-  - `expectation`: Expected Value
-- **Step ID**: `CheckCurrentPageInfo`
-
-<h4 id="CheckCurrentPageMetaTag">Check current page meta tag</h4>
-
-- **Expression**: `the (?<metaName>.+) meta tag on the current page should (?<operator>be|contain|not contain|not be longer than|exist) ?(?<expectation>.+)?`
-- **Expected Data**:
-  - `metaName`: Meta Tag name
-  - `operator`: Check Logic (be, contain, not contain, not be longer than, exist)
-  - `expectation`: Expected Value
-- **Step ID**: `CheckCurrentPageMetaTag`
-
-<h4 id="EnterValueIntoField">Fill out a form field</h4>
-
-- **Expression**: `fill out (?<domQuerySelector>.+) with (?<value>.+)`
-- **Expected Data**:
-  - `domQuerySelector`: Button's DOM Query Selector
-  - `value`: Field Value
-- **Step ID**: `EnterValueIntoField`
-
-<h4 id="NavigateToPage">Navigate to a webpage</h4>
-
-- **Expression**: `navigate to (?<webPageUrl>.+)`
-- **Expected Data**:
-  - `webPageUrl`: Page URL
-- **Step ID**: `NavigateToPage`
-
-<h4 id="SubmitFormByClickingButton">Submit a form by clicking a button</h4>
-
-- **Expression**: `submit the form by clicking (?<domQuerySelector>.+)`
-- **Expected Data**:
-  - `domQuerySelector`: Button's DOM Query Selector
-- **Step ID**: `SubmitFormByClickingButton`
+| Name (ID) | Expression | Expected Data |
+| --- | --- | --- |
+| **Check current page info**<br>(`CheckCurrentPageInfo`) | `the (?<field>status|text|url) of the current page should (?<operator>contain|not contain|be) (?<expectation>.+)` | - `field`: Page Detail (status, text, or url) <br><br>- `operator`: Check Logic (contain, not contain, or be) <br><br>- `expectation`: Expected Value |
+| **Check current page meta tag**<br>(`CheckCurrentPageMetaTag`) | `the (?<metaName>.+) meta tag on the current page should (?<operator>be|contain|not contain|not be longer than|exist) ?(?<expectation>.+)?` | - `metaName`: Meta Tag name <br><br>- `operator`: Check Logic (be, contain, not contain, not be longer than, exist) <br><br>- `expectation`: Expected Value |
+| **Check that Google Analytics tracked an event**<br>(`CheckGoogleAnalyticsEvent`) | `google analytics should have tracked an event with category (?<ec>.+) and action (?<ea>.+) for tracking id (?<id>[a-zA-Z0-9-]+)` | - `ec`: Event Category <br><br>- `ea`: Event Action <br><br>- `id`: Tracking / Measurement ID associated with the GA instance/property (e.g. UA-75228722-5) <br><br>- `withParameters`: Parameter Checks, an optional map of Google Analytics Measurement Protocol Parameters and their expected values. |
+| **Check that Google Analytics tracked a pageview**<br>(`CheckGoogleAnalyticsPageView`) | `google analytics should have tracked a pageview for tracking id (?<id>[a-zA-Z0-9-]+)` | - `id`: Tracking / Measurement ID associated with the GA instance/property (e.g. UA-75228722-5) <br><br>- `withParameters`: Parameter Checks, an optional map of Google Analytics Measurement Protocol Parameters and their expected values. |
+| **Check that Marketo Munchkin tracking loads**<br>(`CheckMarketoMunchkin`) | `the tracking code for munchkin account id (?<id>[a-zA-Z0-9-]+) should load` | - `id`: Munchkin Account ID associated with the user's Marketo instance (e.g. 460-tdh-945) |
+| **Click an element on a page**<br>(`ClickOnElement`) | `click the page element (?<domQuerySelector>.+)` | - `domQuerySelector`: Element's DOM Query Selector |
+| **Fill out a form field**<br>(`EnterValueIntoField`) | `fill out (?<domQuerySelector>.+) with (?<value>.+)` | - `domQuerySelector`: Field's DOM Query Selector <br><br>- `value`: Field Value |
+| **Focus on Frame**<br>(`FocusOnFrame`) | `focus on the (?<domQuerySelector>.+) frame` | - `domQuerySelector`: The iframe's DOM query selector, or "main" for the main frame |
+| **Navigate to a webpage**<br>(`NavigateToPage`) | `navigate to (?<webPageUrl>.+)` | - `webPageUrl`: Page URL |
+| **Scroll to a percentage depth of a web page**<br>(`ScrollTo`) | `scroll to (?<depth>\d+)% of the page` | - `depth`: Percent Depth |
+| **Submit a form by clicking a button**<br>(`SubmitFormByClickingButton`) | `submit the form by clicking (?<domQuerySelector>.+)` | - `domQuerySelector`: Button's DOM Query Selector |
 <!-- stepDetailsEnd -->
 
 ## Development and Contributing
