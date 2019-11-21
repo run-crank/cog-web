@@ -5,4 +5,3 @@ steps:
 - step: navigate to https://crank.run/
 - step: click the page element [href="/discover-cogs"]
 - step: the title meta tag on the current page should be Crank - Discover Cogs
-

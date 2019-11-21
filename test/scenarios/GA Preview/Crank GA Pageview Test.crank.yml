@@ -7,4 +7,3 @@ steps:
   data:
     withParameters:
         dt: "Crank - BDD Test Automation for Integrated SaaS"
-        
