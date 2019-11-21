@@ -8,4 +8,3 @@ steps:
 - step: "Given I navigate to https://www.tableau.com/products/trial"
 - step: When I click the page element [href="/academic/students#form"]
 - step: "Then Google Analytics should have tracked an event with category form and action form present for tracking id UA-625217-46"
-

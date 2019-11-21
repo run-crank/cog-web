@@ -4,4 +4,3 @@ description: This tests checks that the tracking code is loading correctly in Ne
 steps:
 - step: When I navigate to https://newrelic.com/
 - step: Then the tracking code for munchkin account id 412-mzs-894 should load
-

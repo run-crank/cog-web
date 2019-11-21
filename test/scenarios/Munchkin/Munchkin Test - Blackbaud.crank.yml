@@ -4,4 +4,3 @@ description: This tests checks that the tracking code is loading correctly in Bl
 steps:
 - step: When I navigate to https://www.blackbaud.com
 - step: Then the tracking code for munchkin account id 053-mxj-131 should load
-
