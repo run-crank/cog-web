@@ -1,8 +1,0 @@
-scenario: Scroll Through Test
-description: This tests scrolling through X percentage of a page
-
-steps:
-- step: When I navigate to https://demo.mobiscroll.com/angular/scrollview
-- step: Then the title meta tag on the current page should contain Angular and Ionic Scrollview Examples
-- step: When I scroll through 50% of the page
-- step: Then the title meta tag on the current page should contain Angular and Ionic Scrollview Examples | Mobiscroll

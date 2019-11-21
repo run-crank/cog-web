@@ -1,5 +1,5 @@
 scenario: Focus on Frame step
-description: This is a scenario that checks if crank user can switch from the Main frame to a specific frame.
+description: This is a scenario that checks if crank user can switch from Main frame to a specific frame.
 
 tokens:
   test:

@@ -6,3 +6,4 @@ steps:
 - step: When I click the page element [class="first-span"]
 - step: Then the tracking code for munchkin account id 758-USO-349 should load
   failAfter: 5
+  

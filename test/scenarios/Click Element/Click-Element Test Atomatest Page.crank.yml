@@ -1,5 +1,5 @@
 scenario: Element Click Test to Navigate pages
-description: This tests page navigation using the click element step
+description: This tests the click page element on Atomatest Landing page.
 
 tokens:
   test:
@@ -20,8 +20,9 @@ steps:
 - step: Fill out select[id=Country] with {{test.country}}
 - step: click the page element [id="Opt_In_Status__c"]
 - step: click the page element [type="submit"]
-- waitFor: 60
+- waitFor: 6
   step: Validate that the email field on marketo lead {{test.email}} should be {{test.email}}
 - step: Validate that the Opt_In_Status__c field on marketo lead {{test.email}} should be 1
 - step: Validate that the lastName field on marketo lead {{test.email}} should be {{test.lastname}}
+- step: delete the {{test.email}} marketo lead
 

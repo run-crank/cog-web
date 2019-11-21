@@ -1,0 +1,8 @@
+scenario: Google Analytics Event Tracking
+description: Proves that a GA event is triggered after a CTA is clicked
+
+steps:
+- step: Given I navigate to https://marketingplatform.google.com/about/analytics/
+- step: When I click the page element .gmp-header .h-c-header__cta-li--primary a
+- step: "Then google analytics should have tracked an event with category gmp: product: analytics: overview and action sign up cta for tracking id UA-38676921-23"
+
