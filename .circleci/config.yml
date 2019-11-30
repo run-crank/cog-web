@@ -51,6 +51,27 @@ jobs:
           root: .
           paths:
             - ./image.tar
+
+  run-test-scenarios:
+    executor: docker-publisher
+    steps:
+      - checkout
+      - attach_workspace:
+          at: /tmp/workspace
+      - setup_remote_docker
+      - run:
+          name: Load archived Docker image
+          command: docker load -i /tmp/workspace/image.tar
+      - run:
+          name: Install Crank and required Cogs
+          command: |
+            curl -s https://get.crank.run/install.sh | sh
+            docker tag $IMAGE_NAME:latest $IMAGE_NAME:local-test
+            crank cog:install $IMAGE_NAME:local-test --debug
+      - run:
+          name: Run all test scenarios
+          command: crank run ./test/scenarios
+
   publish-dev:
     executor: docker-publisher
     steps:
@@ -67,6 +88,7 @@ jobs:
             IMAGE_TAG="dev-v${CIRCLE_BUILD_NUM}"
             docker tag $IMAGE_NAME:latest $IMAGE_NAME:$IMAGE_TAG
             docker push $IMAGE_NAME:$IMAGE_TAG
+
   publish-tag:
     executor: docker-publisher
     steps:
@@ -90,6 +112,23 @@ workflows:
   test-all-branches:
     jobs:
       - test:
+          filters:
+            branches:
+              ignore:
+                - master
+            tags:
+              ignore: /.*/
+      - build:
+          filters:
+            branches:
+              ignore:
+                - master
+            tags:
+              ignore: /.*/
+      - run-test-scenarios:
+          requires:
+            - test
+            - build
           filters:
             branches:
               ignore:
