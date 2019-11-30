@@ -5,6 +5,11 @@ executors:
       IMAGE_NAME: automatoninc/web
     docker:
       - image: circleci/buildpack-deps:stretch
+  docker-user:
+    environment:
+      IMAGE_NAME: automatoninc/web
+    machine:
+      image: circleci/classic:latest
 
 jobs:
   test:
@@ -53,12 +58,11 @@ jobs:
             - ./image.tar
 
   run-test-scenarios:
-    executor: docker-publisher
+    executor: docker-user
     steps:
       - checkout
       - attach_workspace:
           at: /tmp/workspace
-      - setup_remote_docker
       - run:
           name: Load archived Docker image
           command: docker load -i /tmp/workspace/image.tar
