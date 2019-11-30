@@ -57,6 +57,27 @@ jobs:
           paths:
             - ./image.tar
 
+  install-built-cog:
+    executor: docker-user
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+          name: Load archived Docker image
+          command: docker load -i /tmp/workspace/image.tar
+      - run:
+          name: Install Crank and the built Cog
+          command: |
+            curl -s https://get.crank.run/install.sh | sh
+            docker tag $IMAGE_NAME:latest $IMAGE_NAME:local-test
+            crank cog:install $IMAGE_NAME:local-test --ignore-auth
+      - run:
+          name: List steps
+          command: crank registry:steps
+      - run:
+          name: Uninstall Cog
+          command: crank cog:uninstall $IMAGE_NAME --force
+
   run-test-scenarios:
     executor: docker-user
     steps:
@@ -131,8 +152,7 @@ workflows:
                 - master
             tags:
               ignore: /.*/
-      - run-test-scenarios:
-          context: web-cog-sandbox-env-credentials
+      - install-built-cog:
           requires:
             - test
             - build
@@ -153,11 +173,18 @@ workflows:
           filters:
             branches:
               only: master
+      - run-test-scenarios:
+          context: web-cog-sandbox-env-credentials
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
       - publish-dev:
           context: docker-creds-to-publish-cogs
           requires:
             - test
-            - build
+            - run-test-scenarios
           filters:
             branches:
               only: master
