@@ -1,5 +1,7 @@
-scenario: Element Click Test to Navigate pages
-description: This tests the click page element on Atomatest Landing page.
+scenario: Element Click -  Submits Form
+description: |
+  This proves that the "click page element" step, in combination with a wait,
+  works as a substitute for the "submit the form..." step on.
 
 tokens:
   test:

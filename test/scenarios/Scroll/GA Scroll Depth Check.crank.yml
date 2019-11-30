@@ -1,5 +1,7 @@
-scenario: GA scroll depth check
-description: Proves that a GA event is triggered after a page is scrolled a certain percentage
+scenario: Scroll To - 50%
+description: |
+  Proves that the scroll is realistic enough to trigger a GA scroll event on
+  a scroll tracking blog post after scrolling through 50% of the page.
 
 steps:
 - step: Given I navigate to https://www.optimizesmart.com/scroll-tracking-via-scroll-depth-trigger-in-google-tag-manager/

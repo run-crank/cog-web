@@ -1,8 +1,7 @@
-scenario: GA Event withParameters object value with Ampersand
+scenario: Google Analytics Event - withParameters object value with Ampersand
 description: |
-  Proves that this step checks for a GA Custom Event
-  ...For a Specific GA Tracking ID
-  ...With custom parameter checks.
+  Proves that this step checks for a GA Custom Event for a specific tracking ID
+  including custom parameters checks, one of whose values includes an ampersand.
 
 steps:
 - step: "Given I navigate to https://marketingplatform.google.com/about/analytics/"

@@ -1,5 +1,7 @@
-scenario: GA CTA click check
-description: Proves that a GA event is triggered after a CTA is clicked
+scenario: Google Analytics Event - Page Interaction
+description: |
+  Proves that this step validates Google Analytics events that are fired as a
+  direct result of page interactions.
 
 steps:
 - step: Given I navigate to https://marketingplatform.google.com/about/analytics/

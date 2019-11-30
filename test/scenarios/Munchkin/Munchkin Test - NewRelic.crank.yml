@@ -1,5 +1,7 @@
-scenario: Check that Marketo Munchkin Tracking Loads
-description: This tests checks that the tracking code is loading correctly in New Relic.
+scenario: Check that Marketo Munchkin Tracking Loads - New Relic
+description: |
+  Proves that the Munchkin tracking code is loading correctly on the New Relic
+  homepage.
 
 steps:
 - step: When I navigate to https://newrelic.com/

@@ -1,10 +1,9 @@
-scenario: Google Analytics Event Tracking
+scenario: Google Analytics Event - Prior to Page Interaction
 description: |
-  Proves that this step checks for a GA Custom Event
-  ...For a Specific GA Tracking ID
-  ...With custom parameter checks.
+  Proves that this step validates Google Analytics events that fired prior to
+  interactions on a page, despite page interactions triggering additional events.
 
 steps:
-- step: "Given I navigate to https://www.tableau.com/products/trial"
+- step: Given I navigate to https://www.tableau.com/products/trial
 - step: When I click the page element [href="/academic/students#form"]
-- step: "Then Google Analytics should have tracked an event with category form and action form present for tracking id UA-625217-46"
+- step: Then Google Analytics should have tracked an event with category form and action form present for tracking id UA-625217-46

@@ -1,8 +1,7 @@
-scenario: Google Analytics Event UAT
+scenario: Scroll To - 100%
 description: |
-  Proves that this step checks for a GA Custom Event
-  ...For a Specific GA Tracking ID
-  ...With custom parameter checks.
+  Proves that the scroll is realistic enough to trigger a GA scroll event on
+  the Google Analytics marketing page after scrolling through 100% of the page.
 
 steps:
 - step: Given I navigate to https://marketingplatform.google.com/about/analytics/

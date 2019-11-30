@@ -1,5 +1,6 @@
-scenario: GA crank pageview check
-description: Proves that a GA pageview is triggered after page load.
+scenario: Google Analytics Pageview - With Parameters
+description: |
+  Proves this step can check for GA Pageview events on page load with parameters.
 
 steps:
 - step: When I navigate to https://crank.run
