@@ -1,0 +1,8 @@
+scenario: Check that Marketo Munchkin Tracking Loads
+description: This tests checks that the tracking code is loading correctly in WorkFront.
+
+steps:
+- step: When I navigate to https://www.workfront.com
+- step: When I click the page element [class="first-span"]
+- step: Then the tracking code for munchkin account id 758-USO-349 should load
+  failAfter: 5

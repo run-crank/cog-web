@@ -1,0 +1,21 @@
+scenario: Focus on Frame step
+description: This checks if crank user can switch from a specific frame to another frame.
+
+tokens:
+  test:
+    email: scdssd@thisisjust.atomatest.com
+    lastname: Jackson
+    firstname: Sam
+    submit: button[type=submit]
+  
+steps:
+- step: navigate to https://www.automatoninc.com/hubspot-test/
+- step: Click the page element [id='cookie_action_close_header']
+- step: Focus on the [id='hs-form-iframe-0'] frame
+- step: Fill out input[id='firstname-b8b89a99-2f94-4070-92b6-2ea7d82dd6fa'] with {{test.firstname}}
+- step: Fill out input[id='lastname-b8b89a99-2f94-4070-92b6-2ea7d82dd6fa'] with {{test.lastname}}
+- step: Fill out input[id='email-b8b89a99-2f94-4070-92b6-2ea7d82dd6fa'] with {{test.email}}
+- step: Focus on the [id='drift-widget'] frame
+- waitFor: 3
+  step: Fill out textarea[aria-label='Type your message…'] with blah
+- step: Focus on the Main frame
