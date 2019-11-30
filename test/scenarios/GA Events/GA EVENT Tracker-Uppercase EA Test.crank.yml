@@ -1,4 +1,8 @@
-scenario: Uppercase Event Category/Action UAT
+scenario: Google Analytics Event - Uppercase Event Category/Action
+description: |
+  Proves this step is able to check for events with uppercase category and/or
+  action values.
+
 
 steps:
 - step: Given I navigate to https://www.tableau.com/pricing/individual

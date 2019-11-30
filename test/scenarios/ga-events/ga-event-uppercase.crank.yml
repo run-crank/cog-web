@@ -1,6 +1,0 @@
-scenario: Uppercase Event Category/Action UAT
-
-steps:
-- step: Given I navigate to https://www.tableau.com/pricing/individual
-- step: When I click the page element a.cta.p13n-buy-button
-- step: Then Google Analytics should have tracked an event with category link and action BUY NOW for tracking id UA-625217-46

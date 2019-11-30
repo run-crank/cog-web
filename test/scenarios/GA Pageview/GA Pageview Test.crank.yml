@@ -1,5 +1,6 @@
-scenario: GA basic pageview check
-description: Proves that a GA pageview is triggered after page load.
+scenario: Google Analytics Pageview - Numeric Parameter Value
+description: |
+  Proves that this step can assert numeric parameters.
 
 steps:
 - step: When I navigate to https://marketingplatform.google.com/about/analytics/

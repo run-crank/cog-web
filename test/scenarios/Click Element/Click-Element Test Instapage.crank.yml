@@ -1,5 +1,7 @@
-scenario: Element Click Test to Navigate pages
-description: This tests page navigation using the click element step
+scenario: Element Click -  Navigates Standard Page
+description: |
+  This proves that the "click page element" step is capable of trigerring a
+  recognizable page navigation on a standard web page.
 
 steps:
 - step: navigate to https://instapage.com/

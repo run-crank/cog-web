@@ -1,5 +1,6 @@
-scenario: Focus on Frame step
-description: This checks if crank user can switch from a specific frame to another frame.
+scenario: Focus on Frame - Switch Between Frames
+description: |
+  Proves that it's possible to switch from one specific frame to another
 
 tokens:
   test:
@@ -18,4 +19,4 @@ steps:
 - step: Focus on the [id='drift-widget'] frame
 - waitFor: 3
   step: Fill out textarea[aria-label='Type your message…'] with blah
-- step: Focus on the Main frame
+- step: Focus on the main frame

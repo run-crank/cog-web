@@ -1,5 +1,7 @@
-scenario: Element Click Test to Navigate pages
-description: This tests page navigation using the click element step
+scenario: Element Click -  Navigates on SPA
+description: |
+  This proves that the "click page element" step is capable of triggering a
+  recognizable page navigation on a single-page app.
 
 steps:
 - step: navigate to https://crank.run/

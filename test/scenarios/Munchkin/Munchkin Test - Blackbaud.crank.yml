@@ -1,5 +1,7 @@
-scenario: Check that Marketo Munchkin Tracking Loads in Blackbaud
-description: This tests checks that the tracking code is loading correctly in Blackbaud.
+scenario: Check that Marketo Munchkin Tracking Loads - Blackbaud
+description: |
+  Proves that the Munchkin tracking code is loading correctly on the Blackbaud
+  homepage.
 
 steps:
 - step: When I navigate to https://www.blackbaud.com
