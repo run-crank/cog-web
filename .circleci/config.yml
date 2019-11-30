@@ -72,8 +72,8 @@ jobs:
             curl -s https://get.crank.run/install.sh | sh
             docker tag $IMAGE_NAME:latest $IMAGE_NAME:local-test
             crank cog:install $IMAGE_NAME:local-test
-            crank cog:install automatoninc/marketo:0.2.0 --ignore-auth
-            crank cog:install automatoninc/hubspot:0.2.0 --ignore-auth
+            crank cog:install automatoninc/marketo:0.2.0
+            crank cog:install automatoninc/hubspot:0.2.0
       - run:
           name: Run all test scenarios
           command: crank run ./test/scenarios
@@ -132,6 +132,7 @@ workflows:
             tags:
               ignore: /.*/
       - run-test-scenarios:
+          context: web-cog-sandbox-env-credentials
           requires:
             - test
             - build
