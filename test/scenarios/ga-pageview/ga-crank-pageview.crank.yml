@@ -1,9 +1,0 @@
-scenario: GA crank pageview check
-description: Proves that a GA pageview is triggered after page load.
-
-steps:
-- step: When I navigate to https://crank.run
-- step: Then google analytics should have tracked a pageview for tracking id UA-75228722-5
-  data:
-    withParameters:
-        dt: "Crank - BDD Test Automation for Integrated SaaS"

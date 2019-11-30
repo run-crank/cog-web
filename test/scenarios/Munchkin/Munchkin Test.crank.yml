@@ -5,3 +5,4 @@ steps:
 - step: When I navigate to https://www.marketo.com/
 - step: Click the page element button[title=Close]
 - step: Then the tracking code for munchkin account id 460-tdh-945 should load
+  failAfter: 10
