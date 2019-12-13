@@ -12,6 +12,7 @@ export class DomAware {
   public async getMetaTagContent(metaName: string): Promise<String> {
     // Special case for title.
     if (metaName === 'title') {
+      await this.client['___currentFrame'].waitFor('title');
       return await this.client['___currentFrame'].evaluate(() => {
         try {
           return document.querySelector('title').innerText;
@@ -21,6 +22,7 @@ export class DomAware {
       });
     }
 
+    await this.client['___currentFrame'].waitFor(`meta[name="${metaName}"], meta[property="${metaName}"]`);
     return await this.client['___currentFrame'].evaluate(
       (name) => {
         try {
