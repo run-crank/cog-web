@@ -93,7 +93,7 @@ export class BasicInteractionAware {
         selector,
       );
     } catch (e) {
-      throw Error(`Element may not be visible or clickable`);
+      throw Error('Element may not be visible or clickable');
     }
   }
 
