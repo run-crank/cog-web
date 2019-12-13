@@ -69,19 +69,31 @@ export class BasicInteractionAware {
 
   public async clickElement(selector: string) {
     try {
-      await this.client['___currentFrame'].click(selector);
+      await this.client['___currentFrame'].waitFor(selector);
+      await this.client['___currentFrame'].evaluate(
+        (selector) => {
+          return new Promise((resolve, reject) => {
+            try {
+              // In the event a click handler prevents others from firing,
+              // always resolve after 5s.
+              setTimeout(resolve.bind(null, true), 5000);
+
+              // Bind a click handler to the element that resolves the promise.
+              document.querySelector(selector).addEventListener('click', resolve.bind(null, true));
+
+              // Okay, now actually click the element.
+              document.querySelector(selector).click();
+            } catch (e) {
+              // Stringify the error so that it yields useful info when caught
+              // outside the context of the evaulation.
+              reject(e.toString());
+            }
+          });
+        },
+        selector,
+      );
     } catch (e) {
-      try {
-        await this.client['___currentFrame'].evaluate(
-          async (selector) => {
-            document.querySelector(selector).click();
-            return true;
-          },
-          selector,
-        );
-      } catch (e) {
-        throw Error('Element may not be visible or clickable');
-      }
+      throw Error(`Element may not be visible or clickable`);
     }
   }
 
@@ -165,23 +177,20 @@ export class BasicInteractionAware {
 
       case 'radio':
         try {
-          await this.client['___currentFrame'].click(`${selector}[value="${value}"]`);
+          await this.client['___currentFrame'].evaluate(
+            (selector) => {
+              document.querySelector(selector).click();
+              if (!document.querySelector(selector).checked) {
+                document.querySelector(selector).checked = true;
+              }
+              return true;
+            },
+            `${selector}[value="${value}"]`,
+          );
         } catch (e) {
-          try {
-            await this.client['___currentFrame'].evaluate(
-              (selector) => {
-                document.querySelector(selector).click();
-                if (!document.querySelector(selector).checked) {
-                  document.querySelector(selector).checked = true;
-                }
-                return true;
-              },
-              `${selector}[value="${value}"]`,
-            );
-          } catch (e) {
-            throw Error("Radio button may not be visible or isn't selectable.");
-          }
+          throw Error("Radio button may not be visible or isn't selectable.");
         }
+        break;
 
       case 'type':
         try {
@@ -239,20 +248,20 @@ export class BasicInteractionAware {
             .catch(e => rej(Error('Submit button still there')));
         }),
         new Promise((res, rej) => {
-          this.client['___currentFrame'].click(selector)
+          this.client['___currentFrame'].waitForFunction(
+            (selector) => {
+              try {
+                document.querySelector(selector).click();
+                return true;
+              } catch (e) {
+                return false;
+              }
+            },
+            {},
+            selector,
+          )
             .then(res)
-            .catch((e) => {
-              this.client.waitForFunction(
-                (selector) => {
-                  document.querySelector(selector).click();
-                  return true;
-                },
-                {},
-                selector,
-              )
-                .then(res)
-                .catch(e => rej(Error('Unable to click submit button')));
-            });
+            .catch(e => rej(Error('Unable to click submit button')));
         }),
         new Promise((res, rej) => {
           this.client['___currentFrame'].waitFor(10000)
