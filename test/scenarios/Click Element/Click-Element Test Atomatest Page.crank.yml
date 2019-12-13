@@ -1,4 +1,4 @@
-scenario: Element Click -  Submits Form, Clicks Checkbox
+scenario: Element Click - Submits Form, Clicks Checkbox
 description: |
   This proves that the "click page element" step works as a substitute for 1)
   the "submit the form..." step in combination with a wait, and 2) the fill out
@@ -10,12 +10,12 @@ tokens:
     country: CA
     
 steps:
-- step: navigate to http://go.automatoninc.com/dev-qa-dependent-fields.html
-- step: Fill out input[id=Email] with {{test.email}}
-- step: Fill out select[id=Country] with {{test.country}}
-- step: click the page element [id="Opt_In_Status__c"]
-- step: click the page element [type="submit"]
+- step: Given I navigate to http://go.automatoninc.com/dev-qa-dependent-fields.html
+- step: When I fill out input[id=Email] with {{test.email}}
+- step: And I fill out select[id=Country] with {{test.country}}
+- step: And I click the page element [id="Opt_In_Status__c"]
+- step: And I click the page element [type="submit"]
 - waitFor: 6
-  step: Validate that the email field on marketo lead {{test.email}} should be {{test.email}}
-- step: Validate that the Opt_In_Status__c field on marketo lead {{test.email}} should be 1
-- step: delete the {{test.email}} marketo lead
+  step: Then the email field on marketo lead {{test.email}} should be {{test.email}}
+- step: And the Opt_In_Status__c field on marketo lead {{test.email}} should be 1
+- step: Finally, delete the {{test.email}} marketo lead
