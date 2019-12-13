@@ -11,7 +11,6 @@ tokens:
   
 steps:
 - step: Navigate to https://www.automatoninc.com/hubspot-test/
-- step: Click the page element [id='cookie_action_close_header']
 - step: Focus on the [id='hs-form-iframe-0'] frame
 - step: Fill out input[id='firstname-b8b89a99-2f94-4070-92b6-2ea7d82dd6fa'] with {{test.firstname}}
 - step: Fill out input[id='lastname-b8b89a99-2f94-4070-92b6-2ea7d82dd6fa'] with {{test.lastname}}
