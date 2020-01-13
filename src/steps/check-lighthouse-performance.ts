@@ -30,10 +30,13 @@ export class CheckLighthousePerformance extends BaseStep implements StepInterfac
       const actualScore = performance.score * 100;
       if (actualScore < expectedScore) {
         const audits = Object.values(lhr.audits);
+        console.log(audits.filter((audit: any) => audit.details && audit.details.type === 'opportunity'));
         return this.fail('The page\'s performance score of %d was lower than the expected score of %d.\n\n\n Opportunities for improvement:\n%s', [
           actualScore,
           expectedScore,
-          audits.filter((audit: any) => audit.details && audit.details.type === 'opportunity').map((audit: any) => ` - ${audit.title}: ${audit.displayValue}\n`).join(''),
+          audits.filter((audit: any) => audit.details && audit.details.type === 'opportunity')
+          .sort((a: any, b: any) => b.details.overallSavingsMs - a.details.overallSavingsMs)
+          .map((audit: any) => ` - ${audit.title}: ${audit.displayValue}\n`).join(''),
         ]);
       }
 
