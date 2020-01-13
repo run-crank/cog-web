@@ -42,7 +42,7 @@ export class CheckLighthousePerformance extends BaseStep implements StepInterfac
         expectedScore,
       ]);
     } catch (e) {
-      return this.error('There was a checking lighthouse performance: %s', [
+      return this.error('There was an error checking lighthouse performance: %s', [
         e.toString(),
       ]);
     }
