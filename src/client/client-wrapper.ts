@@ -1,3 +1,4 @@
+import { LighthouseAware } from './mixins/lighthouse';
 import * as grpc from 'grpc';
 import { BasicInteractionAware, DomAware, ResponseAware, MarketoAware, GoogleAnalyticsAware } from './mixins';
 import { Field } from '../core/base-step';
@@ -95,9 +96,9 @@ class ClientWrapper {
 
 }
 
-interface ClientWrapper extends BasicInteractionAware, DomAware, ResponseAware, MarketoAware, GoogleAnalyticsAware {}
+interface ClientWrapper extends BasicInteractionAware, DomAware, ResponseAware, MarketoAware, GoogleAnalyticsAware, LighthouseAware {}
 
-applyMixins(ClientWrapper, [BasicInteractionAware, DomAware, ResponseAware, MarketoAware, GoogleAnalyticsAware]);
+applyMixins(ClientWrapper, [BasicInteractionAware, DomAware, ResponseAware, MarketoAware, GoogleAnalyticsAware, LighthouseAware]);
 
 function applyMixins(derivedCtor: any, baseCtors: any[]) {
   baseCtors.forEach((baseCtor) => {
