@@ -36,7 +36,7 @@ export class CheckLighthousePerformance extends BaseStep implements StepInterfac
           throttleTo,
           audits.filter((audit: any) => audit.details && audit.details.type === 'opportunity' && audit.details.overallSavingsMs > 0)
           .sort((a: any, b: any) => b.details.overallSavingsMs - a.details.overallSavingsMs)
-          .map((audit: any) => ` - ${audit.title}: Potential savings of ${audit.details.overallSavingsMs}\n`).join(''),
+          .map((audit: any) => ` - ${audit.title}: Potential savings of ${audit.details.overallSavingsMs}ms\n`).join(''),
         ]);
       }
 
