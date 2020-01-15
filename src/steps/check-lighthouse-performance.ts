@@ -27,21 +27,23 @@ export class CheckLighthousePerformance extends BaseStep implements StepInterfac
       const lhr = await this.client.getLighthouseScores(currentUrl.toString(), throttleTo);
 
       const performance: any = Object.values(lhr.categories)[0];
-      const actualScore = performance.score * 100;
+      const actualScore = Math.round(performance.score * 100);
       if (actualScore < expectedScore) {
         const audits = Object.values(lhr.audits);
-        return this.fail('The page\'s performance score of %d was lower than the expected score of %d.\n\n\n Opportunities for improvement:\n%s', [
+        return this.fail('The page\'s performance score of %d was lower than the expected score of %d in %s.\n\n\n Opportunities for improvement:\n%s', [
           actualScore,
           expectedScore,
-          audits.filter((audit: any) => audit.details && audit.details.type === 'opportunity')
+          throttleTo,
+          audits.filter((audit: any) => audit.details && audit.details.type === 'opportunity' && audit.details.overallSavingsMs > 0)
           .sort((a: any, b: any) => b.details.overallSavingsMs - a.details.overallSavingsMs)
-          .map((audit: any) => ` - ${audit.title}: ${audit.displayValue}\n`).join(''),
+          .map((audit: any) => ` - ${audit.title}: Potential savings of ${audit.details.overallSavingsMs}\n`).join(''),
         ]);
       }
 
-      return this.pass('The page\'s performance score of %d was greater than %d, as expected', [
+      return this.pass('The page\'s performance score of %d was greater than %d, as expected in %s', [
         actualScore,
         expectedScore,
+        throttleTo,
       ]);
     } catch (e) {
       return this.error('There was an error checking lighthouse performance: %s', [
