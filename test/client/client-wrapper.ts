@@ -595,6 +595,38 @@ describe('ClientWrapper', () => {
     });
   });
 
+  describe('getLighthouseScores', () => {
+    let lighthouse;
+    beforeEach(() => {
+      pageStub = sinon.stub();
+      pageStub.listeners = sinon.stub();
+      pageStub.addListener = sinon.stub();
+
+      pageStub.$ = sinon.stub();
+      pageStub.browser = sinon.stub();
+
+      const browser: any = sinon.stub();
+      browser.wsEndpoint = sinon.stub();
+      browser.wsEndpoint.returns('ws://127.0.0.1:2897/devtools/browser/7604989c-8305-487a-b2a9-1634ef5fde6a');
+      pageStub.browser.returns(browser);
+
+      // Stub out event emitter.
+      pageStub.listenerCount = sinon.stub();
+      pageStub.listenerCount.onFirstCall().returns(0);
+      pageStub.listenerCount.onSecondCall().returns(1);
+
+      lighthouse = sinon.stub();
+      lighthouse.returns(Promise.resolve({}));
+
+      clientWrapperUnderTest = new ClientWrapper(pageStub, null, lighthouse);
+    });
+
+    it('should call lighthouse with expectedArgs', async () => {
+      await clientWrapperUnderTest.getLighthouseScores('http://crank.run', 'desktop');
+      expect(lighthouse).to.have.been.calledWith(lighthouse.getCall(0).args[0], lighthouse.getCall(0).args[1], lighthouse.getCall(0).args[2]);
+    });
+  });
+
   describe('focusFrame', () => {
     beforeEach(() => {
       pageStub = sinon.stub();

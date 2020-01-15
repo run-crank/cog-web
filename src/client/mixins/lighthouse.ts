@@ -5,6 +5,7 @@ import * as MobileConfig from 'lighthouse/lighthouse-core/config/lr-mobile-confi
 
 export class LighthouseAware {
   public client: Page;
+  public lighthouse: any;
 
   async getLighthouseScores(url: string, throttleTo: 'desktop' | 'mobile' = 'desktop', categories: string[] = ['performance']) {
     const browser = this.client.browser();
@@ -17,9 +18,8 @@ export class LighthouseAware {
 
     const config: any = throttleTo === 'mobile' ? MobileConfig : DesktopConfig;
     config.settings.onlyCategories = categories;
-    //// config.settings.emulatedFormFactor = throttleTo;
 
-    const { lhr } = await lighthouse(url, flags, config);
+    const { lhr } = await this.lighthouse(url, flags, config);
     return lhr;
   }
 }

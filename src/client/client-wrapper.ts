@@ -3,16 +3,18 @@ import * as grpc from 'grpc';
 import { BasicInteractionAware, DomAware, ResponseAware, MarketoAware, GoogleAnalyticsAware } from './mixins';
 import { Field } from '../core/base-step';
 import { Page, Request } from 'puppeteer';
+import * as Lighthouse from 'lighthouse';
 
 class ClientWrapper {
 
   public static expectedAuthFields: Field[] = [];
 
   public client: Page;
+  public lighthouse: any;
 
-  constructor (page: Page, auth: grpc.Metadata) {
+  constructor (page: Page, auth: grpc.Metadata, lighthouse = Lighthouse) {
     this.client = page;
-
+    this.lighthouse = lighthouse;
     // Keeps track of the number of inflight requests. @see this.waitForNetworkIdle()
     this.client['__networkRequestsInflight'] = this.client['__networkRequestsInflight'] || 0;
 
