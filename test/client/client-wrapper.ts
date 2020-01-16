@@ -5,6 +5,8 @@ import * as sinonChai from 'sinon-chai';
 import * as justForIdeTypeHinting from 'chai-as-promised';
 import 'mocha';
 
+import * as DesktopConfig from 'lighthouse/lighthouse-core/config/lr-desktop-config';
+
 import { ClientWrapper } from '../../src/client/client-wrapper';
 
 chai.use(sinonChai);
@@ -621,9 +623,27 @@ describe('ClientWrapper', () => {
       clientWrapperUnderTest = new ClientWrapper(pageStub, null, lighthouse);
     });
 
-    it('should call lighthouse with expectedArgs', async () => {
+    it('should call lighthouse with expected url', async () => {
       await clientWrapperUnderTest.getLighthouseScores('http://crank.run', 'desktop');
-      expect(lighthouse).to.have.been.calledWith(lighthouse.getCall(0).args[0], lighthouse.getCall(0).args[1], lighthouse.getCall(0).args[2]);
+      expect(lighthouse.getCall(0).args[0]).to.equal('http://crank.run');
+    });
+
+    it('should call lighthouse with expected flags', async () => {
+      await clientWrapperUnderTest.getLighthouseScores('http://crank.run', 'desktop');
+      // expect(lighthouse.getCall(0).args[1]).to.equal({
+      //   port: '2897',
+      //   output: 'json',
+      //   logLevel: 'info',
+      // });
+
+      expect(lighthouse.getCall(0).args[1].port).to.equal('2897');
+    });
+
+    it('should call lighthouse with expected config', async () => {
+      const expectedConfig = DesktopConfig;
+      expectedConfig.settings.onlyCategories = ['performance'];
+      await clientWrapperUnderTest.getLighthouseScores('http://crank.run', 'desktop');
+      expect(lighthouse.getCall(0).args[2]).to.equal(expectedConfig);
     });
   });
 
