@@ -5,6 +5,8 @@ import * as sinonChai from 'sinon-chai';
 import * as justForIdeTypeHinting from 'chai-as-promised';
 import 'mocha';
 
+import * as DesktopConfig from 'lighthouse/lighthouse-core/config/lr-desktop-config';
+
 import { ClientWrapper } from '../../src/client/client-wrapper';
 
 chai.use(sinonChai);
@@ -592,6 +594,51 @@ describe('ClientWrapper', () => {
     it('should throw', () => {
       return expect(clientWrapperUnderTest.clickElement.bind(clientWrapperUnderTest, expectedSelector))
       .to.throw;
+    });
+  });
+
+  describe('getLighthouseScores', () => {
+    let lighthouse;
+    beforeEach(() => {
+      pageStub = sinon.stub();
+      pageStub.listeners = sinon.stub();
+      pageStub.addListener = sinon.stub();
+
+      pageStub.$ = sinon.stub();
+      pageStub.browser = sinon.stub();
+
+      const browser: any = sinon.stub();
+      browser.wsEndpoint = sinon.stub();
+      browser.wsEndpoint.returns('ws://127.0.0.1:2897/devtools/browser/7604989c-8305-487a-b2a9-1634ef5fde6a');
+      pageStub.browser.returns(browser);
+
+      // Stub out event emitter.
+      pageStub.listenerCount = sinon.stub();
+      pageStub.listenerCount.onFirstCall().returns(0);
+      pageStub.listenerCount.onSecondCall().returns(1);
+
+      lighthouse = sinon.stub();
+      lighthouse.returns(Promise.resolve({}));
+
+      clientWrapperUnderTest = new ClientWrapper(pageStub, null, lighthouse);
+    });
+
+    it('should call lighthouse with expected url', async () => {
+      await clientWrapperUnderTest.getLighthouseScores('http://crank.run', 'desktop');
+      expect(lighthouse.getCall(0).args[0]).to.equal('http://crank.run');
+    });
+
+    it('should call lighthouse with expected flags', async () => {
+      await clientWrapperUnderTest.getLighthouseScores('http://crank.run', 'desktop');
+
+      expect(lighthouse.getCall(0).args[1].port).to.equal('2897');
+    });
+
+    it('should call lighthouse with expected config', async () => {
+      const expectedConfig = DesktopConfig;
+      expectedConfig.settings.onlyCategories = ['performance'];
+      await clientWrapperUnderTest.getLighthouseScores('http://crank.run', 'desktop');
+      expect(lighthouse.getCall(0).args[2]).to.equal(expectedConfig);
     });
   });
 
