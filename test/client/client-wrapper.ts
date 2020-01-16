@@ -630,11 +630,6 @@ describe('ClientWrapper', () => {
 
     it('should call lighthouse with expected flags', async () => {
       await clientWrapperUnderTest.getLighthouseScores('http://crank.run', 'desktop');
-      // expect(lighthouse.getCall(0).args[1]).to.equal({
-      //   port: '2897',
-      //   output: 'json',
-      //   logLevel: 'info',
-      // });
 
       expect(lighthouse.getCall(0).args[1].port).to.equal('2897');
     });
