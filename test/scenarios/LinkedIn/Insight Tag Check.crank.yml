@@ -1,0 +1,7 @@
+scenario: LinkedIn Insight Tag Check
+description: |
+  This checks if a LinkedIn Insight Tag was fired
+
+steps:
+- step: When I navigate to https://business.linkedin.com/marketing-solutions
+- step: Then the linkedin insight tag for partner id 234 should have fired
