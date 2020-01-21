@@ -6,7 +6,7 @@ export class CheckLinkedInInsightTagFiredStep extends BaseStep implements StepIn
   protected stepName: string = 'Check that the LinkedIn Insight tag fired';
   // tslint:disable-next-line:max-line-length
   protected stepExpression: string = 'the linkedin insight tag for partner id (?<pid>\\d+) should have fired';
-  protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
+  protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
   protected expectedFields: Field[] = [{
     field: 'pid',
     type: FieldDefinition.Type.NUMERIC,
