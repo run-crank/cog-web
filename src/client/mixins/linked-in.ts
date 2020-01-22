@@ -12,7 +12,7 @@ export class LinkedInAwareMixin {
                                 || r.url.startsWith('https://dc.ads.linkedin.com/collect')));
 
     const result = validRequests.map(req => new URL(req.url)).filter(url => url.searchParams.get('pid') !== null && url.searchParams.get('pid') == pid);
-    return result.length == validRequests.length; //// this means that all linkedin requests contained the right pid
+    return result.length >= 1;
   }
 
   async validateLinkedInConversionPixelFired(pid: number, cid: number) {
@@ -24,6 +24,6 @@ export class LinkedInAwareMixin {
 
     const result = validRequests.map(req => new URL(req.url))
                   .filter(url => url.searchParams.get('pid') !== null && url.searchParams.get('cid') !== null && url.searchParams.get('pid') == pid && url.searchParams.get('cid') == cid);
-    return result.length == validRequests.length; //// this means that all linkedin requests contained the right pid and cid
+    return result.length >= 1;
   }
 }
