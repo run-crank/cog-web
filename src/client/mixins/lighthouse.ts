@@ -19,7 +19,8 @@ export class LighthouseAware {
     const config: any = throttleTo === 'mobile' ? MobileConfig : DesktopConfig;
     config.settings.onlyCategories = categories;
 
-    const { lhr } = await this.lighthouse(url, flags, config) || {};
+    let { lhr } = await this.lighthouse(url, flags, config);
+    lhr = lhr || {};
 
     if (lhr.runtimeError) {
       throw new Error(lhr.runtimeError.message);
