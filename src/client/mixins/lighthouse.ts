@@ -20,6 +20,11 @@ export class LighthouseAware {
     config.settings.onlyCategories = categories;
 
     const { lhr } = await this.lighthouse(url, flags, config);
+
+    if (lhr.runtimeError) {
+      throw new Error(lhr.runtimeError.message);
+    }
+
     return lhr;
   }
 }
