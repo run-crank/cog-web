@@ -23,6 +23,7 @@ export class CheckLinkedInConversionPixelFiredStep extends BaseStep implements S
     const cid: number = stepData.cid;
 
     try {
+      await this.client.getCurrentPageInfo('url'); //// Ensure context have been navigated to page and have URL
       const validated = await this.client.validateLinkedInConversionPixelFired(pid, cid);
 
       if (validated) {

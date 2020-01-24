@@ -18,6 +18,7 @@ export class CheckLinkedInInsightTagFiredStep extends BaseStep implements StepIn
     const pid: number = stepData.pid;
 
     try {
+      await this.client.getCurrentPageInfo('url'); //// Ensure context have been navigated to page and have URL
       const validated = await this.client.validateLinkedInInsightTag(pid);
 
       if (validated) {
