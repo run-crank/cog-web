@@ -23,7 +23,7 @@ export class LighthouseAware {
     lhr = lhr || {};
 
     if (lhr.runtimeError) {
-      throw new Error('Error: Check that the URL is correct and the page is up and try again.');
+      throw new Error('Check that the URL is correct and the page is up and try again.');
     }
 
     return lhr;
