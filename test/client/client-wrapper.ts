@@ -688,5 +688,9 @@ describe('ClientWrapper', () => {
         expect(pageStub['___currentFrame']).to.equal(frame);
       });
     });
+
+    describe('LinkedIn', () => {
+
+    });
   });
 });
