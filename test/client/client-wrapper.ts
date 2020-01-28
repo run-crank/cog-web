@@ -786,7 +786,7 @@ describe('ClientWrapper', () => {
         expect(result.length).to.equal(0);
       });
 
-      it('should throw error when a not supported content type is evaluated', () => {
+      it('should throw error when an unknown content type is evaluated', () => {
         const expectedParams = {
           wrongProperty: 'Wrong Property',
           wrongValue: 'Wrong Value',
@@ -800,6 +800,28 @@ describe('ClientWrapper', () => {
             rawRequest: {
               _headers: {
                 'content-type': 'invalid/content-type',
+              },
+            },
+          },
+        ];
+
+        expect(clientWrapperUnderTest.evaluateRequests.bind(null, requests, expectedParams)).to.throw();
+      });
+
+      it('should throw error when an unknown request method is evaluated', () => {
+        const expectedParams = {
+          wrongProperty: 'Wrong Property',
+          wrongValue: 'Wrong Value',
+        };
+
+        const requests = [
+          {
+            method: 'UNKNOWN',
+            url: 'http://thisisjust.atomatest.com/api/users',
+            postData: JSON.stringify({ name: 'Atomatommy' }),
+            rawRequest: {
+              _headers: {
+                'content-type': 'application/json',
               },
             },
           },
