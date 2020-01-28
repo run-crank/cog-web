@@ -1,5 +1,5 @@
 import * as grpc from 'grpc';
-import { BasicInteractionAware, DomAware, ResponseAware, MarketoAware, GoogleAnalyticsAware, LighthouseAware, LinkedInAwareMixin } from './mixins';
+import { BasicInteractionAware, DomAware, ResponseAware, MarketoAware, GoogleAnalyticsAware, LighthouseAware, LinkedInAwareMixin, NetworkAware } from './mixins';
 import { Field } from '../core/base-step';
 import { Page, Request } from 'puppeteer';
 import * as Lighthouse from 'lighthouse';
@@ -97,9 +97,9 @@ class ClientWrapper {
 
 }
 
-interface ClientWrapper extends BasicInteractionAware, DomAware, ResponseAware, MarketoAware, GoogleAnalyticsAware, LighthouseAware, LinkedInAwareMixin {}
+interface ClientWrapper extends BasicInteractionAware, DomAware, ResponseAware, MarketoAware, GoogleAnalyticsAware, LighthouseAware, LinkedInAwareMixin, NetworkAware {}
 
-applyMixins(ClientWrapper, [BasicInteractionAware, DomAware, ResponseAware, MarketoAware, GoogleAnalyticsAware, LighthouseAware, LinkedInAwareMixin]);
+applyMixins(ClientWrapper, [BasicInteractionAware, DomAware, ResponseAware, MarketoAware, GoogleAnalyticsAware, LighthouseAware, LinkedInAwareMixin, NetworkAware]);
 
 function applyMixins(derivedCtor: any, baseCtors: any[]) {
   baseCtors.forEach((baseCtor) => {

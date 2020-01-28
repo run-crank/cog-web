@@ -693,4 +693,142 @@ describe('ClientWrapper', () => {
 
     });
   });
+
+  describe('Check Network Requests', () => {
+    describe('GET requests', () => {
+      beforeEach(() => {
+        clientWrapperUnderTest = new ClientWrapper(pageStub, new Metadata());
+      });
+
+      it('should return at least 1 request that matched with expected query params', () => {
+        const requests = [
+          {
+            method: 'GET',
+            url: 'http://thisisjust.atomatest.com?id=1&query=test',
+          },
+        ];
+
+        const expectedParams = {
+          id: '1',
+          query: 'test',
+        };
+
+        const result = clientWrapperUnderTest.evaluateRequests(requests, expectedParams);
+        expect(result.length).to.be.greaterThan(0);
+      });
+
+      it('should return no request(s) when query params are not matched', () => {
+        const requests = [
+          {
+            method: 'GET',
+            url: 'http://thisisjust.atomatest.com?id=1&query=test',
+          },
+        ];
+
+        const expectedParams = {
+          id: '1000000',
+          color: '000000',
+        };
+
+        const result = clientWrapperUnderTest.evaluateRequests(requests, expectedParams);
+        expect(result.length).to.equal(0);
+      });
+    });
+
+    describe('POST requests', () => {
+      beforeEach(() => {
+        clientWrapperUnderTest = new ClientWrapper(pageStub, new Metadata());
+      });
+
+      it('should return at least 1 request that matched with expected query params', () => {
+        const expectedParams = {
+          name: 'Atomatommy',
+          country: 'US',
+        };
+
+        const requests = [
+          {
+            method: 'POST',
+            url: 'http://thisisjust.atomatest.com/api/users',
+            postData: JSON.stringify(expectedParams),
+            rawRequest: {
+              _headers: {
+                'content-type': 'application/json',
+              },
+            },
+          },
+        ];
+
+        const result = clientWrapperUnderTest.evaluateRequests(requests, expectedParams);
+        expect(result.length).to.be.greaterThan(0);
+      });
+
+      it('should return no request(s) when postData are not matched', () => {
+        const expectedParams = {
+          wrongProperty: 'Wrong Property',
+          wrongValue: 'Wrong Value',
+        };
+
+        const requests = [
+          {
+            method: 'POST',
+            url: 'http://thisisjust.atomatest.com/api/users',
+            postData: JSON.stringify({ name: 'Atomatommy' }),
+            rawRequest: {
+              _headers: {
+                'content-type': 'application/json',
+              },
+            },
+          },
+        ];
+
+        const result = clientWrapperUnderTest.evaluateRequests(requests, expectedParams);
+        expect(result.length).to.equal(0);
+      });
+
+      it('should throw error when an unknown content type is evaluated', () => {
+        const expectedParams = {
+          wrongProperty: 'Wrong Property',
+          wrongValue: 'Wrong Value',
+        };
+
+        const requests = [
+          {
+            method: 'POST',
+            url: 'http://thisisjust.atomatest.com/api/users',
+            postData: JSON.stringify({ name: 'Atomatommy' }),
+            rawRequest: {
+              _headers: {
+                'content-type': 'invalid/content-type',
+              },
+            },
+          },
+        ];
+
+        expect(clientWrapperUnderTest.evaluateRequests.bind(null, requests, expectedParams)).to.throw();
+      });
+
+      it('should throw error when an unknown request method is evaluated', () => {
+        const expectedParams = {
+          wrongProperty: 'Wrong Property',
+          wrongValue: 'Wrong Value',
+        };
+
+        const requests = [
+          {
+            method: 'UNKNOWN',
+            url: 'http://thisisjust.atomatest.com/api/users',
+            postData: JSON.stringify({ name: 'Atomatommy' }),
+            rawRequest: {
+              _headers: {
+                'content-type': 'application/json',
+              },
+            },
+          },
+        ];
+
+        expect(clientWrapperUnderTest.evaluateRequests.bind(null, requests, expectedParams)).to.throw();
+      });
+    });
+  });
 });

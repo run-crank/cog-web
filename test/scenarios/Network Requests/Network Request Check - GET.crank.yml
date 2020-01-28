@@ -1,0 +1,12 @@
+scenario: Checks Network Requests for https://www.blackboard.com/
+description: |
+  This checks GET requests and url params
+
+steps:
+- step: When I navigate to https://www.blackboard.com/
+- step: Then there should be 1 matching network request for https://s2376.t.eloqua.com
+  data:
+    pathContains: /visitor/v200/svrGP.aspx
+    withParameters:
+      siteid: 2376
+      optin: disabled
