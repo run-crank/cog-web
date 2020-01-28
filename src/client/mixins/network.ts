@@ -37,10 +37,10 @@ export class NetworkAware {
         if (requestHasValidContentType) {
           try { actualParams = JSON.parse(request.postData); } catch (e) { actualParams = querystring.parse(request.postData); }
         } else {
-          throw new Error(`The request\'s content type ${contentType} is not supported`);
+          throw new Error(`Unknown Content Type: ${contentType}`);
         }
       } else {
-        throw new Error(`The request method ${request.method} is not supported`);
+        throw new Error(`Unknown Request Method: ${request.method}`);
       }
 
       let matched = true;
