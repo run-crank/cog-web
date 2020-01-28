@@ -1,12 +1,6 @@
 import { BaseStep, Field, StepInterface } from '../core/base-step';
 import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../proto/cog_pb';
 
-import { URL } from 'url';
-import * as querystring from 'querystring';
-
-const OTHER_REQUEST_METHODS = ['POST', 'PATCH', 'PUT'];
-const VALID_CONTENT_TYPES = ['application/json', 'application/json;charset=UTF-8', 'application/x-www-form-urlencoded'];
-
 export class CheckNetworkRequestStep extends BaseStep implements StepInterface {
 
   protected stepName: string = 'Check for a specific network request';
@@ -25,10 +19,12 @@ export class CheckNetworkRequestStep extends BaseStep implements StepInterface {
     field: 'pathContains',
     type: FieldDefinition.Type.STRING,
     description: 'Path Contains',
+    optionality: FieldDefinition.Optionality.OPTIONAL,
   }, {
     field: 'withParameters',
     type: FieldDefinition.Type.MAP,
     description: 'Parameters Include',
+    optionality: FieldDefinition.Optionality.OPTIONAL,
   }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
@@ -43,10 +39,9 @@ export class CheckNetworkRequestStep extends BaseStep implements StepInterface {
       await this.client.getCurrentPageInfo('url');
 
       await this.client.waitForNetworkIdle(10000, false);
-      const requests = await this.client.getFinishedRequests();
 
-      const matchingRequests = requests.filter(r => r.url.startsWith(baseUrl) && r.url.includes(pathContains)); //// string.includes(empty) is always true
-      const evaluatedRequests = this.evaluateRequests(matchingRequests, withParameters);
+      const matchingRequests = await this.client.getNetworkRequests(baseUrl, pathContains);
+      const evaluatedRequests = this.client.evaluateRequests(matchingRequests, withParameters);
 
       if (evaluatedRequests.length !== reqCount) {
         return this.fail('Expected %d matching network request(s), but %d were found:\n\n%s', [
@@ -64,50 +59,6 @@ export class CheckNetworkRequestStep extends BaseStep implements StepInterface {
         e.toString(),
       ]);
     }
-  }
-
-  evaluateRequests(requests, expectedParams) {
-    const matching = [];
-
-    requests.forEach((request) => {
-      //// The Iterator logic can be factored out
-      if (request.method == 'GET') {
-        const url = new URL(request.url);
-
-        let matched = true;
-
-        url.searchParams.forEach((value, key) => {
-          if (expectedParams.hasOwnProperty(key) && matched) {
-            matched = expectedParams[key] == value;
-          }
-        });
-
-        if (matched) {
-          matching.push(request);
-        }
-
-      } else if (OTHER_REQUEST_METHODS.includes(request.method)) {
-        const requestHasValidContentType = VALID_CONTENT_TYPES.filter(f => f.includes(request.rawRequest._headers['content-type'])).length > 0;
-        if (requestHasValidContentType) {
-          let matched = true;
-
-          let postData;
-          try { postData = JSON.parse(request.postData); } catch (e) { postData = querystring.parse(request.postData); }
-
-          for (const [key, value] of Object.entries(postData)) {
-            if (expectedParams.hasOwnProperty(key) && matched) {
-              matched = expectedParams[key] == value;
-            }
-          }
-
-          if (matched) {
-            matching.push(request);
-          }
-        }
-      }
-    });
-
-    return matching;
   }
 
 }
