@@ -3,7 +3,7 @@ import { URL } from 'url';
 import * as querystring from 'querystring';
 
 const OTHER_REQUEST_METHODS = ['POST', 'PATCH', 'PUT'];
-const VALID_CONTENT_TYPES = ['application/json', 'application/json;charset=UTF-8', 'application/x-www-form-urlencoded'];
+const SUPPORTED_CONTENT_TYPES = ['application/json', 'application/json;charset=UTF-8', 'application/x-www-form-urlencoded'];
 
 export class NetworkAware {
 
@@ -15,47 +15,54 @@ export class NetworkAware {
     return matchedRequests;
   }
 
-  evaluateRequests(requests, expectedParams) {
-    const matching = [];
+  private convertParamsToObject(params: URLSearchParams) {
+    const result = {};
 
-    requests.forEach((request) => {
-      //// The Iterator logic can be factored out
-      if (request.method == 'GET') {
-        const url = new URL(request.url);
-
-        let matched = true;
-
-        url.searchParams.forEach((value, key) => {
-          if (expectedParams.hasOwnProperty(key) && matched) {
-            matched = expectedParams[key] == value;
-          }
-        });
-
-        if (matched) {
-          matching.push(request);
-        }
-
-      } else if (OTHER_REQUEST_METHODS.includes(request.method)) {
-        const requestHasValidContentType = VALID_CONTENT_TYPES.filter(f => f.includes(request.rawRequest._headers['content-type'])).length > 0;
-        if (requestHasValidContentType) {
-          let matched = true;
-
-          let postData;
-          try { postData = JSON.parse(request.postData); } catch (e) { postData = querystring.parse(request.postData); }
-
-          for (const [key, value] of Object.entries(postData)) {
-            if (expectedParams.hasOwnProperty(key) && matched) {
-              matched = expectedParams[key] == value;
-            }
-          }
-
-          if (matched) {
-            matching.push(request);
-          }
-        }
-      }
+    params.forEach((value, key) => {
+      result[key] = value;
     });
 
-    return matching;
+    return result;
+  }
+
+  evaluateRequests(requests, expectedParams) {
+    const matches = [];
+    requests.forEach((request) => {
+      let actualParams = {};
+      if (request.method === 'GET') {
+        actualParams = this.convertParamsToObject(new URL(request.url).searchParams);
+      } else if (OTHER_REQUEST_METHODS.includes(request.method)) {
+        const contentType = request.rawRequest._headers['content-type'];
+        const requestHasValidContentType = SUPPORTED_CONTENT_TYPES.filter(f => f.includes(contentType)).length > 0;
+        if (requestHasValidContentType) {
+          try { actualParams = JSON.parse(request.postData); } catch (e) { actualParams = querystring.parse(request.postData); }
+        } else {
+          throw new Error(`The request\'s content type ${contentType} is not supported`);
+        }
+      } else {
+        throw new Error(`The request method ${request.method} is not supported`);
+      }
+
+      let matched = true;
+
+      const intersection = Object.keys(actualParams).filter(f => Object.keys(expectedParams).includes(f));
+
+      //// No properties matched; No way requests are matching
+      if (intersection.length === 0) {
+        return [];
+      }
+
+      for (const [key, value] of Object.entries(actualParams)) {
+        if (expectedParams.hasOwnProperty(key) && matched) {
+          matched = expectedParams[key] == value;
+        }
+      }
+
+      if (matched) {
+        matches.push(request);
+      }
+
+    });
+    return matches;
   }
 }
