@@ -50,5 +50,13 @@ instantiateCluster().then((cluster) => {
   });
 });
 
+// Special handler for when Puppeteer Cluster is in an unrecoverable state.
+// @see https://github.com/thomasdondorf/puppeteer-cluster/issues/207
+process.on('unhandledRejection', (up) => {
+  if (up.toString().includes('Unable to restart chrome')) {
+    throw up;
+  }
+});
+
 // Export server for testing.
 export default server;
