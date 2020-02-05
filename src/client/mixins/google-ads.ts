@@ -1,6 +1,6 @@
 export class GoogleAdsAware {
   filterGoogleAdsURLs(requests, aid, group, atag) {
-    const filteredUrl = requests.filter(r => r.url.includes('ad.doubleclick.net') || r.url.includes('fls.doubleclick.net')).map(request => request.url);
+    const filteredUrl = requests.filter(r => r.url.includes('ad.doubleclick.net') || r.url.includes('fls.doubleclick.net')).map(request => decodeURIComponent(request.url));
     const result = filteredUrl.filter(url => url.includes(`src=${aid}`)
                                   && url.toLowerCase().includes(`type=${group.toLowerCase()}`)
                                   && url.toLowerCase().includes(`cat=${atag.toLowerCase()}`));
@@ -21,7 +21,7 @@ export class GoogleAdsAware {
   includesParameters(url, expectedParams) {
     const params = this.getParameters(url);
     for (const key in expectedParams) {
-      if (expectedParams[key] != decodeURIComponent(params[key])) {
+      if (expectedParams[key] != params[key]) {
         return false;
       }
     }
