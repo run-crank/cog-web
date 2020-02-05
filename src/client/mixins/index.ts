@@ -6,3 +6,4 @@ export * from './google-analytics';
 export * from './lighthouse';
 export * from './linked-in';
 export * from './network';
+export * from './google-ads';
