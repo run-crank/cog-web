@@ -46,10 +46,8 @@ export class CheckGoogleFloodlightTag extends BaseStep implements StepInterface 
     try {
       await this.client.waitForNetworkIdle(10000, false);
       const requests = await this.client.getFinishedRequests();
-      const urls = requests.filter(r => r.url.includes('ad.doubleclick.net') || r.url.includes('fls.doubleclick.net')).map(request => request.url);
-      let actual = urls.filter(url => url.includes(`src=${aid}`)
-                                    && url.toLowerCase().includes(`type=${group.toLowerCase()}`)
-                                    && url.toLowerCase().includes(`cat=${atag.toLowerCase()}`));
+      let actual = this.client.filterGoogleAdsURLs(requests, aid, group, atag);
+      console.log(actual);
       // Base parameter checks
       if (actual.length == 0) {
         return this.fail('Expected Floodlight tag to fire for advertiser %d, group %s, and activity %s, but the no Floodlight tag fire was detected.', [
