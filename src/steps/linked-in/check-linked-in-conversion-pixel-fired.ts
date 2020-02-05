@@ -25,7 +25,6 @@ export class CheckLinkedInConversionPixelFiredStep extends BaseStep implements S
     try {
       await this.client.getCurrentPageInfo('url'); //// Ensure context have been navigated to page and have URL
       const validated = await this.client.validateLinkedInConversionPixelFired(pid, cid);
-
       if (validated) {
         return this.pass('LinkedIn Conversion Pixel fired for partner ID %d and conversion ID %d', [pid, cid]);
       }
