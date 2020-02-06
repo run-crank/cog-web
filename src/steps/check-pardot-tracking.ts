@@ -32,20 +32,20 @@ export class CheckPardotTrackingStep extends BaseStep implements StepInterface {
     const stepData: any = step.getData().toJavaScript();
     const aid = stepData.aid;
     const cid = stepData.cid;
-    const customDomain = stepData.customDomain || 'pi.pardot.com';
+    const customDomain = stepData.customDomain || 'https://pi.pardot.com';
     const withParameters = stepData.withParameters;
 
     try {
       //// This will ensure that NavigateTo was called
       await this.client.getCurrentPageInfo('url');
       // Check request with host and path
-      const matchingRequests = await this.client.getNetworkRequests(`http://${customDomain}`, '/analytics');
+      const matchingRequests = await this.client.getNetworkRequests(customDomain, '/analytics');
       const params = {
         account_id: aid,
         campaign_id: cid,
       };
       if (matchingRequests.length == 0) {
-        return this.fail('Expected Pardot tracking request to load for account %d, and campaign %d, but the no tracking loaded.', [
+        return this.fail('Expected Pardot tracking request to load for account %d, and campaign %d, but no tracking loaded.', [
           aid,
           cid,
         ]);
@@ -58,7 +58,7 @@ export class CheckPardotTrackingStep extends BaseStep implements StepInterface {
       }
       const evaluatedRequests = this.client.evaluateRequests(matchingRequests, params);
       if (evaluatedRequests.length == 0) {
-        return this.fail('Expected Pardot tracking request to load for account %d, and campaign %d, but the no tracking loaded. \n\n%s', [
+        return this.fail('Expected Pardot tracking request to load for account %d, and campaign %d, but no tracking. \n\n%s', [
           aid,
           cid,
           matchingRequests.map(request => decodeURIComponent(request.url)).join('\n\n'),

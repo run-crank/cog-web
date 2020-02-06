@@ -19,6 +19,8 @@ describe('CheckLinkedInConversionPixelFiredStep', () => {
     // Set up test stubs.
     clientWrapperStub = sinon.stub();
     clientWrapperStub.validateLinkedInConversionPixelFired = sinon.stub();
+    clientWrapperStub.getCurrentPageInfo = sinon.stub();
+    clientWrapperStub.getCurrentPageInfo.resolves();
     stepUnderTest = new Step(clientWrapperStub);
     protoStep = new ProtoStep();
   });

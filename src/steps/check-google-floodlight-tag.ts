@@ -26,6 +26,7 @@ export class CheckGoogleFloodlightTag extends BaseStep implements StepInterface 
     {
       field: 'cMethod',
       type: FieldDefinition.Type.STRING,
+      optionality: FieldDefinition.Optionality.OPTIONAL,
       description: 'Counting Method (standard, unique, per session)',
     },
     {
@@ -49,7 +50,7 @@ export class CheckGoogleFloodlightTag extends BaseStep implements StepInterface 
       let actual = this.client.filterGoogleAdsURLs(requests, aid, group, atag);
       // Base parameter checks
       if (actual.length == 0) {
-        return this.fail('Expected Floodlight tag to fire for advertiser %d, group %s, and activity %s, but the no Floodlight tag fire was detected.', [
+        return this.fail('Expected Floodlight tag to fire for advertiser %d, group %s, and activity %s, but no Floodlight tag fired.', [
           aid,
           group,
           atag,
@@ -59,7 +60,7 @@ export class CheckGoogleFloodlightTag extends BaseStep implements StepInterface 
       if (!isNullOrUndefined(variables)) {
         const variableCheckedUrls = actual.filter(url => this.client.includesParameters(url, variables));
         if (variableCheckedUrls.length == 0) {
-          return this.fail('Expected Floodlight tag to fire for advertiser %d, group %s, and activity %s, but the no Floodlight tag fire was detected. \n\n%s', [
+          return this.fail('A Floodlight tag fire was detected for advertiser %d, group %s, and activity %s, but it did not match the expected variables.\n\n%s', [
             aid,
             group,
             atag,
@@ -72,7 +73,7 @@ export class CheckGoogleFloodlightTag extends BaseStep implements StepInterface 
       if (cMethod) {
         const conversionMethodUrls = this.client.conversionMethodUrlFilter(cMethod, actual);
         if (conversionMethodUrls.length == 0) {
-          return this.fail('A floodlight tag fire was detected for advertiser %d, group %s, and activity %s, but it did not conform to the %s conversion count method.\n\n%s', [
+          return this.fail('A Floodlight tag fire was detected for advertiser %d, group %s, and activity %s, but it did not conform to the %s conversion count method.\n\n%s', [
             aid,
             group,
             atag,
@@ -82,7 +83,7 @@ export class CheckGoogleFloodlightTag extends BaseStep implements StepInterface 
         actual = conversionMethodUrls;
       }
       // Pass if above errors did not go through
-      return this.pass('Successfully detected Floodlight tag to fire for advertiser %d, group %s, and activity %s.', [
+      return this.pass('Successfully detected Floodlight tag fire for advertiser %d, group %s, and activity %s.', [
         aid,
         group,
         atag,
