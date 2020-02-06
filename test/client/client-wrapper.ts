@@ -245,15 +245,15 @@ describe('ClientWrapper', () => {
       const expectedValue = 'someValue';
 
       // Set up test instance.
-      pageStub['___currentFrame'].evaluate.resolves('radio');
-      pageStub['___currentFrame'].click.resolves();
+      pageStub['___currentFrame'].evaluate.onCall(0).resolves('radio');
+      pageStub['___currentFrame'].evaluate.onCall(1).resolves();
       pageStub['___currentFrame'].addListener.resolves();
       pageStub['___currentFrame'].listeners.resolves([]);
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
       // Call the method and make assertions.
       await clientWrapperUnderTest.fillOutField(expectedSelector, expectedValue);
-      expect(pageStub['___currentFrame'].click).to.have.been.calledWith(`${expectedSelector}[value="${expectedValue}"]`);
+      expect(pageStub['___currentFrame'].evaluate).to.have.been.calledWith(sinon.match.any, `${expectedSelector}[value="${expectedValue}"]`);
     });
 
     it('radio:happyPathViaEvaluation', async () => {
