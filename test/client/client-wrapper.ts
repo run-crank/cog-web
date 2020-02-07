@@ -465,7 +465,6 @@ describe('ClientWrapper', () => {
       pageStub.evaluate = sinon.stub();
 
       pageStub['___currentFrame'] = sinon.stub();
-      pageStub['___currentFrame'].waitFor = sinon.stub();
       pageStub['___currentFrame'].evaluate = sinon.stub();
 
       // Stub out event emitter.
@@ -474,22 +473,8 @@ describe('ClientWrapper', () => {
       pageStub.listenerCount.onSecondCall().returns(1);
     });
 
-    it('sadPath:elementNotFound', () => {
-      // Set up test instance.
-      pageStub['___currentFrame'].waitFor.rejects();
-      pageStub['___currentFrame'].evaluate.resolves();
-      pageStub.listeners.resolves([]);
-      pageStub.addListener.resolves();
-      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
-
-      // Call the method and make assertions.
-      return expect(clientWrapperUnderTest.getMetaTagContent.bind(clientWrapperUnderTest, 'title'))
-        .to.throw;
-    });
-
     it('sadPath:pageEvalThrows', () => {
       // Set up test instance.
-      pageStub['___currentFrame'].waitFor.resolves();
       pageStub['___currentFrame'].evaluate.throws();
       pageStub.listeners.resolves([]);
       pageStub.addListener.resolves();
@@ -504,7 +489,6 @@ describe('ClientWrapper', () => {
       const expectedTitle = 'Some Page Title';
 
       // Set up test instance.
-      pageStub['___currentFrame'].waitFor.resolves();
       pageStub['___currentFrame'].evaluate.resolves(expectedTitle);
       pageStub.listeners.resolves([]);
       pageStub.addListener.resolves();
@@ -513,14 +497,12 @@ describe('ClientWrapper', () => {
       // Call the method and make assertions.
       const actual = await clientWrapperUnderTest.getMetaTagContent('title');
       expect(actual).to.be.string(expectedTitle);
-      expect(pageStub['___currentFrame'].waitFor).to.have.been.calledWith('title');
     });
 
     it('happyPath:otherTag', async () => {
       const expectedOgDescription = 'Some Open Graph Description';
 
       // Set up test instance.
-      pageStub['___currentFrame'].waitFor.resolves();
       pageStub['___currentFrame'].evaluate.resolves(expectedOgDescription);
       pageStub.listeners.resolves([]);
       pageStub.addListener.resolves();
@@ -528,7 +510,6 @@ describe('ClientWrapper', () => {
 
       // Call the method and make assertions.
       const actual = await clientWrapperUnderTest.getMetaTagContent('og:description');
-      expect(pageStub['___currentFrame'].waitFor).to.have.been.calledWith('meta[name="og:description"], meta[property="og:description"]');
       expect(pageStub['___currentFrame'].evaluate).to.have.been.calledWith(sinon.match.any, 'og:description');
       expect(actual).to.be.string(expectedOgDescription);
     });

@@ -27,7 +27,7 @@ async function instantiateCluster(): Promise<Cluster> {
     maxConcurrency: 4,
     retryLimit: 3,
     retryDelay: 3000,
-    timeout: 45000,
+    timeout: 120000,
     puppeteerOptions: {
       headless: false,
       args: process.env.IN_DOCKER ? [
