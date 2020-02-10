@@ -30,7 +30,7 @@ export class CheckGoogleFloodlightTag extends BaseStep implements StepInterface 
       description: 'Counting Method (standard, unique, per session)',
     },
     {
-      field: 'withVariables ',
+      field: 'withVariables',
       type: FieldDefinition.Type.MAP,
       optionality: FieldDefinition.Optionality.OPTIONAL,
       description: 'Custom Variables, an optional map of variable names and their expected values',
@@ -45,9 +45,12 @@ export class CheckGoogleFloodlightTag extends BaseStep implements StepInterface 
     const cMethod: any = stepData.cMethod;
     const variables: any = stepData.withVariables || {};
     try {
+      //// This will ensure that NavigateTo was called
+      await this.client.getCurrentPageInfo('url');
       await this.client.waitForNetworkIdle(10000, false);
       const requests = await this.client.getFinishedRequests();
       let actual = this.client.filterGoogleAdsURLs(requests, aid, group, atag);
+      console.log(actual);
       // Base parameter checks
       if (actual.length == 0) {
         return this.fail('Expected Floodlight tag to fire for advertiser %d, group %s, and activity %s, but no Floodlight tag fired', [

@@ -19,6 +19,8 @@ describe('CheckLinkedInConversionPixelFiredStep', () => {
     // Set up test stubs.
     clientWrapperStub = sinon.stub();
     clientWrapperStub.validateLinkedInConversionPixelFired = sinon.stub();
+    clientWrapperStub.getCurrentPageInfo = sinon.stub();
+    clientWrapperStub.getCurrentPageInfo.resolves();
     stepUnderTest = new Step(clientWrapperStub);
     protoStep = new ProtoStep();
   });
@@ -51,7 +53,7 @@ describe('CheckLinkedInConversionPixelFiredStep', () => {
   describe('ExecuteStep', () => {
     describe('validated', () => {
       beforeEach(() => {
-        clientWrapperStub.validateLinkedInConversionPixelFired.returns(Promise.resolve(true));
+        clientWrapperStub.validateLinkedInConversionPixelFired.resolves(true);
         protoStep.setData(Struct.fromJavaScript({
           pid: 256,
           cid: 512,
@@ -66,7 +68,7 @@ describe('CheckLinkedInConversionPixelFiredStep', () => {
 
     describe('not validated', () => {
       beforeEach(() => {
-        clientWrapperStub.validateLinkedInConversionPixelFired.returns(Promise.resolve(false));
+        clientWrapperStub.validateLinkedInConversionPixelFired.resolves(false);
         protoStep.setData(Struct.fromJavaScript({
           pid: 256,
           cid: 512,

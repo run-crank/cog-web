@@ -7,6 +7,7 @@ export class GoogleAdsAware {
     return result;
   }
   getParameters(url) {
+    console.log(url);
     const test = url.split(';');
     const parameters = {};
     test.shift();
@@ -14,7 +15,6 @@ export class GoogleAdsAware {
       const splitParameter = param.split('=');
       parameters[splitParameter[0]] = splitParameter[1];
     });
-
     return parameters;
   }
 

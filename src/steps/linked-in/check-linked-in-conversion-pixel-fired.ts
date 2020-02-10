@@ -28,7 +28,6 @@ export class CheckLinkedInConversionPixelFiredStep extends BaseStep implements S
       if (validated) {
         return this.pass('LinkedIn Conversion Pixel fired for partner ID %d and conversion ID %d', [pid, cid]);
       }
-
       return this.fail('Expected LinkedIn Conversion Pixel to fire for partner ID %d and conversion ID %d, but it did not fire.', [pid, cid]);
     } catch (e) {
       return this.error('There was a problem checking for LinkedIn Conversion Pixel', [

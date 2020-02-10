@@ -16,7 +16,7 @@ describe('ClientWrapper', () => {
   const expect = chai.expect;
   let pageStub: any;
   let browserStub: any;
-  let metadata: Metadata;
+  const metadata: Metadata = new Metadata();
   let clientWrapperUnderTest: ClientWrapper;
 
   describe('navigateToUrl', () => {
@@ -383,7 +383,7 @@ describe('ClientWrapper', () => {
       };
 
       // Stub out event emitter.
-      pageStub.listenerCount = sinon.stub()
+      pageStub.listenerCount = sinon.stub();
       pageStub.listenerCount.onFirstCall().returns(0);
       pageStub.listenerCount.onSecondCall().returns(1);
     });
@@ -809,6 +809,187 @@ describe('ClientWrapper', () => {
         ];
 
         expect(clientWrapperUnderTest.evaluateRequests.bind(null, requests, expectedParams)).to.throw();
+      });
+    });
+  });
+  describe('GoogleAdsAware', () => {
+    describe('filterGoogleAdsURLs', () => {
+      it('should return expected', () => {
+        const aid = 'anyaid';
+        const group = 'anygroup';
+        const atag = 'anyatag';
+        const ord = 1;
+        const num = 123;
+        const urls = [
+          {
+            url: `https://ad.doubleclick.net/activity;src=${aid};type=${group};cat=${atag};ord=${ord};num=${num}`,
+          },
+          {
+            url: 'anyUrl',
+          },
+        ];
+        clientWrapperUnderTest = new ClientWrapper(pageStub, new Metadata());
+        const result = clientWrapperUnderTest.filterGoogleAdsURLs(urls, aid, group, atag);
+        expect(result[0]).to.equal(`https://ad.doubleclick.net/activity;src=${aid};type=${group};cat=${atag};ord=${ord};num=${num}`);
+      });
+    });
+    describe('getParameters', () => {
+      it('should return expected', () => {
+        const aid = 'anyaid';
+        const group = 'anygroup';
+        const atag = 'anyatag';
+        const ordValue = '1';
+        const numValue = '123';
+        const urls = [
+          {
+            url: `https://ad.doubleclick.net/activity;src=${aid};type=${group};cat=${atag};ord=${ordValue};num=${numValue}`,
+          },
+          {
+            url: 'anyUrl',
+          },
+        ];
+        const expectedResult = {
+          src: aid,
+          type: group,
+          cat: atag,
+          ord: ordValue,
+          num: numValue,
+        };
+        clientWrapperUnderTest = new ClientWrapper(pageStub, new Metadata());
+        const result = clientWrapperUnderTest.getParameters(urls[0].url);
+        expect(result['src']).to.equal(expectedResult['src']);
+        expect(result['type']).to.equal(expectedResult['type']);
+        expect(result['cat']).to.equal(expectedResult['cat']);
+        expect(result['ord']).to.equal(expectedResult['ord']);
+        expect(result['num']).to.equal(expectedResult['num']);
+      });
+
+    });
+    describe('includesParameters', () => {
+      it('should return true', () => {
+        const aid = 'anyaid';
+        const group = 'anygroup';
+        const atag = 'anyatag';
+        const ordValue = '1';
+        const numValue = '123';
+        const urls = [
+          {
+            url: `https://ad.doubleclick.net/activity;src=${aid};type=${group};cat=${atag};ord=${ordValue};num=${numValue};anyKey=anyValue`,
+          },
+          {
+            url: 'anyUrl',
+          },
+        ];
+        const expectedParams = {
+          anyKey: 'anyValue',
+        };
+        clientWrapperUnderTest = new ClientWrapper(pageStub, new Metadata());
+        const result = clientWrapperUnderTest.includesParameters(urls[0].url, expectedParams);
+        expect(result).to.equal(true);
+      });
+      it('should return false', () => {
+        const aid = 'anyaid';
+        const group = 'anygroup';
+        const atag = 'anyatag';
+        const ordValue = '1';
+        const numValue = '123';
+        const urls = [
+          {
+            url: `https://ad.doubleclick.net/activity;src=${aid};type=${group};cat=${atag};ord=${ordValue};num=${numValue};anyKey=anyValue`,
+          },
+          {
+            url: 'anyUrl',
+          },
+        ];
+        const expectedParams = {
+          anyKey: 'anyOtherValue',
+        };
+        clientWrapperUnderTest = new ClientWrapper(pageStub, new Metadata());
+        const result = clientWrapperUnderTest.includesParameters(urls[0].url, expectedParams);
+        expect(result).to.equal(false);
+      });
+    });
+    describe('conversionMethodUrlFilter', () => {
+      describe('standard', () => {
+        it('should return a value', () => {
+          const aid = 'anyaid';
+          const group = 'anygroup';
+          const atag = 'anyatag';
+          const ordValue = 12345;
+          const urls = [
+            `https://ad.doubleclick.net/activity;src=${aid};type=${group};cat=${atag};ord=${ordValue}`,
+          ];
+          clientWrapperUnderTest = new ClientWrapper(pageStub, new Metadata());
+          const result = clientWrapperUnderTest.conversionMethodUrlFilter('standard', urls);
+          expect(result).to.includes(urls[0]);
+        });
+        it('should return no value', () => {
+          const aid = 'anyaid';
+          const group = 'anygroup';
+          const atag = 'anyatag';
+          const ordValue = 1;
+          const numValue = 123;
+          const urls = [
+            `https://ad.doubleclick.net/activity;src=${aid};type=${group};cat=${atag};ord=${ordValue};num=${numValue}`,
+          ];
+          clientWrapperUnderTest = new ClientWrapper(pageStub, new Metadata());
+          const result = clientWrapperUnderTest.conversionMethodUrlFilter('standard', urls);
+          expect(result.length).to.equal(0);
+        });
+      });
+      describe('unique', () => {
+        it('should return a value', () => {
+          const aid = 'anyaid';
+          const group = 'anygroup';
+          const atag = 'anyatag';
+          const ordValue = 1;
+          const numValue = 123;
+          const urls = [
+            `https://ad.doubleclick.net/activity;src=${aid};type=${group};cat=${atag};ord=${ordValue};num=${numValue}`,
+          ];
+          clientWrapperUnderTest = new ClientWrapper(pageStub, new Metadata());
+          const result = clientWrapperUnderTest.conversionMethodUrlFilter('unique', urls);
+          expect(result).to.includes(urls[0]);
+        });
+        it('should return no value', () => {
+          const aid = 'anyaid';
+          const group = 'anygroup';
+          const atag = 'anyatag';
+          const ordValue = 123;
+          const numValue = 123;
+          const urls = [
+            `https://ad.doubleclick.net/activity;src=${aid};type=${group};cat=${atag};ord=${ordValue};num=${numValue}`,
+          ];
+          clientWrapperUnderTest = new ClientWrapper(pageStub, new Metadata());
+          const result = clientWrapperUnderTest.conversionMethodUrlFilter('unique', urls);
+          expect(result.length).to.equal(0);
+        });
+      });
+      describe('session', () => {
+        it('should return true', () => {
+          const aid = 'anyaid';
+          const group = 'anygroup';
+          const atag = 'anyatag';
+          const ordValue = 'asd123';
+          const urls = [
+            `https://ad.doubleclick.net/activity;src=${aid};type=${group};cat=${atag};ord=${ordValue}`,
+          ];
+          clientWrapperUnderTest = new ClientWrapper(pageStub, new Metadata());
+          const result = clientWrapperUnderTest.conversionMethodUrlFilter('session', urls);
+          expect(result).to.includes(urls[0]);
+        });
+        it('should return false', () => {
+          const aid = 'anyaid';
+          const group = 'anygroup';
+          const atag = 'anyatag';
+          const ordValue = 1;
+          const urls = [
+            `https://ad.doubleclick.net/activity;src=${aid};type=${group};cat=${atag};ord=${ordValue}`,
+          ];
+          clientWrapperUnderTest = new ClientWrapper(pageStub, new Metadata());
+          const result = clientWrapperUnderTest.conversionMethodUrlFilter('session', urls);
+          expect(result.length).to.equal(0);
+        });
       });
     });
   });
