@@ -50,7 +50,6 @@ export class CheckGoogleFloodlightTag extends BaseStep implements StepInterface 
       await this.client.waitForNetworkIdle(10000, false);
       const requests = await this.client.getFinishedRequests();
       let actual = this.client.filterGoogleAdsURLs(requests, aid, group, atag);
-      console.log(actual);
       // Base parameter checks
       if (actual.length == 0) {
         return this.fail('Expected Floodlight tag to fire for advertiser %d, group %s, and activity %s, but no Floodlight tag fired', [
