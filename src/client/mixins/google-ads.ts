@@ -14,7 +14,6 @@ export class GoogleAdsAware {
       const splitParameter = param.split('=');
       parameters[splitParameter[0]] = splitParameter[1];
     });
-
     return parameters;
   }
 

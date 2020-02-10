@@ -223,6 +223,24 @@ describe('CheckCurrentPageMetaTag', () => {
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.FAILED);
   });
 
+  it('should fail using not "exist" operator and metatag is null', async () => {
+    const expectedResult = null;
+    const expectedData = {
+      metaName: 'title',
+      operator: 'someOperator',
+    };
+
+    // Stub a response that matches expectations.
+    clientWrapperStub.waitForNetworkIdle.resolves();
+    clientWrapperStub.getMetaTagContent.resolves(expectedResult);
+
+    // Set step data corresponding to expectations
+    protoStep.setData(Struct.fromJavaScript(expectedData));
+
+    const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
+    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
+  });
+
   it('should fail using "not be longer than" operator', async () => {
     const expectedResult = 'This string is 29 characters.';
     const expectedData = {
