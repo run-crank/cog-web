@@ -32,7 +32,7 @@ export class CheckPardotTrackingStep extends BaseStep implements StepInterface {
     const stepData: any = step.getData().toJavaScript();
     const aid = stepData.aid;
     const cid = stepData.cid;
-    const customDomain = stepData.customDomain || 'https://pi.pardot.com';
+    const customDomain = stepData.customDomain || 'http://pi.pardot.com';
     const withParameters = stepData.withParameters;
 
     try {
