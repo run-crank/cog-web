@@ -35,7 +35,14 @@ export class NetworkAware {
         const contentType = request.rawRequest._headers['content-type'];
         const requestHasValidContentType = SUPPORTED_CONTENT_TYPES.filter(f => f.includes(contentType) || contentType.includes(f)).length > 0;
         if (requestHasValidContentType) {
-          try { actualParams = JSON.parse(request.postData); } catch (e) { actualParams = querystring.parse(request.postData); }
+          try {
+            actualParams = JSON.parse(request.postData);
+          } catch (e) {
+            if (contentType == 'text/plain') {
+              throw new Error(`Unable To Parse Body To JSON: ${request.postData}`);
+            }
+            actualParams = querystring.parse(request.postData);
+          }
         } else {
           throw new Error(`Unknown Content Type: ${contentType}`);
         }
