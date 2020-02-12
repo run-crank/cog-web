@@ -39,7 +39,7 @@ export class NetworkAware {
             actualParams = JSON.parse(request.postData);
           } catch (e) {
             if (contentType == 'text/plain') {
-              throw new Error(`Unable To Parse Body To JSON: ${request.postData}`); 
+              throw new Error(`Unable To Parse Body To JSON: ${request.postData}`);
             }
             actualParams = querystring.parse(request.postData);
           }
