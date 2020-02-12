@@ -32,12 +32,13 @@ export class CheckPardotTrackingStep extends BaseStep implements StepInterface {
     const stepData: any = step.getData().toJavaScript();
     const aid = stepData.aid;
     const cid = stepData.cid;
-    const customDomain = stepData.customDomain || 'http://pi.pardot.com';
     const withParameters = stepData.withParameters;
 
     try {
       //// This will ensure that NavigateTo was called
-      await this.client.getCurrentPageInfo('url');
+      const url = await this.client.getCurrentPageInfo('url');
+      const protocol = `${url.split('//')[0]}//`;
+      const customDomain = stepData.customDomain || `${protocol}pi.pardot.com`;
       // Check request with host and path
       const matchingRequests = await this.client.getNetworkRequests(customDomain, '/analytics');
       const params = {

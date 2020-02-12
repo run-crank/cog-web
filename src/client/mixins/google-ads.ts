@@ -44,7 +44,7 @@ export class GoogleAdsAware {
     } else if (method == 'session') {
       result = urls.filter((url) => {
         const params = this.getParameters(url);
-        return isNaN(params['ord']) && params['ord'] != '1' && !params['num'];
+        return params['ord'] != '1' && !params['num'];
       });
     }
 

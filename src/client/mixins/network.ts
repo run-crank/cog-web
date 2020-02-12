@@ -3,7 +3,7 @@ import { URL } from 'url';
 import * as querystring from 'querystring';
 
 const OTHER_REQUEST_METHODS = ['POST', 'PATCH', 'PUT'];
-const SUPPORTED_CONTENT_TYPES = ['application/json', 'application/json;charset=UTF-8', 'application/x-www-form-urlencoded'];
+const SUPPORTED_CONTENT_TYPES = ['application/json', 'application/json;charset=UTF-8', 'application/x-www-form-urlencoded', 'text/plain'];
 
 export class NetworkAware {
 
@@ -33,7 +33,7 @@ export class NetworkAware {
         actualParams = this.convertParamsToObject(new URL(request.url).searchParams);
       } else if (OTHER_REQUEST_METHODS.includes(request.method)) {
         const contentType = request.rawRequest._headers['content-type'];
-        const requestHasValidContentType = SUPPORTED_CONTENT_TYPES.filter(f => f.includes(contentType)).length > 0;
+        const requestHasValidContentType = SUPPORTED_CONTENT_TYPES.filter(f => f.includes(contentType) || contentType.includes(f)).length > 0;
         if (requestHasValidContentType) {
           try { actualParams = JSON.parse(request.postData); } catch (e) { actualParams = querystring.parse(request.postData); }
         } else {
