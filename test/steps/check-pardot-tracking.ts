@@ -20,7 +20,7 @@ describe('CheckPardotTrackingStep', () => {
     clientWrapperStub = sinon.stub();
     clientWrapperStub.getNetworkRequests = sinon.stub();
     clientWrapperStub.getCurrentPageInfo = sinon.stub();
-    clientWrapperStub.getCurrentPageInfo.resolves();
+    clientWrapperStub.getCurrentPageInfo.resolves('http://any.url.com');
     clientWrapperStub.waitForNetworkIdle = sinon.stub();
     clientWrapperStub.waitForNetworkIdle.resolves();
     clientWrapperStub.evaluateRequests = sinon.stub();
