@@ -1,3 +1,4 @@
+import { isNullOrUndefined } from 'util';
 
 import { URL } from 'url';
 import * as querystring from 'querystring';
@@ -52,16 +53,18 @@ export class NetworkAware {
 
       let matched = true;
 
-      const intersection = Object.keys(actualParams).filter(f => Object.keys(expectedParams).includes(f));
+      if (!isNullOrUndefined(expectedParams)) {
+        const intersection = Object.keys(actualParams).filter(f => Object.keys(expectedParams).includes(f));
 
-      //// No properties matched; No way requests are matching
-      if (intersection.length === 0) {
-        return [];
-      }
+        //// No properties matched; No way requests are matching
+        if (intersection.length === 0) {
+          return [];
+        }
 
-      for (const [key, value] of Object.entries(actualParams)) {
-        if (expectedParams.hasOwnProperty(key) && matched) {
-          matched = expectedParams[key] == value;
+        for (const [key, value] of Object.entries(actualParams)) {
+          if (expectedParams.hasOwnProperty(key) && matched) {
+            matched = expectedParams[key] == value;
+          }
         }
       }
 
