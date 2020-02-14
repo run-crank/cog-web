@@ -12,7 +12,10 @@ export class NetworkAware {
     await (this as any).waitForNetworkIdle(10000, false);
     const requests = await (this as any).getFinishedRequests();
 
-    const matchedRequests = requests.filter(r => r.url.startsWith(baseUrl) && (new URL(r.url).pathname.includes(pathContains) && pathContains));
+    let matchedRequests = requests.filter(r => r.url.startsWith(baseUrl));
+    if (pathContains) {
+      matchedRequests = requests.filter(r => (new URL(r.url).pathname.includes(pathContains) && pathContains));
+    }
     return matchedRequests;
   }
 
