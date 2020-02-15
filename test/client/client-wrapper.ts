@@ -1059,7 +1059,7 @@ describe('ClientWrapper', () => {
             `https://ad.doubleclick.net/activity;src=${aid};type=${group};cat=${atag};ord=${ordValue}`,
           ];
           clientWrapperUnderTest = new ClientWrapper(pageStub, new Metadata());
-          const result = clientWrapperUnderTest.conversionMethodUrlFilter('session', urls);
+          const result = clientWrapperUnderTest.conversionMethodUrlFilter('per session', urls);
           expect(result).to.includes(urls[0]);
         });
         it('should return false', () => {
@@ -1071,7 +1071,7 @@ describe('ClientWrapper', () => {
             `https://ad.doubleclick.net/activity;src=${aid};type=${group};cat=${atag};ord=${ordValue}`,
           ];
           clientWrapperUnderTest = new ClientWrapper(pageStub, new Metadata());
-          const result = clientWrapperUnderTest.conversionMethodUrlFilter('session', urls);
+          const result = clientWrapperUnderTest.conversionMethodUrlFilter('per session', urls);
           expect(result.length).to.equal(0);
         });
       });
