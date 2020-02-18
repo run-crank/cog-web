@@ -45,7 +45,7 @@ export class CheckNetworkRequestStep extends BaseStep implements StepInterface {
         return this.fail('Expected %d matching network request(s), but %d were found:\n\n%s', [
           reqCount,
           evaluatedRequests.length,
-          evaluatedRequests.map(r => `${r.url}\n`),
+          matchingRequests.map(r => `${r.url}\n\n`),
         ]);
       }
 
