@@ -909,7 +909,7 @@ describe('ClientWrapper', () => {
             url: `https://ad.doubleclick.net/activity;src=${aid};type=${group};cat=${atag};ord=${ord};num=${num}`,
           },
           {
-            url: 'anyUrl',
+            url: 'https://ad.anybaseUrl.net/activity;src=${aid};type=${group};cat=${atag};ord=${ord};num=${num}',
           },
         ];
         clientWrapperUnderTest = new ClientWrapper(pageStub, new Metadata());

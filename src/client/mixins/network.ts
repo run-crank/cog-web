@@ -14,7 +14,7 @@ export class NetworkAware {
 
     let matchedRequests = requests.filter(r => r.url.startsWith(baseUrl));
     if (pathContains) {
-      matchedRequests = requests.filter(r => (new URL(r.url).pathname.includes(pathContains) && pathContains));
+      matchedRequests = matchedRequests.filter(r => (new URL(r.url).pathname.includes(pathContains) && pathContains));
     }
     return matchedRequests;
   }
@@ -60,7 +60,7 @@ export class NetworkAware {
         const intersection = Object.keys(actualParams).filter(f => Object.keys(expectedParams).includes(f));
 
         //// No properties matched; No way requests are matching
-        if (intersection.length === 0) {
+        if (intersection.length == 0 || intersection.length != Object.keys(expectedParams).length) {
           return [];
         }
 

@@ -43,7 +43,7 @@ export class CheckGoogleFloodlightTag extends BaseStep implements StepInterface 
     const group: any = stepData.group;
     const atag: any = stepData.atag;
     const cMethod: any = stepData.cMethod;
-    const variables: any = stepData.withVariables || {};
+    const variables: any = stepData.withVariables;
     try {
       //// This will ensure that NavigateTo was called
       await this.client.getCurrentPageInfo('url');
