@@ -1,6 +1,10 @@
 export class GoogleAdsAware {
   filterGoogleAdsURLs(requests, aid, group, atag) {
-    const filteredUrl = requests.filter(r => r.url.split('/')[2].includes('ad.doubleclick.net') || r.url.split('/')[2].includes('fls.doubleclick.net')).map(request => decodeURIComponent(request.url));
+    const filteredUrl = requests.filter((r) => {
+      if (r.url.split('/')[0].includes('http')) {
+        return r.url.split('/')[2].includes('ad.doubleclick.net') || r.url.split('/')[2].includes('fls.doubleclick.net');
+      }
+    }).map(request => decodeURIComponent(request.url));
     const result = filteredUrl.filter(url => url.includes(`src=${aid};`)
                                   && url.toLowerCase().includes(`type=${group.toLowerCase()};`)
                                   && url.toLowerCase().includes(`cat=${atag.toLowerCase()};`));
