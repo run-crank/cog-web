@@ -1,18 +1,18 @@
-scenario: Checks Network Requests for https://www.onupkeep.com/
+scenario: Checks Network Requests for https://www.marketo.com/
 description: |
   This checks both application/json and application/x-www-form-urlencoded content types for POST
 
 steps:
-- step: When I navigate to https://www.onupkeep.com/
+- step: When I navigate to https://www.marketo.com/
 # JSON Payload Check
-- step: Then there should be 1 matching network request for https://app.coview.com
-  data:
-    pathContains: /api/client-info/launcher
-    withParameters:
-      projectKey: Av-EzYN98DI
+- step: Then there should be 1 matching network request for https://dpm.demdex.net
+  # data:
+  #   pathContains: /api/client-info/launcher
+  #   withParameters:
+  #     projectKey: Av-EzYN98DI
 # Form Payload Check
-- step: And there should be 1 matching network request for https://api-iam.intercom.io
-  data:
-    pathContains: /messenger/web/ping
-    withParameters:
-      app_id: c8ise6cp
+# - step: And there should be 1 matching network request for https://api-iam.intercom.io
+#   data:
+#     pathContains: /messenger/web/ping
+#     withParameters:
+#       app_id: c8ise6cp
