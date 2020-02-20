@@ -13,9 +13,11 @@ export class NetworkAware {
     const requests = await (this as any).getFinishedRequests();
 
     let matchedRequests = requests.filter(r => r.url.startsWith(baseUrl));
+
     if (pathContains) {
       matchedRequests = matchedRequests.filter(r => (new URL(r.url).pathname.includes(pathContains) && pathContains));
     }
+
     return matchedRequests;
   }
 
