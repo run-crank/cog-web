@@ -75,7 +75,7 @@ export class CheckGoogleFloodlightTag extends BaseStep implements StepInterface 
       if (cMethod) {
         const conversionMethodUrls = this.client.conversionMethodUrlFilter(cMethod, actual);
         if (conversionMethodUrls.length == 0) {
-          return this.fail('A Floodlight tag fire was detected for advertiser %d, group %s, and activity %s, but it did not conform to the %s conversion count method.\n\n%s', [
+          return this.fail('A Floodlight tag fire was detected for advertiser %d, group %s, and activity %s, but it did not conform to the %s conversion count method.', [
             aid,
             group,
             atag,
