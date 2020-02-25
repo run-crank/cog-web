@@ -1,0 +1,8 @@
+scenario: Google FloodLight - No Variables
+description: This checks that a Google FloodLight tag fired works as expected even without parameters.
+
+steps:
+- step: When I navigate to https://newrelic.com/
+- step: Then a floodlight tag should have fired for advertiser 9647137, group newre0, and activity newre0
+  data:
+    cMethod: per session

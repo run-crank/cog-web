@@ -1,0 +1,9 @@
+scenario: Google FloodLight - No Counting Method
+description: This proves that Google FloodLight tag fired step works as expected even without the Counting Method
+
+steps:
+- step: When I navigate to https://www.salesforce.com/ap/?ir=1
+- step: Then a floodlight tag should have fired for advertiser 2382028, group brows0, and activity sf-un0
+  data:
+    withVariables:
+      u1: /ap/

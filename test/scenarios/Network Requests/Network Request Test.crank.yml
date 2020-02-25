@@ -1,0 +1,21 @@
+scenario: Network Request Test
+description: This checks some of the finished network requests of https://www.onupkeep.com/
+
+steps:
+- step: When I navigate to https://www.onupkeep.com/
+- step: Then there should be 1 matching network request for https://app.coview.com
+  data:
+    pathContains: /api/client-info/launcher
+    withParameters:
+      projectKey: Av-EzYN98DI
+- step: And there should be 1 matching network request for https://api-iam.intercom.io
+  data:
+    pathContains: /messenger/web/conversations
+    withParameters:
+      page_title: CMMS Software by UpKeep CMMS | Try Free
+- step: And there should be 15 matching network request for https://js.intercomcdn.com
+- step: And there should be 1 matching network request for https://pi.pardot.com
+  data:
+    withParameters:
+     account_id: 501441
+     campaign_id: 7332
