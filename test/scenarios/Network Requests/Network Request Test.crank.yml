@@ -13,7 +13,8 @@ steps:
     pathContains: /messenger/web/conversations
     withParameters:
       page_title: CMMS Software by UpKeep CMMS | Try Free
-- step: And there should be 15 matching network request for https://js.intercomcdn.com
+- step: And there should be 2 matching network requests for https://calendly.com
+- step: And there should be 0 matching network requests for https://doesnot-exist.fyi
 - step: And there should be 1 matching network request for https://pi.pardot.com
   data:
     withParameters:
