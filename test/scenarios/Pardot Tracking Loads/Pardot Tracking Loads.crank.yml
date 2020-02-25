@@ -1,0 +1,11 @@
+scenario: Pardot tracking loads Test
+description: This checks for a finished network request of Pardot tracking loads
+
+steps:
+- step: When I navigate to https://www.pardot.com/
+- step: Then the tracking code for pardot account 1001 and campaign 1001 should have loaded
+  data:
+    customDomain: https://pi.pardot.com/video
+    withParameters:
+      type: play
+      video_name: Find &amp; Nurture Leads

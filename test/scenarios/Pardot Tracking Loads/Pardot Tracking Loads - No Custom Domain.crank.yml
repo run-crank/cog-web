@@ -1,0 +1,9 @@
+scenario: Check Pardot tracking loads
+description: This checks for a finished network request of Pardot tracking loads
+
+steps:
+- step: When I navigate to http://go.pardot.com/l/811013/2019-10-16/3mxyx?utm_source=google&utm_medium=paid+search&utm_term=crank&utm_campaign=123456
+- step: Then the tracking code for pardot account 812013 and campaign 45363 should have loaded
+  data:
+    withParameters:
+      utm_campaign: 123456

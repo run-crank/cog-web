@@ -1,0 +1,10 @@
+scenario: Google FloodLight - Counting Method and Variable fields provided
+description: This checks that a Google FloodLight tag fired step passes when Counting Method and Variable fields are provided.
+
+steps:
+- step: When I navigate to https://www.tableau.com/trial/tableau-software
+- step: Then a floodlight tag should have fired for advertiser 8292931, group all, and activity 20glo0
+  data:
+    cMethod: unique
+    withVariables:
+      u8: All - Audience Roles
