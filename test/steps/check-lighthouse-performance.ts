@@ -65,6 +65,15 @@ describe('CheckLighthousePerformance', () => {
         clientWrapperStub.getLighthouseScores.returns(Promise.resolve({
           categories: {
             performance: {
+              auditRefs:
+              [
+                { id: 'first-contentful-paint', weight: 3, group: 'metrics' },
+                { id: 'first-meaningful-paint', weight: 3, group: 'metrics' },
+                { id: 'speed-index', weight: 3, group: 'metrics' },
+                { id: 'first-cpu-idle', weight: 3, group: 'metrics' },
+                { id: 'interactive', weight: 3, group: 'metrics' },
+                { id: 'max-potential-fid', weight: 3, group: 'metrics' },
+              ],
               score: 0.75,
             },
           },
@@ -90,6 +99,15 @@ describe('CheckLighthousePerformance', () => {
         clientWrapperStub.getLighthouseScores.returns(Promise.resolve({
           categories: {
             performance: {
+              auditRefs:
+              [
+                { id: 'first-contentful-paint', weight: 3, group: 'metrics' },
+                { id: 'first-meaningful-paint', weight: 3, group: 'metrics' },
+                { id: 'speed-index', weight: 3, group: 'metrics' },
+                { id: 'first-cpu-idle', weight: 3, group: 'metrics' },
+                { id: 'interactive', weight: 3, group: 'metrics' },
+                { id: 'max-potential-fid', weight: 3, group: 'metrics' },
+              ],
               score: 0.25,
             },
           },

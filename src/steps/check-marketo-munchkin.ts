@@ -13,6 +13,7 @@ export class CheckMarketoMunchkin extends BaseStep implements StepInterface {
   }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
+    const querystring = require('querystring');
     const stepData: any = step.getData().toJavaScript();
     const id: string = stepData.id;
 
@@ -24,7 +25,9 @@ export class CheckMarketoMunchkin extends BaseStep implements StepInterface {
       } else if (!actual.map(request => request.url).find(url => url.includes(`://${id.toLowerCase()}.mktoresp.com/webevents/visitWebPage`))) {
         return this.fail('No visit was logged for munchkin account %s', [id]);
       } else {
-        return this.pass('Munchkin tracking successfully logged a page visit for munchkin id %s', [id]);
+        const params = querystring.parse(actual[0]);
+        const record = this.keyValue('marketoMuchkingRequests', 'Marketo Munchkin Requests', params);
+        return this.pass('Munchkin tracking successfully logged a page visit for munchkin id %s', [id], [record]);
       }
     } catch (e) {
       return this.error('There was a problem checking tracking for munchkin id %s: %s', [id, e.toString()]);

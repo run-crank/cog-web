@@ -84,12 +84,21 @@ export class CheckGoogleFloodlightTag extends BaseStep implements StepInterface 
         }
         actual = conversionMethodUrls;
       }
+      let table;
+      if (actual.length > 1) {
+        table = this.createTable(actual);
+      }
       // Pass if above errors did not go through
-      return this.pass('Successfully detected Floodlight tag fire for advertiser %d, group %s, and activity %s.', [
-        aid,
-        group,
-        atag,
-      ]);
+      return this.pass(
+        'Successfully detected Floodlight tag fire for advertiser %d, group %s, and activity %s.',
+        [
+          aid,
+          group,
+          atag,
+        ],
+        [
+          table,
+        ]);
     } catch (e) {
       return this.error('There was a problem checking for a Floodlight tag to fire for advertiser %d, group %s, and activity %s.', [
         aid,
@@ -98,6 +107,19 @@ export class CheckGoogleFloodlightTag extends BaseStep implements StepInterface 
         e.toString(),
       ]);
     }
+  }
+
+  private createTable(urls) {
+    const headers = {};
+    const rows = [];
+    const headerKeys = Object.keys(this.client.getParameters(urls[0]));
+    headerKeys.forEach((key: string) => {
+      headers[key] = key;
+    });
+    urls.forEach((url: string) => {
+      rows.push(this.client.getParameters(url));
+    });
+    return this.table('googleFloodlightTagRequest', 'Google Floodlight Tag Request', headers, rows);
   }
 }
 

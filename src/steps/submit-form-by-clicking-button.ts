@@ -1,5 +1,5 @@
 import { BaseStep, Field, StepInterface } from '../core/base-step';
-import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../proto/cog_pb';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition, StepRecord } from '../proto/cog_pb';
 
 export class SubmitFormByClickingButton extends BaseStep implements StepInterface {
 
@@ -16,10 +16,11 @@ export class SubmitFormByClickingButton extends BaseStep implements StepInterfac
   async executeStep(step: Step): Promise<RunStepResponse> {
     const stepData: any = step.getData().toJavaScript();
     const selector: string = stepData.domQuerySelector;
-
     try {
       await this.client.submitFormByClickingButton(selector);
-      return this.pass('Successfully submitted form by clicking button %s', [selector]);
+      const screenshot = await this.client.client.screenshot({ type: 'jpeg', encoding: 'binary', quality: 60 });
+      const binaryRecord = this.binary('screenshot', 'Screenshot', 'image/jpeg', screenshot);
+      return this.pass('Successfully submitted form by clicking button %s', [selector], [binaryRecord]);
     } catch (e) {
       return this.error('There was a problem submitting the form: %s', [e.toString()]);
     }

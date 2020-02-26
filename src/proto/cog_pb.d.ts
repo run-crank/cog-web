@@ -2,6 +2,7 @@
 // file: cog.proto
 
 /* tslint:disable */
+/* eslint-disable */
 
 import * as jspb from "google-protobuf";
 import * as google_protobuf_struct_pb from "google-protobuf/google/protobuf/struct_pb";
@@ -79,6 +80,9 @@ export class StepDefinition extends jspb.Message {
     getName(): string;
     setName(value: string): void;
 
+    getHelp(): string;
+    setHelp(value: string): void;
+
     getType(): StepDefinition.Type;
     setType(value: StepDefinition.Type): void;
 
@@ -89,6 +93,11 @@ export class StepDefinition extends jspb.Message {
     getExpectedFieldsList(): Array<FieldDefinition>;
     setExpectedFieldsList(value: Array<FieldDefinition>): void;
     addExpectedFields(value?: FieldDefinition, index?: number): FieldDefinition;
+
+    clearExpectedRecordsList(): void;
+    getExpectedRecordsList(): Array<RecordDefinition>;
+    setExpectedRecordsList(value: Array<RecordDefinition>): void;
+    addExpectedRecords(value?: RecordDefinition, index?: number): RecordDefinition;
 
 
     serializeBinary(): Uint8Array;
@@ -105,9 +114,11 @@ export namespace StepDefinition {
     export type AsObject = {
         stepId: string,
         name: string,
+        help: string,
         type: StepDefinition.Type,
         expression: string,
         expectedFieldsList: Array<FieldDefinition.AsObject>,
+        expectedRecordsList: Array<RecordDefinition.AsObject>,
     }
 
     export enum Type {
@@ -130,6 +141,9 @@ export class FieldDefinition extends jspb.Message {
     getDescription(): string;
     setDescription(value: string): void;
 
+    getHelp(): string;
+    setHelp(value: string): void;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): FieldDefinition.AsObject;
@@ -147,6 +161,7 @@ export namespace FieldDefinition {
         optionality: FieldDefinition.Optionality,
         type: FieldDefinition.Type,
         description: string,
+        help: string,
     }
 
     export enum Optionality {
@@ -170,12 +185,63 @@ export namespace FieldDefinition {
 
 }
 
+export class RecordDefinition extends jspb.Message { 
+    getId(): string;
+    setId(value: string): void;
+
+    getType(): RecordDefinition.Type;
+    setType(value: RecordDefinition.Type): void;
+
+    clearGuaranteedFieldsList(): void;
+    getGuaranteedFieldsList(): Array<FieldDefinition>;
+    setGuaranteedFieldsList(value: Array<FieldDefinition>): void;
+    addGuaranteedFields(value?: FieldDefinition, index?: number): FieldDefinition;
+
+    getMayHaveMoreFields(): boolean;
+    setMayHaveMoreFields(value: boolean): void;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): RecordDefinition.AsObject;
+    static toObject(includeInstance: boolean, msg: RecordDefinition): RecordDefinition.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: RecordDefinition, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): RecordDefinition;
+    static deserializeBinaryFromReader(message: RecordDefinition, reader: jspb.BinaryReader): RecordDefinition;
+}
+
+export namespace RecordDefinition {
+    export type AsObject = {
+        id: string,
+        type: RecordDefinition.Type,
+        guaranteedFieldsList: Array<FieldDefinition.AsObject>,
+        mayHaveMoreFields: boolean,
+    }
+
+    export enum Type {
+    KEYVALUE = 0,
+    TABLE = 1,
+    BINARY = 2,
+    }
+
+}
+
 export class RunStepRequest extends jspb.Message { 
 
     hasStep(): boolean;
     clearStep(): void;
     getStep(): Step | undefined;
     setStep(value?: Step): void;
+
+    getRequestId(): string;
+    setRequestId(value: string): void;
+
+    getScenarioId(): string;
+    setScenarioId(value: string): void;
+
+    getRequestorId(): string;
+    setRequestorId(value: string): void;
 
 
     serializeBinary(): Uint8Array;
@@ -191,6 +257,9 @@ export class RunStepRequest extends jspb.Message {
 export namespace RunStepRequest {
     export type AsObject = {
         step?: Step.AsObject,
+        requestId: string,
+        scenarioId: string,
+        requestorId: string,
     }
 }
 
@@ -234,6 +303,11 @@ export class RunStepResponse extends jspb.Message {
     setMessageArgsList(value: Array<google_protobuf_struct_pb.Value>): void;
     addMessageArgs(value?: google_protobuf_struct_pb.Value, index?: number): google_protobuf_struct_pb.Value;
 
+    clearRecordsList(): void;
+    getRecordsList(): Array<StepRecord>;
+    setRecordsList(value: Array<StepRecord>): void;
+    addRecords(value?: StepRecord, index?: number): StepRecord;
+
 
     hasResponseData(): boolean;
     clearResponseData(): void;
@@ -256,6 +330,7 @@ export namespace RunStepResponse {
         outcome: RunStepResponse.Outcome,
         messageFormat: string,
         messageArgsList: Array<google_protobuf_struct_pb.Value.AsObject>,
+        recordsList: Array<StepRecord.AsObject>,
         responseData?: google_protobuf_struct_pb.Struct.AsObject,
     }
 
@@ -265,4 +340,121 @@ export namespace RunStepResponse {
     ERROR = 2,
     }
 
+}
+
+export class StepRecord extends jspb.Message { 
+    getId(): string;
+    setId(value: string): void;
+
+    getName(): string;
+    setName(value: string): void;
+
+
+    hasKeyValue(): boolean;
+    clearKeyValue(): void;
+    getKeyValue(): google_protobuf_struct_pb.Struct | undefined;
+    setKeyValue(value?: google_protobuf_struct_pb.Struct): void;
+
+
+    hasTable(): boolean;
+    clearTable(): void;
+    getTable(): TableRecord | undefined;
+    setTable(value?: TableRecord): void;
+
+
+    hasBinary(): boolean;
+    clearBinary(): void;
+    getBinary(): BinaryRecord | undefined;
+    setBinary(value?: BinaryRecord): void;
+
+
+    getValueCase(): StepRecord.ValueCase;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): StepRecord.AsObject;
+    static toObject(includeInstance: boolean, msg: StepRecord): StepRecord.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: StepRecord, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): StepRecord;
+    static deserializeBinaryFromReader(message: StepRecord, reader: jspb.BinaryReader): StepRecord;
+}
+
+export namespace StepRecord {
+    export type AsObject = {
+        id: string,
+        name: string,
+        keyValue?: google_protobuf_struct_pb.Struct.AsObject,
+        table?: TableRecord.AsObject,
+        binary?: BinaryRecord.AsObject,
+    }
+
+    export enum ValueCase {
+        VALUE_NOT_SET = 0,
+    
+    KEY_VALUE = 3,
+
+    TABLE = 4,
+
+    BINARY = 5,
+
+    }
+
+}
+
+export class TableRecord extends jspb.Message { 
+
+    hasHeaders(): boolean;
+    clearHeaders(): void;
+    getHeaders(): google_protobuf_struct_pb.Struct | undefined;
+    setHeaders(value?: google_protobuf_struct_pb.Struct): void;
+
+    clearRowsList(): void;
+    getRowsList(): Array<google_protobuf_struct_pb.Struct>;
+    setRowsList(value: Array<google_protobuf_struct_pb.Struct>): void;
+    addRows(value?: google_protobuf_struct_pb.Struct, index?: number): google_protobuf_struct_pb.Struct;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): TableRecord.AsObject;
+    static toObject(includeInstance: boolean, msg: TableRecord): TableRecord.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: TableRecord, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): TableRecord;
+    static deserializeBinaryFromReader(message: TableRecord, reader: jspb.BinaryReader): TableRecord;
+}
+
+export namespace TableRecord {
+    export type AsObject = {
+        headers?: google_protobuf_struct_pb.Struct.AsObject,
+        rowsList: Array<google_protobuf_struct_pb.Struct.AsObject>,
+    }
+}
+
+export class BinaryRecord extends jspb.Message { 
+    getData(): Uint8Array | string;
+    getData_asU8(): Uint8Array;
+    getData_asB64(): string;
+    setData(value: Uint8Array | string): void;
+
+    getMimeType(): string;
+    setMimeType(value: string): void;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): BinaryRecord.AsObject;
+    static toObject(includeInstance: boolean, msg: BinaryRecord): BinaryRecord.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: BinaryRecord, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): BinaryRecord;
+    static deserializeBinaryFromReader(message: BinaryRecord, reader: jspb.BinaryReader): BinaryRecord;
+}
+
+export namespace BinaryRecord {
+    export type AsObject = {
+        data: Uint8Array | string,
+        mimeType: string,
+    }
 }

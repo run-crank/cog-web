@@ -25,7 +25,9 @@ export class EnterValueIntoField extends BaseStep implements StepInterface {
     // Determine how to fill out the field, and then try.
     try {
       await this.client.fillOutField(selector, value);
-      return this.pass('Successfully filled out %s with %s', [selector, value]);
+      const screenshot = await this.client.client.screenshot({ type: 'jpeg', encoding: 'binary', quality: 60 });
+      const binaryRecord = this.binary('screenshot', 'Screenshot', 'image/jpeg', screenshot);
+      return this.pass('Successfully filled out %s with %s', [selector, value], [binaryRecord]);
     } catch (e) {
       return this.error('There was a problem filling out %s with %s: %s', [
         selector,

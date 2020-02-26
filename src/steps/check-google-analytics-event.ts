@@ -63,19 +63,27 @@ export class CheckGoogleAnalyticsEvent extends BaseStep implements StepInterface
           urls.length > 0 ? urls.join('\n\n') : '(no network requests captured)',
         ]);
       } else {
-        return this.pass('Successfully detected GA event with category %s, and action %s for tracking id %s.', [
+        const record = this.keyValue('googleAnalyticsRequest', 'Matched Google Analytics Request', params);
+        return this.pass(
+          'Successfully detected GA event with category %s, and action %s for tracking id %s.',
+          [
+            stepData.ec,
+            stepData.ea,
+            stepData.id,
+          ],
+          [
+            record,
+          ]);
+      }
+    } catch (e) {
+      return this.error(
+        'There was a problem checking for a GA event with category %s, and action %s, for tracking id %s: %s',
+        [
           stepData.ec,
           stepData.ea,
           stepData.id,
+          e.toString(),
         ]);
-      }
-    } catch (e) {
-      return this.error('There was a problem checking for a GA event with category %s, and action %s, for tracking id %s: %s', [
-        stepData.ec,
-        stepData.ea,
-        stepData.id,
-        e.toString(),
-      ]);
     }
   }
 

@@ -48,10 +48,15 @@ export class CheckNetworkRequestStep extends BaseStep implements StepInterface {
           evaluatedRequests.map(r => `${r.url}\n\n`).join(''),
         ]);
       }
-
-      return this.pass('%d network requests found, as expected', [
-        evaluatedRequests.length,
-      ]);
+      const table = this.createTable(evaluatedRequests.map(request => request.url));
+      return this.pass(
+        '%d network requests found, as expected',
+        [
+          evaluatedRequests.length,
+        ],
+        [
+          table,
+        ]);
     } catch (e) {
       return this.error('There was a problem checking network request: %s', [
         e.toString(),
@@ -59,6 +64,19 @@ export class CheckNetworkRequestStep extends BaseStep implements StepInterface {
     }
   }
 
+  private createTable(urls) {
+    const querystring = require('querystring');
+    const headers = {};
+    const rows = [];
+    const headerKeys = Object.keys(querystring.parse(urls[0]));
+    headerKeys.forEach((key: string) => {
+      headers[key] = key;
+    });
+    urls.forEach((url: string) => {
+      rows.push(querystring.parse(urls[0]));
+    });
+    return this.table('googleFloodlightTagRequest', 'Google Floodlight Tag Request', headers, rows);
+  }
 }
 
 export { CheckNetworkRequestStep as Step };

@@ -50,7 +50,8 @@ export class CheckGoogleAnalyticsPageView extends BaseStep implements StepInterf
           urls.length > 0 ? urls.join('\n\n') : '(no network requests captured)',
         ]);
       } else {
-        return this.pass('Successfuly detected GA pageview for tracking id %s.', [id]);
+        const record = this.keyValue('googleAnalyticsRequest', 'Matched Google Analytics Request', params);
+        return this.pass('Successfuly detected GA pageview for tracking id %s.', [id], [record]);
       }
     } catch (e) {
       return this.error('There was a problem checking for a GA pageview for tracking id %s: %s', [id, e.toString()]);
