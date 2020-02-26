@@ -47,7 +47,7 @@ export class CheckLighthousePerformance extends BaseStep implements StepInterfac
       }
       const record = this.createSuccessRecord(performance);
       return this.pass(
-        'The page\'s performance score of %d was greater than or equal to %d, as expected in %s', 
+        'The page\'s performance score of %d was greater than or equal to %d, as expected in %s',
         [
           actualScore,
           expectedScore,
