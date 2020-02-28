@@ -22,8 +22,6 @@ export class CheckGoogleAnalyticsPageView extends BaseStep implements StepInterf
   ];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
-    const querystring = require('querystring');
-
     const stepData: any = step.getData().toJavaScript();
     const id: any = stepData.id;
     const expectedParams: any = stepData.withParameters || {};
@@ -42,13 +40,20 @@ export class CheckGoogleAnalyticsPageView extends BaseStep implements StepInterf
       }
 
       if (actual[0]) {
-        params = querystring.parse(actual[0]);
+        params = this.getUrlParams(actual[0]);
       }
+      console.log(params);
+
       if (actual.length !== 1) {
-        return this.fail('Expected 1 matching GA pageview, but there were %d. Logged GA requests include:\n\n%s', [
-          actual.length,
-          urls.length > 0 ? urls.join('\n\n') : '(no network requests captured)',
-        ]);
+        const tableRecord = this.createTable(urls);
+        return this.fail(
+          'Expected 1 matching GA pageview, but %d matched.',
+          [
+            actual.length,
+          ],
+          [
+            tableRecord,
+          ]);
       } else {
         const record = this.keyValue('googleAnalyticsRequest', 'Matched Google Analytics Request', params);
         return this.pass('Successfuly detected GA pageview for tracking id %s.', [id], [record]);
@@ -65,6 +70,19 @@ export class CheckGoogleAnalyticsPageView extends BaseStep implements StepInterf
       }
     }
     return true;
+  }
+
+  private createTable(urls) {
+    const headers = {};
+    const rows = [];
+    const headerKeys = Object.keys(this.getUrlParams(urls[0]));
+    headerKeys.forEach((key: string) => {
+      headers[key] = key;
+    });
+    urls.forEach((url: string) => {
+      rows.push(this.getUrlParams(url));
+    });
+    return this.table('googleAnalyticsRequest', 'Matched Google Analytics Request', headers, rows);
   }
 }
 

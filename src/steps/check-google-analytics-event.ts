@@ -31,8 +31,6 @@ export class CheckGoogleAnalyticsEvent extends BaseStep implements StepInterface
   ];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
-    const querystring = require('querystring');
-
     const stepData: any = step.getData().toJavaScript();
     const eventCategory: any = encodeURIComponent(stepData.ec);
     const eventAction: any = encodeURIComponent(stepData.ea);
@@ -54,14 +52,19 @@ export class CheckGoogleAnalyticsEvent extends BaseStep implements StepInterface
       }
 
       if (actual[0]) {
-        params = querystring.parse(actual[0]);
+        params = this.getUrlParams(actual[0]);
       }
 
       if (actual.length !== 1) {
-        return this.fail('Expected 1 matching GA event, but %d matched. Logged GA requests include:\n\n%s', [
-          actual.length,
-          urls.length > 0 ? urls.join('\n\n') : '(no network requests captured)',
-        ]);
+        const tableRecord = this.createTable(urls);
+        return this.fail(
+          'Expected 1 matching GA event, but %d matched.',
+          [
+            actual.length,
+          ],
+          [
+            tableRecord,
+          ]);
       } else {
         const record = this.keyValue('googleAnalyticsRequest', 'Matched Google Analytics Request', params);
         return this.pass(
@@ -95,6 +98,20 @@ export class CheckGoogleAnalyticsEvent extends BaseStep implements StepInterface
     }
     return true;
   }
+
+  private createTable(urls) {
+    const headers = {};
+    const rows = [];
+    const headerKeys = Object.keys(this.getUrlParams(urls[0]));
+    headerKeys.forEach((key: string) => {
+      headers[key] = key;
+    });
+    urls.forEach((url: string) => {
+      rows.push(this.getUrlParams(url));
+    });
+    return this.table('googleAnalyticsRequest', 'Matched Google Analytics Request', headers, rows);
+  }
+
 }
 
 export { CheckGoogleAnalyticsEvent as Step };

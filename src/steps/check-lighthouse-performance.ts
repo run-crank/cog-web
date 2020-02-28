@@ -25,12 +25,13 @@ export class CheckLighthousePerformance extends BaseStep implements StepInterfac
     try {
       const currentUrl = await this.client.getCurrentPageInfo('url');
       const lhr = await this.client.getLighthouseScores(currentUrl.toString(), throttleTo);
-
       const performance: any = Object.values(lhr.categories)[0];
       const actualScore = Math.round(performance.score * 100);
       if (actualScore < expectedScore) {
         const audits = Object.values(lhr.audits);
-        const record = this.createFailRecord(audits);
+        const recordTable = this.createFailRecord(audits);
+        const recordKeyValue = this.createSuccessRecord(lhr);
+
         return this.fail(
           'The page\'s performance score of %d was lower than the expected score of %d in %s.\n\n\n Opportunities for improvement:\n%s',
           [
@@ -42,10 +43,11 @@ export class CheckLighthousePerformance extends BaseStep implements StepInterfac
             .map((audit: any) => ` - ${audit.title}: Potential savings of ${audit.details.overallSavingsMs}ms\n`).join(''),
           ],
           [
-            record,
+            recordTable,
+            recordKeyValue,
           ]);
       }
-      const record = this.createSuccessRecord(performance);
+      const record = this.createSuccessRecord(lhr);
       return this.pass(
         'The page\'s performance score of %d was greater than or equal to %d, as expected in %s',
         [
@@ -63,15 +65,16 @@ export class CheckLighthousePerformance extends BaseStep implements StepInterfac
     }
   }
 
-  private createSuccessRecord(performance) {
+  private createSuccessRecord(record) {
     const obj = {};
-    obj['actualScore'] = performance.score * 100;
-    obj['firstContentfulPaint'] = performance.auditRefs.find(data => data.id == 'first-contentful-paint').weight;
-    obj['firstMeaningfulPaint'] =  performance.auditRefs.find(data => data.id == 'first-meaningful-paint').weight;
-    obj['speedIndex'] = performance.auditRefs.find(data => data.id == 'speed-index').weight;
-    obj['firstCpuIdle'] = performance.auditRefs.find(data => data.id == 'first-cpu-idle').weight;
-    obj['timeToInteractive'] = performance.auditRefs.find(data => data.id == 'interactive').weight;
-    obj['maxPotentialFirstInputDelay'] = performance.auditRefs.find(data => data.id == 'max-potential-fid').weight;
+    const entries = record.timing.entries;
+    obj['actualScore'] = record.categories.performance.score * 100;
+    obj['firstContentfulPaint'] = entries.find(data => data.name == 'lh:computed:FirstContentfulPaint').duration;
+    obj['firstMeaningfulPaint'] =  entries.find(data => data.name == 'lh:computed:FirstMeaningfulPaint').duration;
+    obj['speedIndex'] = entries.find(data => data.name == 'lh:computed:SpeedIndex').duration;
+    obj['firstCpuIdle'] = entries.find(data => data.name == 'lh:computed:FirstCPUIdle').duration;
+    obj['timeToInteractive'] = entries.find(data => data.name == 'lh:computed:Interactive').duration;
+    obj['maxPotentialFirstInputDelay'] = entries.find(data => data.name == 'lh:computed:MaxPotentialFID').duration;
 
     return this.keyValue('labData', 'Performance Lab Data', obj);
   }
@@ -83,7 +86,9 @@ export class CheckLighthousePerformance extends BaseStep implements StepInterfac
       description: 'Details',
     };
     const rows = [];
-    audits.forEach((audit) => {
+    audits.filter((audit: any) => audit.details && audit.details.type === 'opportunity' && audit.details.overallSavingsMs > 0)
+    .sort((a: any, b: any) => b.details.overallSavingsMs - a.details.overallSavingsMs)
+    .forEach((audit) => {
       const data = {
         title: String(audit.title) ,
         overallSavingsMs: audit.details ? String(audit.details.overallSavingsMs) : '',

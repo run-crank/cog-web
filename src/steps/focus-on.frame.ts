@@ -23,10 +23,17 @@ export class FocusOnFrame extends BaseStep implements StepInterface {
       const binaryRecord = this.binary('screenshot', 'Screenshot', 'image/jpeg', screenshot);
       return this.pass('Successfully focused on frame %s', [iframeSelector], [binaryRecord]);
     } catch (e) {
-      return this.error('Unable to focus on frame %s, the frame may no longer exist on the page: %s', [
-        iframeSelector,
-        e.toString(),
-      ]);
+      const screenshot = await this.client.client.screenshot({ type: 'jpeg', encoding: 'binary', quality: 60 });
+      const binaryRecord = this.binary('screenshot', 'Screenshot', 'image/jpeg', screenshot);
+      return this.error(
+        'Unable to focus on frame %s, the frame may no longer exist on the page: %s',
+        [
+          iframeSelector,
+          e.toString(),
+        ],
+        [
+          binaryRecord,
+        ]);
     }
   }
 

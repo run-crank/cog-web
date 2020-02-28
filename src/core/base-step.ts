@@ -129,6 +129,18 @@ export abstract class BaseStep {
     return record;
   }
 
+  protected getUrlParams(url) {
+    const params = {};
+    if (url && url.includes('?')) {
+      const paramString = url.split('?')[1];
+      paramString.split('&').forEach((p) => {
+        const param = p.split('=');
+        params[param[0]] = String(decodeURIComponent(param[1]));
+      });
+    }
+    return params;
+  }
+
   private outcomelessResponse(message: string, messageArgs: any[] = []): RunStepResponse {
     const response: RunStepResponse = new RunStepResponse();
     response.setMessageFormat(message);

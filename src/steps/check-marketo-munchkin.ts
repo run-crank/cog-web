@@ -20,18 +20,40 @@ export class CheckMarketoMunchkin extends BaseStep implements StepInterface {
     try {
       await this.client.waitForNetworkIdle(10000, false);
       const actual = await this.client.getFinishedRequests();
-      if (!actual.map(request => request.url).find(url => url.includes('://munchkin.marketo.net') && url.includes('munchkin.js'))) {
+      // Filter by munchkin host
+      const munchkinFilteredUrl = actual.map(request => request.url).find(url => url.includes('://munchkin.marketo.net') && url.includes('munchkin.js'));
+      if (!munchkinFilteredUrl) {
         return this.fail('The munchkin.js script was never requested.');
-      } else if (!actual.map(request => request.url).find(url => url.includes(`://${id.toLowerCase()}.mktoresp.com/webevents/visitWebPage`))) {
-        return this.fail('No visit was logged for munchkin account %s', [id]);
-      } else {
-        const params = querystring.parse(actual[0]);
-        const record = this.keyValue('marketoMuchkingRequests', 'Marketo Munchkin Requests', params);
-        return this.pass('Munchkin tracking successfully logged a page visit for munchkin id %s', [id], [record]);
       }
+      // Filter by ID
+      const idFilteredUrl = actual.map(request => request.url).find(url => url.includes(`://${id.toLowerCase()}.mktoresp.com/webevents/visitWebPage`));
+      if (!idFilteredUrl) {
+        const record = this.createTable(actual.map(request => request.url).filter(url => url.includes('.mktoresp.com/webevents/visitWebPage')));
+        return this.fail('No visit was logged for munchkin account %s', [id], [record]);
+      }
+
+      const record = this.createRecord(idFilteredUrl);
+      return this.pass('Munchkin tracking successfully logged a page visit for munchkin id %s', [id], [record]);
     } catch (e) {
       return this.error('There was a problem checking tracking for munchkin id %s: %s', [id, e.toString()]);
     }
+  }
+
+  private createRecord(url) {
+    const obj = {};
+    const id = url.split('.mktoresp')[0].split('//')[1];
+    obj['Munchkin ID'] = id;
+    return this.keyValue('marketoMuchkingRequests', 'Marketo Munchkin Requests', obj);
+  }
+
+  private createTable(actual) {
+    const headers = { munchkinId: 'Munchkin ID' };
+    const rows = [];
+    actual.forEach((url) => {
+      const id = url.split('.mktoresp')[0].split('//')[1];
+      rows.push({ munchkinId: id });
+    });
+    return this.table('marketoMuchkingRequests', 'Marketo Munchkin Requests', headers, rows);
   }
 }
 

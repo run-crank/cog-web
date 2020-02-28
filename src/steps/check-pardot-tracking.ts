@@ -66,7 +66,7 @@ export class CheckPardotTrackingStep extends BaseStep implements StepInterface {
           matchingRequests.map(request => decodeURIComponent(request.url)).join('\n\n'),
         ]);
       }
-      const record = this.keyValue('pardotTrackingRequest', 'Pardot Tracking Request', params);
+      const record = this.createRecord(evaluatedRequests[0].rawRequest._url);
       return this.pass(
         'Successfully detected Pardot Tracking request for account id %d, and campaign id %d.', [aid, cid], [record]);
     } catch (e) {
@@ -74,6 +74,12 @@ export class CheckPardotTrackingStep extends BaseStep implements StepInterface {
         e.toString(),
       ]);
     }
+  }
+
+  private createRecord(url) {
+    let params = {};
+    params = this.getUrlParams(decodeURIComponent(url));
+    return this.keyValue('pardotTrackingRequest', 'Pardot Tracking Request', params);
   }
 
 }

@@ -917,7 +917,7 @@ describe('ClientWrapper', () => {
         expect(result[0]).to.equal(`https://ad.doubleclick.net/activity;src=${aid};type=${group};cat=${atag};ord=${ord};num=${num}`);
       });
     });
-    describe('getParameters', () => {
+    describe('getGoogleFloodlightParameters', () => {
       it('should return expected', () => {
         const aid = 'anyaid';
         const group = 'anygroup';
@@ -940,7 +940,7 @@ describe('ClientWrapper', () => {
           num: numValue,
         };
         clientWrapperUnderTest = new ClientWrapper(pageStub, new Metadata());
-        const result = clientWrapperUnderTest.getParameters(urls[0].url);
+        const result = clientWrapperUnderTest.getGoogleFloodlightParameters(urls[0].url);
         expect(result['src']).to.equal(expectedResult['src']);
         expect(result['type']).to.equal(expectedResult['type']);
         expect(result['cat']).to.equal(expectedResult['cat']);

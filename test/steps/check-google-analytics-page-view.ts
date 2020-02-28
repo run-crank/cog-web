@@ -20,6 +20,7 @@ describe('CheckGoogleAnalyticsPageView', () => {
     clientWrapperStub = sinon.stub();
     clientWrapperStub.getFinishedRequests = sinon.stub();
     clientWrapperStub.waitForNetworkIdle = sinon.stub();
+    clientWrapperStub.evaluateRequests = sinon.stub();
     stepUnderTest = new Step(clientWrapperStub);
     protoStep = new ProtoStep();
   });
@@ -62,13 +63,14 @@ describe('CheckGoogleAnalyticsPageView', () => {
       withParameters: {
         someKey: 'someValue',
         numericVal: 1,
-        another: 'can also include & and @!: symbols'
+        another: 'can also include & and @!: symbols',
       },
     };
 
     // Stub a response that matches expectations.
     clientWrapperStub.waitForNetworkIdle.resolves();
     clientWrapperStub.getFinishedRequests.resolves(expectedResult);
+    clientWrapperStub.evaluateRequests.resolves(expectedResult);
 
     // Set step data corresponding to expectations
     protoStep.setData(Struct.fromJavaScript(dataInput));

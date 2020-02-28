@@ -23,10 +23,17 @@ export class ClickOnElement extends BaseStep implements StepInterface {
       const binaryRecord = this.binary('screenshot', 'Screenshot', 'image/jpeg', screenshot);
       return this.pass('Successfully clicked element: %s', [selector], [binaryRecord]);
     } catch (e) {
-      return this.error('There was a problem clicking element %s: %s', [
-        selector,
-        e.toString(),
-      ]);
+      const screenshot = await this.client.client.screenshot({ type: 'jpeg', encoding: 'binary', quality: 60 });
+      const binaryRecord = this.binary('screenshot', 'Screenshot', 'image/jpeg', screenshot);
+      return this.error(
+        'There was a problem clicking element %s: %s',
+        [
+          selector,
+          e.toString(),
+        ],
+        [
+          binaryRecord,
+        ]);
     }
   }
 

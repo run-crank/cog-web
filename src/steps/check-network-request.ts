@@ -42,11 +42,16 @@ export class CheckNetworkRequestStep extends BaseStep implements StepInterface {
       const evaluatedRequests = this.client.evaluateRequests(matchingRequests, withParameters);
 
       if (evaluatedRequests.length !== reqCount) {
-        return this.fail('Expected %d matching network request(s), but %d were found:\n\n%s', [
-          reqCount,
-          evaluatedRequests.length,
-          evaluatedRequests.map(r => `${r.url}\n\n`).join(''),
-        ]);
+        const table = this.createTable(evaluatedRequests.map(request => request.url));
+        return this.fail(
+          'Expected %d matching network request(s), but %d were found:\n\n%s', [
+            reqCount,
+            evaluatedRequests.length,
+            evaluatedRequests.map(r => `${r.url}\n\n`).join(''),
+          ],
+          [
+            table,
+          ]);
       }
       const table = this.createTable(evaluatedRequests.map(request => request.url));
       return this.pass(
@@ -65,17 +70,16 @@ export class CheckNetworkRequestStep extends BaseStep implements StepInterface {
   }
 
   private createTable(urls) {
-    const querystring = require('querystring');
     const headers = {};
     const rows = [];
-    const headerKeys = Object.keys(querystring.parse(urls[0]));
+    const headerKeys = Object.keys(this.getUrlParams(urls[0]));
     headerKeys.forEach((key: string) => {
       headers[key] = key;
     });
     urls.forEach((url: string) => {
-      rows.push(querystring.parse(urls[0]));
+      rows.push(this.getUrlParams(urls[0]));
     });
-    return this.table('googleFloodlightTagRequest', 'Google Floodlight Tag Request', headers, rows);
+    return this.table('networkRequests', 'Network Requests', headers, rows);
   }
 }
 

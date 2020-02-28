@@ -112,14 +112,14 @@ export class CheckGoogleFloodlightTag extends BaseStep implements StepInterface 
   private createTable(urls) {
     const headers = {};
     const rows = [];
-    const headerKeys = Object.keys(this.client.getParameters(urls[0]));
+    const headerKeys = Object.keys(this.client.getGoogleFloodlightParameters(urls[0]));
     headerKeys.forEach((key: string) => {
       headers[key] = key;
     });
     urls.forEach((url: string) => {
-      rows.push(this.client.getParameters(url));
+      rows.push(this.client.getGoogleFloodlightParameters(url));
     });
-    return this.table('googleFloodlightTagRequest', 'Google Floodlight Tag Request', headers, rows);
+    return this.table('googleFloodlightTagRequests', 'Google Floodlight Tag Requests', headers, rows);
   }
 }
 
