@@ -19,10 +19,10 @@ export class CheckLinkedInInsightTagFiredStep extends BaseStep implements StepIn
 
     try {
       await this.client.getCurrentPageInfo('url'); //// Ensure context have been navigated to page and have URL
-      const validated = await this.client.validateLinkedInInsightTag(pid);
-
-      if (validated) {
-        return this.pass('LinkedIn Insight tag fired for partner ID %d', [pid]);
+      const result = await this.client.filterLinkedInInsightTag(pid);
+      if (result.length >= 1) {
+        const table = this.createTable(result);
+        return this.pass('LinkedIn Insight tag fired for partner ID %d', [pid], [table]);
       }
 
       return this.fail('Expected LinkedIn Insight tag to fire for partner ID %d, but the tag did not fire.', [pid]);
@@ -31,6 +31,20 @@ export class CheckLinkedInInsightTagFiredStep extends BaseStep implements StepIn
         e.toString(),
       ]);
     }
+  }
+
+  private createTable(urls) {
+    const headers = {};
+    const rows = [];
+    const mappedUrls = urls.map(url => url.href);
+    const headerKeys = Object.keys(this.getUrlParams(mappedUrls[0]));
+    headerKeys.forEach((key: string) => {
+      headers[key] = key;
+    });
+    mappedUrls.forEach((url: string) => {
+      rows.push(this.getUrlParams(url));
+    });
+    return this.table('linkedInInsightsTagFiredRequests', 'Matched LinkedIn Tag Fired Request', headers, rows);
   }
 
 }

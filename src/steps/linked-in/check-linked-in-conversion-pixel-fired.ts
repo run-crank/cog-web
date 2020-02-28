@@ -24,9 +24,10 @@ export class CheckLinkedInConversionPixelFiredStep extends BaseStep implements S
 
     try {
       await this.client.getCurrentPageInfo('url'); //// Ensure context have been navigated to page and have URL
-      const validated = await this.client.validateLinkedInConversionPixelFired(pid, cid);
-      if (validated) {
-        return this.pass('LinkedIn Conversion Pixel fired for partner ID %d and conversion ID %d', [pid, cid]);
+      const result = await this.client.filterLinkedInConversionPixelFired(pid, cid);
+      if (result.length >= 1) {
+        const table = this.createTable(result);
+        return this.pass('LinkedIn Conversion Pixel fired for partner ID %d and conversion ID %d', [pid, cid], [table]);
       }
       return this.fail('Expected LinkedIn Conversion Pixel to fire for partner ID %d and conversion ID %d, but it did not fire.', [pid, cid]);
     } catch (e) {
@@ -34,6 +35,20 @@ export class CheckLinkedInConversionPixelFiredStep extends BaseStep implements S
         e.toString(),
       ]);
     }
+  }
+
+  private createTable(urls) {
+    const headers = {};
+    const rows = [];
+    const mappedUrls = urls.map(url => url.href);
+    const headerKeys = Object.keys(this.getUrlParams(mappedUrls[0]));
+    headerKeys.forEach((key: string) => {
+      headers[key] = key;
+    });
+    mappedUrls.forEach((url: string) => {
+      rows.push(this.getUrlParams(url));
+    });
+    return this.table('linkedInInsightsTagFiredRequests', 'Matched LinkedIn Tag Fired Request', headers, rows);
   }
 
 }
