@@ -1,3 +1,4 @@
+import { isNullOrUndefined } from 'util';
 import { BaseStep, Field, StepInterface } from '../core/base-step';
 import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../proto/cog_pb';
 
@@ -51,20 +52,23 @@ export class CheckGoogleAnalyticsEvent extends BaseStep implements StepInterface
         actual = actual.filter(u => this.includesParameters(u, expectedParams));
       }
 
-      if (actual[0]) {
+      if (!isNullOrUndefined(actual[0])) {
         params = this.getUrlParams(actual[0]);
       }
 
+      const records = [];
       if (actual.length !== 1) {
-        const tableRecord = this.createTable(urls);
+        let table;
+        if (actual.length > 1) {
+          table = this.createTable(urls);
+          records.push(table);
+        }
         return this.fail(
           'Expected 1 matching GA event, but %d matched.',
           [
             actual.length,
           ],
-          [
-            tableRecord,
-          ]);
+          records);
       } else {
         const record = this.keyValue('googleAnalyticsRequest', 'Matched Google Analytics Request', params);
         return this.pass(

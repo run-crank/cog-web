@@ -35,23 +35,25 @@ export class CheckMarketoMunchkin extends BaseStep implements StepInterface {
       const record = this.createRecord(idFilteredUrl);
       return this.pass('Munchkin tracking successfully logged a page visit for munchkin id %s', [id], [record]);
     } catch (e) {
+      console.log(e);
       return this.error('There was a problem checking tracking for munchkin id %s: %s', [id, e.toString()]);
     }
   }
 
   private createRecord(url) {
-    const obj = {};
-    const id = url.split('.mktoresp')[0].split('//')[1];
-    obj['Munchkin ID'] = id;
+    const obj = this.getUrlParams(url);
     return this.keyValue('marketoMuchkingRequests', 'Marketo Munchkin Requests', obj);
   }
 
-  private createTable(actual) {
-    const headers = { munchkinId: 'Munchkin ID' };
+  private createTable(urls) {
+    const headers = {};
     const rows = [];
-    actual.forEach((url) => {
-      const id = url.split('.mktoresp')[0].split('//')[1];
-      rows.push({ munchkinId: id });
+    const headerKeys = Object.keys(this.getUrlParams(urls[0]));
+    headerKeys.forEach((key: string) => {
+      headers[key] = key;
+    });
+    urls.forEach((url: string) => {
+      rows.push(this.getUrlParams(url));
     });
     return this.table('marketoMuchkingRequests', 'Marketo Munchkin Requests', headers, rows);
   }

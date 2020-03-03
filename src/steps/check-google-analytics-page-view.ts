@@ -1,6 +1,6 @@
 import { BaseStep, Field, StepInterface } from '../core/base-step';
 import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../proto/cog_pb';
-import { request } from 'needle';
+import { isNullOrUndefined } from 'util';
 
 export class CheckGoogleAnalyticsPageView extends BaseStep implements StepInterface {
 
@@ -39,24 +39,27 @@ export class CheckGoogleAnalyticsPageView extends BaseStep implements StepInterf
         actual = actual.filter(u => this.includesParameters(u, expectedParams));
       }
 
-      if (actual[0]) {
+      if (!isNullOrUndefined(actual[0])) {
         params = this.getUrlParams(actual[0]);
       }
-      console.log(params);
 
+      const records = [];
       if (actual.length !== 1) {
-        const tableRecord = this.createTable(urls);
+        let table;
+        if (actual.length > 1) {
+          table = this.createTable(urls);
+          records.push(table);
+        }
         return this.fail(
           'Expected 1 matching GA pageview, but %d matched.',
           [
             actual.length,
           ],
-          [
-            tableRecord,
-          ]);
+          records);
       } else {
         const record = this.keyValue('googleAnalyticsRequest', 'Matched Google Analytics Request', params);
-        return this.pass('Successfuly detected GA pageview for tracking id %s.', [id], [record]);
+        records.push(record);
+        return this.pass('Successfuly detected GA pageview for tracking id %s.', [id], records);
       }
     } catch (e) {
       return this.error('There was a problem checking for a GA pageview for tracking id %s: %s', [id, e.toString()]);

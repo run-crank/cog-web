@@ -78,7 +78,7 @@ export class CheckPardotTrackingStep extends BaseStep implements StepInterface {
 
   private createRecord(url) {
     let params = {};
-    params = this.getUrlParams(decodeURIComponent(url));
+    params = this.getUrlParams(url);
     return this.keyValue('pardotTrackingRequest', 'Pardot Tracking Request', params);
   }
 

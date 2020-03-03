@@ -1,3 +1,4 @@
+import { isNullOrUndefined } from 'util';
 import { ClientWrapper } from '../client/client-wrapper';
 import { StepDefinition, FieldDefinition, RecordDefinition, Step as PbStep, RunStepResponse, StepRecord, TableRecord, BinaryRecord } from '../proto/cog_pb';
 import { Struct, Value } from 'google-protobuf/google/protobuf/struct_pb';
@@ -131,11 +132,10 @@ export abstract class BaseStep {
 
   protected getUrlParams(url) {
     const params = {};
-    if (url && url.includes('?')) {
-      const paramString = url.split('?')[1];
-      paramString.split('&').forEach((p) => {
-        const param = p.split('=');
-        params[param[0]] = String(decodeURIComponent(param[1]));
+    if (!isNullOrUndefined(url)) {
+      const requestUrl = new URL(url);
+      requestUrl.searchParams.forEach((value, key) => {
+        params[key] = value;
       });
     }
     return params;

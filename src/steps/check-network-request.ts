@@ -1,5 +1,6 @@
 import { BaseStep, Field, StepInterface } from '../core/base-step';
 import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../proto/cog_pb';
+import { isObject } from 'util';
 
 export class CheckNetworkRequestStep extends BaseStep implements StepInterface {
 
@@ -41,27 +42,29 @@ export class CheckNetworkRequestStep extends BaseStep implements StepInterface {
       const matchingRequests = await this.client.getNetworkRequests(baseUrl, pathContains);
       const evaluatedRequests = this.client.evaluateRequests(matchingRequests, withParameters);
 
+      const records = [];
       if (evaluatedRequests.length !== reqCount) {
-        const table = this.createTable(evaluatedRequests.map(request => request.url));
+        let table;
+        if (evaluatedRequests.length > 1) {
+          table = this.createTable(evaluatedRequests);
+          records.push(table);
+        }
         return this.fail(
           'Expected %d matching network request(s), but %d were found:\n\n%s', [
             reqCount,
             evaluatedRequests.length,
             evaluatedRequests.map(r => `${r.url}\n\n`).join(''),
           ],
-          [
-            table,
-          ]);
+          records);
       }
-      const table = this.createTable(evaluatedRequests.map(request => request.url));
+      const table = this.createTable(evaluatedRequests);
+      records.push(table);
       return this.pass(
         '%d network requests found, as expected',
         [
           evaluatedRequests.length,
         ],
-        [
-          table,
-        ]);
+        records);
     } catch (e) {
       return this.error('There was a problem checking network request: %s', [
         e.toString(),
@@ -69,17 +72,31 @@ export class CheckNetworkRequestStep extends BaseStep implements StepInterface {
     }
   }
 
-  private createTable(urls) {
+  private createTable(requests) {
     const headers = {};
     const rows = [];
-    const headerKeys = Object.keys(this.getUrlParams(urls[0]));
+    requests.forEach((request) => {
+      let params = {};
+      if (request.method == 'POST') {
+        params = this.getPostRequestParams(request);
+      } else {
+        params = this.getUrlParams(request.url);
+      }
+      rows.push(params);
+    });
+    const headerKeys = Object.keys(rows[0]);
     headerKeys.forEach((key: string) => {
       headers[key] = key;
     });
-    urls.forEach((url: string) => {
-      rows.push(this.getUrlParams(urls[0]));
-    });
     return this.table('networkRequests', 'Network Requests', headers, rows);
+  }
+
+  private getPostRequestParams(request) {
+    if (request.rawRequest._headers['content-type'].includes('application/json')) {
+      return JSON.parse(request.postData);
+    } else {
+      return this.getUrlParams(`${request.url}?${request.postData}`);
+    }
   }
 }
 

@@ -33,7 +33,7 @@ export class CheckLighthousePerformance extends BaseStep implements StepInterfac
         const recordKeyValue = this.createSuccessRecord(lhr);
 
         return this.fail(
-          'The page\'s performance score of %d was lower than the expected score of %d in %s.\n\n\n Opportunities for improvement:\n%s',
+          'The page\'s performance score of %d was lower than the expected score of %d in %s.\n\n\n',
           [
             actualScore,
             expectedScore,
