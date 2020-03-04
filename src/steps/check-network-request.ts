@@ -84,7 +84,7 @@ export class CheckNetworkRequestStep extends BaseStep implements StepInterface {
       }
       rows.push(params);
     });
-    const headerKeys = Object.keys(rows[0]);
+    const headerKeys = Object.keys(rows[0] || {});
     headerKeys.forEach((key: string) => {
       headers[key] = key;
     });
