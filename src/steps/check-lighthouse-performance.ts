@@ -1,5 +1,5 @@
-import { BaseStep, Field, StepInterface } from '../core/base-step';
-import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../proto/cog_pb';
+import { BaseStep, Field, StepInterface, ExpectedRecord } from '../core/base-step';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition } from '../proto/cog_pb';
 
 export class CheckLighthousePerformance extends BaseStep implements StepInterface {
 
@@ -15,6 +15,41 @@ export class CheckLighthousePerformance extends BaseStep implements StepInterfac
     field: 'expectedScore',
     type: FieldDefinition.Type.NUMERIC,
     description: 'Expected Score',
+  }];
+
+  protected expectedRecords: ExpectedRecord[] = [{
+    id: 'labData',
+    type: RecordDefinition.Type.KEYVALUE,
+    fields: [{
+      field: 'actualScore',
+      type: FieldDefinition.Type.NUMERIC,
+      description: 'Performance Score',
+    }, {
+      field: 'firstContentfulPaint',
+      type: FieldDefinition.Type.NUMERIC,
+      description: 'First Contentful Paint',
+    }, {
+      field: 'firstMeaningfulPaint',
+      type: FieldDefinition.Type.NUMERIC,
+      description: 'First Meaningful Paint',
+    }, {
+      field: 'speedIndex',
+      type: FieldDefinition.Type.NUMERIC,
+      description: 'Speed Index',
+    }, {
+      field: 'firstCpuIdle',
+      type: FieldDefinition.Type.NUMERIC,
+      description: 'First CPU Idle',
+    }, {
+      field: 'timeToInteractive',
+      type: FieldDefinition.Type.NUMERIC,
+      description: 'Time to Interactive',
+    }, {
+      field: 'maxPotentialFirstInputDelay',
+      type: FieldDefinition.Type.NUMERIC,
+      description: 'Max Potential First Input Delay',
+    }],
+    dynamicFields: false,
   }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {

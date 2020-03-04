@@ -1,5 +1,5 @@
-import { BaseStep, Field, StepInterface } from '../core/base-step';
-import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../proto/cog_pb';
+import { BaseStep, Field, StepInterface, ExpectedRecord } from '../core/base-step';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition } from '../proto/cog_pb';
 import { isNullOrUndefined } from 'util';
 
 export class CheckGoogleAnalyticsPageView extends BaseStep implements StepInterface {
@@ -20,6 +20,17 @@ export class CheckGoogleAnalyticsPageView extends BaseStep implements StepInterf
       description: 'Parameter Checks, an optional map of Google Analytics Measurement Protocol Parameters and their expected values.',
     },
   ];
+
+  protected expectedRecords: ExpectedRecord[] = [{
+    id: 'googleAnalyticsRequest',
+    type: RecordDefinition.Type.KEYVALUE,
+    fields: [{
+      field: 'cid',
+      type: FieldDefinition.Type.STRING,
+      description: 'Google Analytics Client ID',
+    }],
+    dynamicFields: true,
+  }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
     const stepData: any = step.getData().toJavaScript();
