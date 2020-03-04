@@ -63,6 +63,27 @@ describe('CheckLighthousePerformance', () => {
       beforeEach(() => {
         clientWrapperStub.getCurrentPageInfo.returns(Promise.resolve('http://google.com'));
         clientWrapperStub.getLighthouseScores.returns(Promise.resolve({
+          timing:
+          {
+            entries: [
+              { name: 'lh:computed:FirstContentfulPaint', duration: 3 },
+              { name: 'lh:computed:FirstMeaningfulPaint', duration: 3 },
+              { name: 'lh:computed:SpeedIndex', duration: 3 },
+              { name: 'lh:computed:FirstCPUIdle', duration: 3 },
+              { name: 'lh:computed:Interactive', duration: 3 },
+              { name: 'lh:computed:MaxPotentialFID', duration: 3 },
+            ],
+          },
+          audits: {
+            someAudit: {
+              title: 'someAudit',
+              details: {
+                type: 'opportunity',
+                overallSavingMs: 123,
+              },
+              description: 'someDescription',
+            },
+          },
           categories: {
             performance: {
               score: 0.75,
@@ -88,17 +109,30 @@ describe('CheckLighthousePerformance', () => {
       beforeEach(() => {
         clientWrapperStub.getCurrentPageInfo.returns(Promise.resolve('http://google.com'));
         clientWrapperStub.getLighthouseScores.returns(Promise.resolve({
-          categories: {
-            performance: {
-              score: 0.25,
-            },
+          timing:
+          {
+            entries: [
+              { name: 'lh:computed:FirstContentfulPaint', duration: 3 },
+              { name: 'lh:computed:FirstMeaningfulPaint', duration: 3 },
+              { name: 'lh:computed:SpeedIndex', duration: 3 },
+              { name: 'lh:computed:FirstCPUIdle', duration: 3 },
+              { name: 'lh:computed:Interactive', duration: 3 },
+              { name: 'lh:computed:MaxPotentialFID', duration: 3 },
+            ],
           },
           audits: {
-            redirects: {
-              title: 'Avoid page redirects',
+            someAudit: {
+              title: 'someAudit',
               details: {
                 type: 'opportunity',
+                overallSavingMs: 123,
               },
+              description: 'someDescription',
+            },
+          },
+          categories: {
+            performance: {
+              score: 0.75,
             },
           },
         }));

@@ -96,16 +96,76 @@ describe('CheckNetworkRequest', () => {
         clientWrapperStub.getCurrentPageInfo.returns(Promise.resolve('http://thisisjust.atomatest.com'));
         clientWrapperStub.getNetworkRequests.returns(Promise.resolve([]));
         // tslint:disable-next-line:prefer-array-literal
-        clientWrapperStub.evaluateRequests.returns(new Array(10));
-        protoStep.setData(Struct.fromJavaScript({
-          reqCount: 10,
-          baseUrl: 'http://thisisjust.atomatest.com',
-        }));
       });
-
-      it('should respond with fail', async () => {
-        const response = await stepUnderTest.executeStep(protoStep);
-        expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
+      describe('GET', () => {
+        it('should respond with pass', async () => {
+          clientWrapperStub.evaluateRequests.returns([
+            {
+              url: 'http://thisisjust.atomatest.com?anyKey=anyValue',
+              method: 'GET',
+            },
+            {
+              url: 'http://thisisjust.atomatest.com?anyKey=anyValue',
+              method: 'GET',
+            },
+          ]);
+          protoStep.setData(Struct.fromJavaScript({
+            reqCount: 2,
+            baseUrl: 'http://thisisjust.atomatest.com',
+          }));
+          const response = await stepUnderTest.executeStep(protoStep);
+          expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
+        });
+      });
+      describe('POST', () => {
+        describe('JSON Payload Check', () => {
+          it('should respond with pass', async () => {
+            clientWrapperStub.evaluateRequests.returns([
+              {
+                rawRequest: { _headers: { 'content-type': 'application/json' } },
+                url: 'http://thisisjust.atomatest.com',
+                method: 'POST',
+                postData: '{"anyKey":"anyValue"}',
+              },
+              {
+                rawRequest: { _headers: { 'content-type': 'application/json' } },
+                url: 'http://thisisjust.atomatest.com',
+                method: 'POST',
+                postData: '{"anyKey":"anyValue"}',
+              },
+            ]);
+            protoStep.setData(Struct.fromJavaScript({
+              reqCount: 2,
+              baseUrl: 'http://thisisjust.atomatest.com',
+            }));
+            const response = await stepUnderTest.executeStep(protoStep);
+            expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
+          });
+        });
+        describe('Form Payload Check', () => {
+          it('should respond with pass', async () => {
+            clientWrapperStub.evaluateRequests.returns([
+              {
+                rawRequest: { _headers: { 'content-type': 'anyContentType' } },
+                url: 'http://thisisjust.atomatest.com',
+                method: 'POST',
+                postData: 'anyKey=anyValue',
+              },
+              {
+                rawRequest: { _headers: { 'content-type': 'anyContentType' } },
+                url: 'http://thisisjust.atomatest.com',
+                method: 'POST',
+                postData: 'anyKey=anyValue',
+              },
+            ]);
+            protoStep.setData(Struct.fromJavaScript({
+              reqCount: 2,
+              baseUrl: 'http://thisisjust.atomatest.com',
+            }));
+            const response = await stepUnderTest.executeStep(protoStep);
+            expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
+          });
+        });
       });
     });
   });

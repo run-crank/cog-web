@@ -48,10 +48,10 @@ describe('CheckMarketoMunchkin', () => {
     const sampleId = 'someId';
     const expectedResult = [
       {
-        url: 'https://munchkin.marketo.net/somethingsomething/munchkin.js',
+        url: 'https://munchkin.marketo.net/somethingsomething/munchkin.js?_mchId=anyID',
       },
       {
-        url: `https://${sampleId.toLowerCase()}.mktoresp.com/webevents/visitWebPage`,
+        url: `https://${sampleId.toLowerCase()}.mktoresp.com/webevents/visitWebPage?_mchId=${sampleId.toLowerCase()}`,
       },
     ];
     const dataInput = {
@@ -77,34 +77,7 @@ describe('CheckMarketoMunchkin', () => {
         url: 'no munchkin url',
       },
       {
-        url: `https://${sampleId}.mktoresp.com/webevents/visitWebPage`,
-      },
-    ];
-    const dataInput = {
-      id: sampleId,
-    };
-
-    // Stub a response that matches expectations.
-    clientWrapperStub.waitForNetworkIdle.resolves();
-    clientWrapperStub.getFinishedRequests.resolves(expectedResult);
-
-    // Set step data corresponding to expectations
-    protoStep.setData(Struct.fromJavaScript(dataInput));
-
-    const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(response.getMessageFormat()).to.equal(expectedMessage);
-    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.FAILED);
-  });
-
-  it('should respond with fail if the client returns result without munchkin url', async () => {
-    const sampleId = 'someId';
-    const expectedMessage = 'No visit was logged for munchkin account %s';
-    const expectedResult = [
-      {
-        url: 'https://munchkin.marketo.net/somethingsomething/munchkin.js',
-      },
-      {
-        url: 'https://someOtherId.mktoresp.com/webevents/visitWebPage',
+        url: `https://${sampleId}.mktoresp.com/webevents/visitWebPage?_mchId=anyID`,
       },
     ];
     const dataInput = {

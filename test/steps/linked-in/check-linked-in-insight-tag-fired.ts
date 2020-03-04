@@ -18,7 +18,7 @@ describe('CheckLinkedInInsightTagFiredStep', () => {
   beforeEach(() => {
     // Set up test stubs.
     clientWrapperStub = sinon.stub();
-    clientWrapperStub.validateLinkedInInsightTag = sinon.stub();
+    clientWrapperStub.filterLinkedInInsightTag = sinon.stub();
     clientWrapperStub.getCurrentPageInfo = sinon.stub();
     clientWrapperStub.getCurrentPageInfo.resolves();
     stepUnderTest = new Step(clientWrapperStub);
@@ -49,7 +49,7 @@ describe('CheckLinkedInInsightTagFiredStep', () => {
   describe('ExecuteStep', () => {
     describe('validated', () => {
       beforeEach(() => {
-        clientWrapperStub.validateLinkedInInsightTag.resolves(true);
+        clientWrapperStub.filterLinkedInInsightTag.resolves([{ href:'https://px.ads.linkedin.com/collect?someField=someValue' }]);
         protoStep.setData(Struct.fromJavaScript({
           pid: 256,
         }));
@@ -63,7 +63,7 @@ describe('CheckLinkedInInsightTagFiredStep', () => {
 
     describe('not validated', () => {
       beforeEach(() => {
-        clientWrapperStub.validateLinkedInInsightTag.resolves(false);
+        clientWrapperStub.filterLinkedInInsightTag.resolves([]);
         protoStep.setData(Struct.fromJavaScript({
           pid: 256,
         }));
@@ -77,7 +77,7 @@ describe('CheckLinkedInInsightTagFiredStep', () => {
 
     describe('throws any error', () => {
       beforeEach(() => {
-        clientWrapperStub.validateLinkedInInsightTag.throws();
+        clientWrapperStub.filterLinkedInInsightTag.throws();
         protoStep.setData(Struct.fromJavaScript({
           pid: 256,
         }));

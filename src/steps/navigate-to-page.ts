@@ -20,9 +20,21 @@ export class NavigateToPage extends BaseStep implements StepInterface {
     // Navigate to URL.
     try {
       await this.client.navigateToUrl(url);
-      return this.pass('Successfully navigated to %s', [url]);
+      const screenshot = await this.client.client.screenshot({ type: 'jpeg', encoding: 'binary', quality: 60 });
+      const binaryRecord = this.binary('screenshot', 'Screenshot', 'image/jpeg', screenshot);
+      return this.pass('Successfully navigated to %s', [url], [binaryRecord]);
     } catch (e) {
-      return this.error('There was a problem navigating to %s: %s', [url, e.toString()]);
+      const screenshot = await this.client.client.screenshot({ type: 'jpeg', encoding: 'binary', quality: 60 });
+      const binaryRecord = this.binary('screenshot', 'Screenshot', 'image/jpeg', screenshot);
+      return this.error(
+        'There was a problem navigating to %s: %s',
+        [
+          url,
+          e.toString(),
+        ],
+        [
+          binaryRecord,
+        ]);
     }
   }
 

@@ -13,22 +13,48 @@ export class CheckMarketoMunchkin extends BaseStep implements StepInterface {
   }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
+    const querystring = require('querystring');
     const stepData: any = step.getData().toJavaScript();
     const id: string = stepData.id;
 
     try {
       await this.client.waitForNetworkIdle(10000, false);
       const actual = await this.client.getFinishedRequests();
-      if (!actual.map(request => request.url).find(url => url.includes('://munchkin.marketo.net') && url.includes('munchkin.js'))) {
+      // Filter by munchkin host
+      const munchkinFilteredUrl = actual.map(request => request.url).find(url => url.includes('://munchkin.marketo.net') && url.includes('munchkin.js'));
+      if (!munchkinFilteredUrl) {
         return this.fail('The munchkin.js script was never requested.');
-      } else if (!actual.map(request => request.url).find(url => url.includes(`://${id.toLowerCase()}.mktoresp.com/webevents/visitWebPage`))) {
-        return this.fail('No visit was logged for munchkin account %s', [id]);
-      } else {
-        return this.pass('Munchkin tracking successfully logged a page visit for munchkin id %s', [id]);
       }
+      // Filter by ID
+      const idFilteredUrl = actual.map(request => request.url).find(url => url.includes(`://${id.toLowerCase()}.mktoresp.com/webevents/visitWebPage`));
+      if (!idFilteredUrl) {
+        const record = this.createTable(actual.map(request => request.url).filter(url => url.includes('.mktoresp.com/webevents/visitWebPage')));
+        return this.fail('No visit was logged for munchkin account %s', [id], [record]);
+      }
+
+      const record = this.createRecord(idFilteredUrl);
+      return this.pass('Munchkin tracking successfully logged a page visit for munchkin id %s', [id], [record]);
     } catch (e) {
       return this.error('There was a problem checking tracking for munchkin id %s: %s', [id, e.toString()]);
     }
+  }
+
+  private createRecord(url) {
+    const obj = this.getUrlParams(url);
+    return this.keyValue('marketoMuchkingRequests', 'Marketo Munchkin Requests', obj);
+  }
+
+  private createTable(urls) {
+    const headers = {};
+    const rows = [];
+    const headerKeys = Object.keys(this.getUrlParams(urls[0]));
+    headerKeys.forEach((key: string) => {
+      headers[key] = key;
+    });
+    urls.forEach((url: string) => {
+      rows.push(this.getUrlParams(url));
+    });
+    return this.table('marketoMuchkingRequests', 'Marketo Munchkin Requests', headers, rows);
   }
 }
 

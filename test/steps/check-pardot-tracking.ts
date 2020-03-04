@@ -71,7 +71,9 @@ describe('CheckPardotTrackingStep', () => {
     const sampleValue = 'anyValue';
     const finishedRequests = [
       {
-        url: `https://pi.pardot.com/analytics?account_id=${aidValue}&campaign_id=${cidValue}&${sampleKey}=${sampleValue}`,
+        rawRequest: {
+          _url: `https://pi.pardot.com/analytics?account_id=${aidValue}&campaign_id=${cidValue}&${sampleKey}=${sampleValue}`,
+        },
       },
     ];
     const dataInput = {

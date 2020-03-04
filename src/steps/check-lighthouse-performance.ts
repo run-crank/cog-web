@@ -25,31 +25,79 @@ export class CheckLighthousePerformance extends BaseStep implements StepInterfac
     try {
       const currentUrl = await this.client.getCurrentPageInfo('url');
       const lhr = await this.client.getLighthouseScores(currentUrl.toString(), throttleTo);
-
       const performance: any = Object.values(lhr.categories)[0];
       const actualScore = Math.round(performance.score * 100);
       if (actualScore < expectedScore) {
         const audits = Object.values(lhr.audits);
-        return this.fail('The page\'s performance score of %d was lower than the expected score of %d in %s.\n\n\n Opportunities for improvement:\n%s', [
+        const recordTable = this.createFailRecord(audits);
+        const recordKeyValue = this.createSuccessRecord(lhr);
+
+        return this.fail(
+          'The page\'s performance score of %d was lower than the expected score of %d in %s.\n\n\n',
+          [
+            actualScore,
+            expectedScore,
+            throttleTo,
+            audits.filter((audit: any) => audit.details && audit.details.type === 'opportunity' && audit.details.overallSavingsMs > 0)
+            .sort((a: any, b: any) => b.details.overallSavingsMs - a.details.overallSavingsMs)
+            .map((audit: any) => ` - ${audit.title}: Potential savings of ${audit.details.overallSavingsMs}ms\n`).join(''),
+          ],
+          [
+            recordTable,
+            recordKeyValue,
+          ]);
+      }
+      const record = this.createSuccessRecord(lhr);
+      return this.pass(
+        'The page\'s performance score of %d was greater than or equal to %d, as expected in %s',
+        [
           actualScore,
           expectedScore,
           throttleTo,
-          audits.filter((audit: any) => audit.details && audit.details.type === 'opportunity' && audit.details.overallSavingsMs > 0)
-          .sort((a: any, b: any) => b.details.overallSavingsMs - a.details.overallSavingsMs)
-          .map((audit: any) => ` - ${audit.title}: Potential savings of ${audit.details.overallSavingsMs}ms\n`).join(''),
+        ],
+        [
+          record,
         ]);
-      }
-
-      return this.pass('The page\'s performance score of %d was greater than or equal to %d, as expected in %s', [
-        actualScore,
-        expectedScore,
-        throttleTo,
-      ]);
     } catch (e) {
       return this.error('There was an error checking lighthouse performance: %s', [
         e.toString(),
       ]);
     }
+  }
+
+  private createSuccessRecord(record) {
+    const obj = {};
+    const entries = record.timing.entries;
+    obj['actualScore'] = record.categories.performance.score * 100;
+    obj['firstContentfulPaint'] = entries.find(data => data.name == 'lh:computed:FirstContentfulPaint').duration;
+    obj['firstMeaningfulPaint'] =  entries.find(data => data.name == 'lh:computed:FirstMeaningfulPaint').duration;
+    obj['speedIndex'] = entries.find(data => data.name == 'lh:computed:SpeedIndex').duration;
+    obj['firstCpuIdle'] = entries.find(data => data.name == 'lh:computed:FirstCPUIdle').duration;
+    obj['timeToInteractive'] = entries.find(data => data.name == 'lh:computed:Interactive').duration;
+    obj['maxPotentialFirstInputDelay'] = entries.find(data => data.name == 'lh:computed:MaxPotentialFID').duration;
+
+    return this.keyValue('labData', 'Performance Lab Data', obj);
+  }
+
+  private createFailRecord(audits) {
+    const headers = {
+      title: 'Title',
+      overallSavingsMs: 'Estimated Savings (ms)',
+      description: 'Details',
+    };
+    const rows = [];
+    audits.filter((audit: any) => audit.details && audit.details.type === 'opportunity' && audit.details.overallSavingsMs > 0)
+    .sort((a: any, b: any) => b.details.overallSavingsMs - a.details.overallSavingsMs)
+    .forEach((audit) => {
+      const data = {
+        title: String(audit.title) ,
+        overallSavingsMs: audit.details ? String(audit.details.overallSavingsMs) : '',
+        description: String(audit.description),
+      };
+      rows.push(data);
+    });
+
+    return this.table('performanceOpportunities', 'Performance Opportunities', headers, rows);
   }
 
 }
