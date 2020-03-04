@@ -35,7 +35,6 @@ export class CheckMarketoMunchkin extends BaseStep implements StepInterface {
       const record = this.createRecord(idFilteredUrl);
       return this.pass('Munchkin tracking successfully logged a page visit for munchkin id %s', [id], [record]);
     } catch (e) {
-      console.log(e);
       return this.error('There was a problem checking tracking for munchkin id %s: %s', [id, e.toString()]);
     }
   }
