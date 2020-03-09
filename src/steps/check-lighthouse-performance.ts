@@ -68,14 +68,11 @@ export class CheckLighthousePerformance extends BaseStep implements StepInterfac
         const recordKeyValue = this.createSuccessRecord(lhr);
 
         return this.fail(
-          'The page\'s performance score of %d was lower than the expected score of %d in %s.\n\n\n',
+          'The page\'s performance score of %d was lower than the expected score of %d in %s.\n',
           [
             actualScore,
             expectedScore,
             throttleTo,
-            audits.filter((audit: any) => audit.details && audit.details.type === 'opportunity' && audit.details.overallSavingsMs > 0)
-            .sort((a: any, b: any) => b.details.overallSavingsMs - a.details.overallSavingsMs)
-            .map((audit: any) => ` - ${audit.title}: Potential savings of ${audit.details.overallSavingsMs}ms\n`).join(''),
           ],
           [
             recordTable,
