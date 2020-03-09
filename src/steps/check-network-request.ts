@@ -1,6 +1,6 @@
 import { BaseStep, Field, StepInterface } from '../core/base-step';
 import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../proto/cog_pb';
-import { isObject } from 'util';
+import { URL } from 'url';
 
 export class CheckNetworkRequestStep extends BaseStep implements StepInterface {
 
@@ -56,8 +56,9 @@ export class CheckNetworkRequestStep extends BaseStep implements StepInterface {
           ],
           records);
       }
-      const table = this.createTable(evaluatedRequests);
-      records.push(table);
+      if (evaluatedRequests.length > 0) {
+        records.push(this.createTable(evaluatedRequests));
+      }
       return this.pass(
         '%d network requests found, as expected',
         [
@@ -76,13 +77,14 @@ export class CheckNetworkRequestStep extends BaseStep implements StepInterface {
     const rows = [];
     headers['url'] = 'url';
     requests.forEach((request) => {
+      const url = new URL(request.url);
       let params = {};
       if (request.method == 'POST') {
         params = this.getPostRequestParams(request);
       } else {
         params = this.getUrlParams(request.url);
       }
-      params['url'] = request.url;
+      params['url'] = `${url.origin}${url.pathname}`;
       rows.push(params);
     });
     const headerKeys = Object.keys(rows[0] || {});
