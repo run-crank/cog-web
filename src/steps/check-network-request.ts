@@ -50,10 +50,9 @@ export class CheckNetworkRequestStep extends BaseStep implements StepInterface {
           records.push(table);
         }
         return this.fail(
-          'Expected %d matching network request(s), but %d were found:\n\n%s', [
+          'Expected %d matching network request(s), but %d were found:\n\n', [
             reqCount,
             evaluatedRequests.length,
-            evaluatedRequests.map(r => `${r.url}\n\n`).join(''),
           ],
           records);
       }
@@ -75,6 +74,7 @@ export class CheckNetworkRequestStep extends BaseStep implements StepInterface {
   private createTable(requests) {
     const headers = {};
     const rows = [];
+    headers['url'] = 'url';
     requests.forEach((request) => {
       let params = {};
       if (request.method == 'POST') {
@@ -82,6 +82,7 @@ export class CheckNetworkRequestStep extends BaseStep implements StepInterface {
       } else {
         params = this.getUrlParams(request.url);
       }
+      params['url'] = request.url;
       rows.push(params);
     });
     const headerKeys = Object.keys(rows[0] || {});
