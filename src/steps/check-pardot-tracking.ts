@@ -71,11 +71,17 @@ export class CheckPardotTrackingStep extends BaseStep implements StepInterface {
       }
       const evaluatedRequests = this.client.evaluateRequests(matchingRequests, params);
       if (evaluatedRequests.length == 0) {
-        return this.fail('Expected Pardot tracking request to load for account %d, and campaign %d, but no tracking loaded. \n\n%s', [
-          aid,
-          cid,
-          matchingRequests.map(request => decodeURIComponent(request.url)).join('\n\n'),
-        ]);
+        const tableRecord = this.createTable(matchingRequests.map(request => request.url));
+        return this.fail(
+          'Expected Pardot tracking request to load for account %d, and campaign %d, but no tracking loaded. \n\n%s',
+          [
+            aid,
+            cid,
+            matchingRequests.map(request => decodeURIComponent(request.url)).join('\n\n'),
+          ],
+          [
+            tableRecord,
+          ]);
       }
       const record = this.createRecord(evaluatedRequests[0].rawRequest._url);
       return this.pass(
@@ -91,6 +97,19 @@ export class CheckPardotTrackingStep extends BaseStep implements StepInterface {
     let params = {};
     params = this.getUrlParams(url);
     return this.keyValue('pardotTrackingRequest', 'Pardot Tracking Request', params);
+  }
+
+  private createTable(urls) {
+    const headers = {};
+    const rows = [];
+    const headerKeys = Object.keys(this.getUrlParams(urls[0]));
+    headerKeys.forEach((key: string) => {
+      headers[key] = key;
+    });
+    urls.forEach((url: string) => {
+      rows.push(this.getUrlParams(url));
+    });
+    return this.table('pardotTrackingRequests', 'Pardot Tracking Request', headers, rows);
   }
 
 }
