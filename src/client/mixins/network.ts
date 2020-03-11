@@ -68,7 +68,7 @@ export class NetworkAware {
 
         for (const [key, value] of Object.entries(actualParams)) {
           if (expectedParams.hasOwnProperty(key) && matched) {
-            matched = expectedParams[key] == value;
+            matched = expectedParams[key] == String(value);
           }
         }
       }
