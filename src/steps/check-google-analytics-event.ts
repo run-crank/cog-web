@@ -56,30 +56,33 @@ export class CheckGoogleAnalyticsEvent extends BaseStep implements StepInterface
                                     && r.url.includes('https://www.google-analytics.com')
                                     && r.url.includes('/collect')
                                     && r.url.includes('t=event')).map(r => r.url);
-      let actual = urls.filter(url => url.includes(`tid=${id}`)
+      const filteredRequest = urls.filter(url => url.includes(`tid=${id}`)
                                     && url.toLowerCase().includes(`ea=${eventAction.toLowerCase()}`)
                                     && url.toLowerCase().includes(`ec=${eventCategory.toLowerCase()}`));
-      if (Object.keys(expectedParams).length > 0) {
-        actual = actual.filter(u => this.includesParameters(u, expectedParams));
-      }
-
-      if (!isNullOrUndefined(actual[0])) {
-        params = this.getUrlParams(actual[0]);
-      }
-
-      const records = [];
-      if (actual.length !== 1) {
+      let records = [];
+      if (filteredRequest.length !== 1) {
         let table;
-        if (actual.length > 1) {
-          table = this.createTable(urls);
+        if (filteredRequest.length > 1) {
+          table = this.createTable(filteredRequest);
           records.push(table);
         }
-        return this.fail(
-          'Expected 1 matching GA event, but %d matched.',
-          [
-            actual.length,
-          ],
-          records);
+        return this.fail('Expected 1 matching GA event, but %d matched.', [filteredRequest.length], records);
+      }
+
+      let filteredRequestsWithParams;
+      if (Object.keys(expectedParams).length > 0) {
+        filteredRequestsWithParams = filteredRequest.filter(u => this.includesParameters(u, expectedParams));
+      }
+
+      if (!isNullOrUndefined(filteredRequestsWithParams[0])) {
+        params = this.getUrlParams(filteredRequestsWithParams[0]);
+      }
+
+      records = [];
+      if (filteredRequestsWithParams.length !== 1) {
+        const table = this.createTable(filteredRequest);
+        records.push(table);
+        return this.fail('Expected 1 matching GA event, but %d matched.', [filteredRequestsWithParams.length], records);
       } else {
         const record = this.keyValue('googleAnalyticsRequest', 'Matched Google Analytics Request', params);
         return this.pass(
