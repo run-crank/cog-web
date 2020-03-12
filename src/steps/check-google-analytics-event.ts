@@ -48,6 +48,7 @@ export class CheckGoogleAnalyticsEvent extends BaseStep implements StepInterface
     const eventAction: any = encodeURIComponent(stepData.ea);
     const id: any = stepData.id;
     const expectedParams: any = stepData.withParameters || {};
+    let result;
     try {
       await this.client.waitForNetworkIdle(10000, false);
       const requests = await this.client.getFinishedRequests();
@@ -58,21 +59,23 @@ export class CheckGoogleAnalyticsEvent extends BaseStep implements StepInterface
       const filteredRequest = urls.filter(url => url.includes(`tid=${id}`)
                                     && url.toLowerCase().includes(`ea=${eventAction.toLowerCase()}`)
                                     && url.toLowerCase().includes(`ec=${eventCategory.toLowerCase()}`));
+      result = filteredRequest;
       let records = [];
       let filteredRequestsWithParams = [];
       if (!isNullOrUndefined(expectedParams)) {
         if (Object.keys(expectedParams).length > 0) {
           filteredRequestsWithParams = filteredRequest.filter(u => this.includesParameters(u, expectedParams));
+          result = filteredRequestsWithParams;
         }
       }
 
       records = [];
-      if (filteredRequestsWithParams.length !== 1) {
+      if (result.length !== 1) {
         const table = this.createTable(filteredRequest);
         records.push(table);
-        return this.fail('Expected 1 matching GA event, but %d matched.', [filteredRequestsWithParams.length], records);
+        return this.fail('Expected 1 matching GA event, but %d matched.', [result.length], records);
       }
-      const params = this.getUrlParams(filteredRequestsWithParams[0]);
+      const params = this.getUrlParams(result[0]);
       const record = this.keyValue('googleAnalyticsRequest', 'Matched Google Analytics Request', params);
       return this.pass(
         'Successfully detected GA event with category %s, and action %s for tracking id %s.',
