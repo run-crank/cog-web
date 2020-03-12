@@ -60,18 +60,7 @@ export class CheckGoogleAnalyticsEvent extends BaseStep implements StepInterface
                                     && url.toLowerCase().includes(`ea=${eventAction.toLowerCase()}`)
                                     && url.toLowerCase().includes(`ec=${eventCategory.toLowerCase()}`));
       result = filteredRequest;
-      // Handle requests by required parameters
       let records = [];
-      if (result.length !== 1) {
-        let table;
-        if (result.length > 1) {
-          table = this.createTable(result);
-          records.push(table);
-        }
-        return this.fail('Expected 1 matching GA event, but %d matched.', [result.length], records);
-      }
-
-      // Handle requests by optional parameters
       let filteredRequestsWithParams = [];
       if (!isNullOrUndefined(expectedParams)) {
         if (Object.keys(expectedParams).length > 0) {

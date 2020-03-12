@@ -46,18 +46,7 @@ export class CheckGoogleAnalyticsPageView extends BaseStep implements StepInterf
                                         && r.url.includes('t=pageview')).map(r => r.url);
       const filteredRequest = urls.filter(url => url.includes(`tid=${id}`));
       result = filteredRequest;
-      // Handle requests by required parameters
       let records = [];
-      if (result.length !== 1) {
-        let table;
-        if (result.length > 1) {
-          table = this.createTable(result);
-          records.push(table);
-        }
-        return this.fail('Expected 1 matching GA pageview, but %d matched.', [result.length], records);
-      }
-
-      // Handle requests by optional parameters
       let filteredRequestsWithParams = [];
       if (!isNullOrUndefined(expectedParams)) {
         if (Object.keys(expectedParams).length > 0) {
