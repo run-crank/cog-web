@@ -36,7 +36,7 @@ export class CheckGoogleAnalyticsPageView extends BaseStep implements StepInterf
     const stepData: any = step.getData().toJavaScript();
     const id: any = stepData.id;
     const expectedParams: any = stepData.withParameters || {};
-    let params;
+    let result;
     try {
       await this.client.waitForNetworkIdle(10000, false);
       const requests = await this.client.getFinishedRequests();
@@ -45,36 +45,37 @@ export class CheckGoogleAnalyticsPageView extends BaseStep implements StepInterf
                                         && r.url.includes('/collect')
                                         && r.url.includes('t=pageview')).map(r => r.url);
       const filteredRequest = urls.filter(url => url.includes(`tid=${id}`));
-
+      result = filteredRequest;
+      // Handle requests by required parameters
       let records = [];
-      if (filteredRequest.length !== 1) {
+      if (result.length !== 1) {
         let table;
-        if (filteredRequest.length > 1) {
-          table = this.createTable(filteredRequest);
+        if (result.length > 1) {
+          table = this.createTable(result);
           records.push(table);
         }
-        return this.fail('Expected 1 matching GA pageview, but %d matched.', [filteredRequest.length], records);
+        return this.fail('Expected 1 matching GA pageview, but %d matched.', [result.length], records);
       }
 
-      let filteredRequestsWithParams;
-      if (Object.keys(expectedParams).length > 0) {
-        filteredRequestsWithParams = filteredRequest.filter(u => this.includesParameters(u, expectedParams));
-      }
-
-      if (!isNullOrUndefined(filteredRequestsWithParams[0])) {
-        params = this.getUrlParams(filteredRequestsWithParams[0]);
+      // Handle requests by optional parameters
+      let filteredRequestsWithParams = [];
+      if (!isNullOrUndefined(expectedParams)) {
+        if (Object.keys(expectedParams).length > 0) {
+          filteredRequestsWithParams = filteredRequest.filter(u => this.includesParameters(u, expectedParams));
+          result = filteredRequestsWithParams;
+        }
       }
 
       records = [];
-      if (filteredRequestsWithParams.length !== 1) {
+      if (result.length !== 1) {
         const table = this.createTable(filteredRequest);
         records.push(table);
-        return this.fail('Expected 1 matching GA pageview, but %d matched.', [filteredRequestsWithParams.length], records);
-      } else {
-        const record = this.keyValue('googleAnalyticsRequest', 'Matched Google Analytics Request', params);
-        records.push(record);
-        return this.pass('Successfuly detected GA pageview for tracking id %s.', [id], records);
+        return this.fail('Expected 1 matching GA pageview, but %d matched.', [result.length], records);
       }
+      const params = this.getUrlParams(result[0]);
+      const record = this.keyValue('googleAnalyticsRequest', 'Matched Google Analytics Request', params);
+      records.push(record);
+      return this.pass('Successfuly detected GA pageview for tracking id %s.', [id], records);
     } catch (e) {
       return this.error('There was a problem checking for a GA pageview for tracking id %s: %s', [id, e.toString()]);
     }

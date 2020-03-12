@@ -60,6 +60,7 @@
     "typescript": "^3.5.1"
   },
   "dependencies": {
+    "@run-crank/utilities": "^0.1.6",
     "bluebird": "^3.5.5",
     "google-protobuf": "^3.8.0",
     "grpc": "^1.21.1",
