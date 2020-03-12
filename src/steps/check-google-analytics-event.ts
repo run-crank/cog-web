@@ -48,7 +48,7 @@ export class CheckGoogleAnalyticsEvent extends BaseStep implements StepInterface
     const eventAction: any = encodeURIComponent(stepData.ea);
     const id: any = stepData.id;
     const expectedParams: any = stepData.withParameters || {};
-    let params;
+    let result;
     try {
       await this.client.waitForNetworkIdle(10000, false);
       const requests = await this.client.getFinishedRequests();
@@ -56,43 +56,48 @@ export class CheckGoogleAnalyticsEvent extends BaseStep implements StepInterface
                                     && r.url.includes('https://www.google-analytics.com')
                                     && r.url.includes('/collect')
                                     && r.url.includes('t=event')).map(r => r.url);
-      let actual = urls.filter(url => url.includes(`tid=${id}`)
+      const filteredRequest = urls.filter(url => url.includes(`tid=${id}`)
                                     && url.toLowerCase().includes(`ea=${eventAction.toLowerCase()}`)
                                     && url.toLowerCase().includes(`ec=${eventCategory.toLowerCase()}`));
-      if (Object.keys(expectedParams).length > 0) {
-        actual = actual.filter(u => this.includesParameters(u, expectedParams));
-      }
-
-      if (!isNullOrUndefined(actual[0])) {
-        params = this.getUrlParams(actual[0]);
-      }
-
-      const records = [];
-      if (actual.length !== 1) {
+      result = filteredRequest;
+      // Handle requests by required parameters
+      let records = [];
+      if (result.length !== 1) {
         let table;
-        if (actual.length > 1) {
-          table = this.createTable(urls);
+        if (result.length > 1) {
+          table = this.createTable(result);
           records.push(table);
         }
-        return this.fail(
-          'Expected 1 matching GA event, but %d matched.',
-          [
-            actual.length,
-          ],
-          records);
-      } else {
-        const record = this.keyValue('googleAnalyticsRequest', 'Matched Google Analytics Request', params);
-        return this.pass(
-          'Successfully detected GA event with category %s, and action %s for tracking id %s.',
-          [
-            stepData.ec,
-            stepData.ea,
-            stepData.id,
-          ],
-          [
-            record,
-          ]);
+        return this.fail('Expected 1 matching GA event, but %d matched.', [result.length], records);
       }
+
+      // Handle requests by optional parameters
+      let filteredRequestsWithParams = [];
+      if (!isNullOrUndefined(expectedParams)) {
+        if (Object.keys(expectedParams).length > 0) {
+          filteredRequestsWithParams = filteredRequest.filter(u => this.includesParameters(u, expectedParams));
+          result = filteredRequestsWithParams;
+        }
+      }
+
+      records = [];
+      if (result.length !== 1) {
+        const table = this.createTable(filteredRequest);
+        records.push(table);
+        return this.fail('Expected 1 matching GA event, but %d matched.', [result.length], records);
+      }
+      const params = this.getUrlParams(result[0]);
+      const record = this.keyValue('googleAnalyticsRequest', 'Matched Google Analytics Request', params);
+      return this.pass(
+        'Successfully detected GA event with category %s, and action %s for tracking id %s.',
+        [
+          stepData.ec,
+          stepData.ea,
+          stepData.id,
+        ],
+        [
+          record,
+        ]);
     } catch (e) {
       return this.error(
         'There was a problem checking for a GA event with category %s, and action %s, for tracking id %s: %s',

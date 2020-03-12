@@ -1,5 +1,5 @@
 import { isNullOrUndefined } from 'util';
-
+import * as util from '@run-crank/utilities';
 import { URL } from 'url';
 import * as querystring from 'querystring';
 
@@ -68,7 +68,7 @@ export class NetworkAware {
 
         for (const [key, value] of Object.entries(actualParams)) {
           if (expectedParams.hasOwnProperty(key) && matched) {
-            matched = expectedParams[key] == value;
+            matched =  String(expectedParams[key]) == String(value);
           }
         }
       }
