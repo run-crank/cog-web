@@ -18,8 +18,9 @@ describe('CheckGoogleAnalyticsEvent', () => {
   beforeEach(() => {
     // Set up test stubs.
     clientWrapperStub = sinon.stub();
-    clientWrapperStub.getFinishedRequests = sinon.stub();
     clientWrapperStub.waitForNetworkIdle = sinon.stub();
+    clientWrapperStub.getNetworkRequests = sinon.stub();
+    clientWrapperStub.evaluateRequests = sinon.stub();
     stepUnderTest = new Step(clientWrapperStub);
     protoStep = new ProtoStep();
   });
@@ -82,7 +83,8 @@ describe('CheckGoogleAnalyticsEvent', () => {
 
     // Stub a response that matches expectations.
     clientWrapperStub.waitForNetworkIdle.resolves();
-    clientWrapperStub.getFinishedRequests.resolves(expectedResult);
+    clientWrapperStub.getNetworkRequests.resolves(expectedResult);
+    clientWrapperStub.evaluateRequests.returns(expectedResult);
 
     // Set step data corresponding to expectations
     protoStep.setData(Struct.fromJavaScript(dataInput));
@@ -109,7 +111,8 @@ describe('CheckGoogleAnalyticsEvent', () => {
 
     // Stub a response that matches expectations.
     clientWrapperStub.waitForNetworkIdle.resolves();
-    clientWrapperStub.getFinishedRequests.resolves(expectedResult);
+    clientWrapperStub.getNetworkRequests.resolves(expectedResult);
+    clientWrapperStub.evaluateRequests.returns(expectedResult);
 
     // Set step data corresponding to expectations
     protoStep.setData(Struct.fromJavaScript(dataInput));
@@ -135,7 +138,8 @@ describe('CheckGoogleAnalyticsEvent', () => {
 
     // Stub a response that matches expectations.
     clientWrapperStub.waitForNetworkIdle.resolves();
-    clientWrapperStub.getFinishedRequests.resolves(expectedResult);
+    clientWrapperStub.getNetworkRequests.resolves(expectedResult);
+    clientWrapperStub.evaluateRequests.returns(expectedResult);
 
     // Set step data corresponding to expectations
     protoStep.setData(Struct.fromJavaScript(dataInput));
@@ -165,7 +169,8 @@ describe('CheckGoogleAnalyticsEvent', () => {
 
     // Stub a response that matches expectations.
     clientWrapperStub.waitForNetworkIdle.resolves();
-    clientWrapperStub.getFinishedRequests.resolves(expectedResult);
+    clientWrapperStub.getNetworkRequests.resolves(expectedResult);
+    clientWrapperStub.evaluateRequests.returns(expectedResult);
 
     // Set step data corresponding to expectations
     protoStep.setData(Struct.fromJavaScript(dataInput));
@@ -199,7 +204,8 @@ describe('CheckGoogleAnalyticsEvent', () => {
 
     // Stub a response that matches expectations.
     clientWrapperStub.waitForNetworkIdle.resolves();
-    clientWrapperStub.getFinishedRequests.resolves(expectedResult);
+    clientWrapperStub.getNetworkRequests.resolves(expectedResult);
+    clientWrapperStub.evaluateRequests.returns(expectedResult);
 
     // Set step data corresponding to expectations
     protoStep.setData(Struct.fromJavaScript(dataInput));
@@ -220,7 +226,7 @@ describe('CheckGoogleAnalyticsEvent', () => {
     };
 
     // Stub a response that matches expectations.
-    clientWrapperStub.getFinishedRequests.throws(error);
+    clientWrapperStub.getNetworkRequests.throws(error);
 
     // Set step data corresponding to expectations
     protoStep.setData(Struct.fromJavaScript(dataInput));
