@@ -47,18 +47,18 @@ export class CheckGoogleAnalyticsEvent extends BaseStep implements StepInterface
     const eventCategory: any = encodeURIComponent(stepData.ec);
     const eventAction: any = encodeURIComponent(stepData.ea);
     const id: any = stepData.id;
-    const expectedParams: any = stepData.withParameters || {};
+    const expectedParams: any = stepData.withParameters;
     let result;
+    const requiredParams = {
+      t: 'event',
+      tid: id,
+      ea: decodeURIComponent(eventAction.toLowerCase()),
+      ec: decodeURIComponent(eventCategory.toLowerCase()),
+    };
     try {
       await this.client.waitForNetworkIdle(10000, false);
-      const requests = await this.client.getFinishedRequests();
-      const urls = requests.filter(r => r.method == 'GET'
-                                    && r.url.includes('https://www.google-analytics.com')
-                                    && r.url.includes('/collect')
-                                    && r.url.includes('t=event')).map(r => r.url);
-      const filteredRequest = urls.filter(url => url.includes(`tid=${id}`)
-                                    && url.toLowerCase().includes(`ea=${eventAction.toLowerCase()}`)
-                                    && url.toLowerCase().includes(`ec=${eventCategory.toLowerCase()}`));
+      const requests = await this.client.getNetworkRequests('https://www.google-analytics.com', '/collect');
+      const filteredRequest = this.client.evaluateRequests(requests, requiredParams).map(r => r.url);
       result = filteredRequest;
       let records = [];
       let filteredRequestsWithParams = [];
