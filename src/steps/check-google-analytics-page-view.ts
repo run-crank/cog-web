@@ -35,17 +35,18 @@ export class CheckGoogleAnalyticsPageView extends BaseStep implements StepInterf
   async executeStep(step: Step): Promise<RunStepResponse> {
     const stepData: any = step.getData().toJavaScript();
     const id: any = stepData.id;
-    const expectedParams: any = stepData.withParameters || {};
+    const expectedParams: any = stepData.withParameters;
+    const requiredParams = {
+      t: 'pageview',
+      tid: id,
+    };
     let result;
     try {
       await this.client.waitForNetworkIdle(10000, false);
-      const requests = await this.client.getFinishedRequests();
-      const urls = requests.filter(r => r.method == 'GET'
-                                        && r.url.includes('https://www.google-analytics.com')
-                                        && r.url.includes('/collect')
-                                        && r.url.includes('t=pageview')).map(r => r.url);
-      const filteredRequest = urls.filter(url => url.includes(`tid=${id}`));
+      const requests = await this.client.getNetworkRequests('https://www.google-analytics.com', '/collect');
+      const filteredRequest = this.client.evaluateRequests(requests, requiredParams).map(r => r.url);
       result = filteredRequest;
+
       let records = [];
       let filteredRequestsWithParams = [];
       if (!isNullOrUndefined(expectedParams)) {
