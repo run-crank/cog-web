@@ -52,8 +52,8 @@ export class CheckGoogleAnalyticsEvent extends BaseStep implements StepInterface
     const requiredParams = {
       t: 'event',
       tid: id,
-      ea: decodeURIComponent(eventAction.toLowerCase()),
-      ec: decodeURIComponent(eventCategory.toLowerCase()),
+      ea: decodeURIComponent(eventAction),
+      ec: decodeURIComponent(eventCategory),
     };
     try {
       await this.client.waitForNetworkIdle(10000, false);
