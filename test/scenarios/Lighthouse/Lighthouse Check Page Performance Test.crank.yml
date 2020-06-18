@@ -5,4 +5,6 @@ description: |
 steps:
 - step: When I navigate to https://crank.run/
 - step: Then the mobile lighthouse performance score should be 74 or higher
+  failAfter: 1
 - step: Then the mobile lighthouse performance score should be 75 or higher
+  failAfter: 1

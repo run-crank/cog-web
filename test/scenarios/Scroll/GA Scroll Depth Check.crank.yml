@@ -1,12 +1,12 @@
 scenario: Scroll To - 50%
 description: |
   Proves that the scroll is realistic enough to trigger a GA scroll event on
-  a scroll tracking blog post after scrolling through 50% of the page.
+  after scrolling through 50% of the page.
 
 steps:
-- step: Given I navigate to https://www.optimizesmart.com/scroll-tracking-via-scroll-depth-trigger-in-google-tag-manager/
+- step: Given I navigate to https://marketingplatform.google.com/about/analytics/
 - step: When I scroll to 50% of the page
-- step: Then google analytics should have tracked an event with category Scroll Tracking and action /scroll-tracking-via-scroll-depth-trigger-in-google-tag-manager/ for tracking id UA-1509844-26
+- step: "Then google analytics should have tracked an event with category gmp: product: analytics: overview and action scroll depth for tracking id UA-38676921-23"
   data:
     withParameters:
-      el: 50% Scroll
+      el: scroll 50%
