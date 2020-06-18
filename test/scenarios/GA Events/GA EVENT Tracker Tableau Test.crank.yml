@@ -5,5 +5,9 @@ description: |
 
 steps:
 - step: Given I navigate to https://www.tableau.com/products/trial
+- step: And I scroll to 100% of the page
 - step: When I click the page element [href="/academic/students#form"]
-- step: Then Google Analytics should have tracked an event with category form and action form present for tracking id UA-625217-46
+- step: Then Google Analytics should have tracked an event with category engagement and action reached page bottom for tracking id UA-625217-46
+  data:
+    withParameters:
+      cd24: https://www.tableau.com/products/trial

@@ -17,5 +17,5 @@ steps:
 - step: And I click the page element [type="submit"]
 - waitFor: 6
   step: Then the email field on marketo lead {{test.email}} should be {{test.email}}
-- step: And the Opt_In_Status__c field on marketo lead {{test.email}} should be 1
+- step: And the Opt_In_Status__c field on marketo lead {{test.email}} should be true
 - step: Finally, delete the {{test.email}} marketo lead

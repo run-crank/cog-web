@@ -10,7 +10,7 @@ steps:
       projectKey: Av-EzYN98DI
 - step: And there should be 1 matching network request for https://api-iam.intercom.io
   data:
-    pathContains: /messenger/web/conversations
+    pathContains: /messenger/web/ping
     withParameters:
       page_title: CMMS Software by UpKeep CMMS | Try Free
 - step: And there should be 2 matching network requests for https://calendly.com
