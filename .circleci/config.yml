@@ -93,8 +93,8 @@ jobs:
             curl -s https://get.crank.run/install.sh | sh
             docker tag $IMAGE_NAME:latest $IMAGE_NAME:local-test
             crank cog:install $IMAGE_NAME:local-test
-            crank cog:install automatoninc/marketo:0.2.0
-            crank cog:install automatoninc/hubspot:0.2.0
+            crank cog:install automatoninc/marketo:0.5.2
+            crank cog:install automatoninc/hubspot:0.4.1
       - run:
           name: Run all test scenarios
           command: crank run ./test/scenarios
