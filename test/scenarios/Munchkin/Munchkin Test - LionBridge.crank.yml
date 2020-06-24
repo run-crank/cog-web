@@ -1,8 +1,0 @@
-scenario: Check that Marketo Munchkin Tracking Loads - LionBridge
-description: |
-  Proves that the Munchkin tracking code is loading correctly on the LionBridge
-  homepage.
-
-steps:
-- step: When I navigate to https://www.lionbridge.com/
-- step: Then the tracking code for munchkin account id 972-pws-816 should load
