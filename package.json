@@ -1,6 +1,6 @@
 {
   "name": "cog-web",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "A generic web browser Cog for Crank",
   "license": "MIT",
   "cog": {
