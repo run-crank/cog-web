@@ -78,26 +78,26 @@ jobs:
           name: Uninstall Cog
           command: crank cog:uninstall $IMAGE_NAME --force
 
-  run-test-scenarios:
-    executor: docker-user
-    steps:
-      - checkout
-      - attach_workspace:
-          at: /tmp/workspace
-      - run:
-          name: Load archived Docker image
-          command: docker load -i /tmp/workspace/image.tar
-      - run:
-          name: Install Crank and required Cogs
-          command: |
-            curl -s https://get.crank.run/install.sh | sh
-            docker tag $IMAGE_NAME:latest $IMAGE_NAME:local-test
-            crank cog:install $IMAGE_NAME:local-test
-            crank cog:install automatoninc/marketo:0.5.2
-            crank cog:install automatoninc/hubspot:0.4.1
-      - run:
-          name: Run all test scenarios
-          command: crank run ./test/scenarios
+  # run-test-scenarios:
+  #   executor: docker-user
+  #   steps:
+  #     - checkout
+  #     - attach_workspace:
+  #         at: /tmp/workspace
+  #     - run:
+  #         name: Load archived Docker image
+  #         command: docker load -i /tmp/workspace/image.tar
+  #     - run:
+  #         name: Install Crank and required Cogs
+  #         command: |
+  #           curl -s https://get.crank.run/install.sh | sh
+  #           docker tag $IMAGE_NAME:latest $IMAGE_NAME:local-test
+  #           crank cog:install $IMAGE_NAME:local-test
+  #           crank cog:install automatoninc/marketo:0.5.2
+  #           crank cog:install automatoninc/hubspot:0.4.1
+  #     - run:
+  #         name: Run all test scenarios
+  #         command: crank run ./test/scenarios
 
   publish-dev:
     executor: docker-publisher
