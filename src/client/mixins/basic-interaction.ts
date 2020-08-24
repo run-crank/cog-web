@@ -124,7 +124,7 @@ export class BasicInteractionAware {
     // configuration blocks requests from UAs matching that pattern.
     await this.client.setUserAgent(ua.replace(' Chrome', ' AutomatonChrome'));
     await this.client.setViewport({ width: 1280, height: 960 });
-    const response = await this.client.goto(url, { waitUntil: 'networkidle0' });
+    const response = await this.client.goto(url, { waitUntil: 'networkidle0', timeout: 90000 });
 
     // Stash this response on the client. Adding the data to the client is the
     // only way to persist this response object between steps.
