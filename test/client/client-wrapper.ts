@@ -125,7 +125,7 @@ describe('ClientWrapper', () => {
       expect(pageStub.setUserAgent).to.have.been.calledWith(expectedUserAgent);
       expect(pageStub.setViewport).to.have.been.calledWith(sinon.match.has('width', 1280));
       expect(pageStub.setViewport).to.have.been.calledWith(sinon.match.has('height', 960));
-      expect(pageStub.goto).to.have.been.calledWith(expectedUrl, { waitUntil: 'networkidle0' });
+      expect(pageStub.goto).to.have.been.calledWith(expectedUrl, { waitUntil: 'networkidle0', timeout: 90000 });
       expect(pageStub.___lastResponse).to.be.string(expectedLastResponse);
     });
 
