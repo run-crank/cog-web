@@ -8,11 +8,11 @@ steps:
     pathContains: /api/client-info/launcher
     withParameters:
       projectKey: Av-EzYN98DI
-- step: And there should be 1 matching network request for https://api-iam.intercom.io
-  data:
-    pathContains: /messenger/web/ping
-    withParameters:
-      page_title: CMMS Software by UpKeep CMMS | Try Free
+# - step: And there should be 1 matching network request for https://api-iam.intercom.io
+#   data:
+#     pathContains: /messenger/web/ping
+#     withParameters:
+#       page_title: CMMS Software by UpKeep CMMS | Try Free
 - step: And there should be 2 matching network requests for https://calendly.com
 - step: And there should be 0 matching network requests for https://doesnot-exist.fyi
 - step: And there should be 1 matching network request for https://pi.pardot.com

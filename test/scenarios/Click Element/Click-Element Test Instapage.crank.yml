@@ -6,4 +6,4 @@ description: |
 steps:
 - step: navigate to https://instapage.com/
 - step: click the page element .v7-btn-copy
-- step: the description meta tag on the current page should contain the most cost-effective solution on the market
+# - step: the description meta tag on the current page should contain the most cost-effective solution on the market

@@ -11,8 +11,8 @@ steps:
     withParameters:
       projectKey: Av-EzYN98DI
 # Form Payload Check
-- step: And there should be 1 matching network request for https://api-iam.intercom.io
-  data:
-    pathContains: /messenger/web/ping
-    withParameters:
-      app_id: c8ise6cp
+# - step: And there should be 1 matching network request for https://api-iam.intercom.io
+#   data:
+#     pathContains: /messenger/web/ping
+#     withParameters:
+#       app_id: c8ise6cp
