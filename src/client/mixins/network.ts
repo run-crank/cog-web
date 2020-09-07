@@ -42,7 +42,7 @@ export class NetworkAware {
         const requestHasValidContentType = SUPPORTED_CONTENT_TYPES.filter(f => f.includes(contentType) || contentType.includes(f)).length > 0;
         if (requestHasValidContentType) {
           try {
-            actualParams = JSON.parse(request.postData);
+            actualParams = request.postData ? JSON.parse(request.postData) : this.convertParamsToObject(new URL(request.url).searchParams);
           } catch (e) {
             if (contentType == 'text/plain') {
               throw new Error(`Unable To Parse Body To JSON: ${request.postData}`);
