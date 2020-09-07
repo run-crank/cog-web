@@ -24,6 +24,8 @@ export class NetworkAware {
   private convertParamsToObject(params: URLSearchParams) {
     const result = {};
 
+    if (isNullOrUndefined(params)) return result;
+
     params.forEach((value, key) => {
       result[key] = value;
     });
@@ -40,14 +42,15 @@ export class NetworkAware {
       } else if (OTHER_REQUEST_METHODS.includes(request.method)) {
         const contentType = request.rawRequest._headers['content-type'];
         const requestHasValidContentType = SUPPORTED_CONTENT_TYPES.filter(f => f.includes(contentType) || contentType.includes(f)).length > 0;
+        const postData = request.postData ? JSON.parse(request.postData) : this.convertParamsToObject(new URL(request.url).searchParams);
         if (requestHasValidContentType) {
           try {
-            actualParams = request.postData ? JSON.parse(request.postData) : this.convertParamsToObject(new URL(request.url).searchParams);
+            actualParams = postData;
           } catch (e) {
             if (contentType == 'text/plain') {
-              throw new Error(`Unable To Parse Body To JSON: ${request.postData}`);
+              throw new Error(`Unable To Parse Body To JSON: ${postData.toString()}`);
             }
-            actualParams = querystring.parse(request.postData);
+            actualParams = querystring.parse(postData.toString());
           }
         } else {
           throw new Error(`Unknown Content Type: ${contentType}`);
