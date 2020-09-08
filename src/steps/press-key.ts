@@ -20,12 +20,12 @@ export class PressKey extends BaseStep implements StepInterface {
       await this.client.pressKey(key);
       const screenshot = await this.client.client.screenshot({ type: 'jpeg', encoding: 'binary', quality: 60 });
       const binaryRecord = this.binary('screenshot', 'Screenshot', 'image/jpeg', screenshot);
-      return this.pass('Successfully pressed element: %s', [key], [binaryRecord]);
+      return this.pass('Successfully pressed key: %s', [key], [binaryRecord]);
     } catch (e) {
       const screenshot = await this.client.client.screenshot({ type: 'jpeg', encoding: 'binary', quality: 60 });
       const binaryRecord = this.binary('screenshot', 'Screenshot', 'image/jpeg', screenshot);
       return this.error(
-        'There was a problem clicking key %s: %s',
+        'There was a problem pressing key %s: %s',
         [
           key,
           e.toString(),
