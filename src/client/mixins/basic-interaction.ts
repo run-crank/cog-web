@@ -1,5 +1,6 @@
 import { Page } from 'puppeteer';
 import { Promise as Bluebird } from 'bluebird';
+import { keyCodes } from '../_shared/constants/key-codes.constant';
 
 export class BasicInteractionAware {
   public client: Page;
@@ -64,6 +65,16 @@ export class BasicInteractionAware {
       });
     } catch (e) {
       throw Error(`Unable to scroll to ${depth} percent depth: ${e}`);
+    }
+  }
+
+  public async pressKey(key: string) {
+    if (!keyCodes[key]) throw Error('Key is invalid');
+
+    try {
+      await this.client.keyboard.type(String.fromCharCode(keyCodes[key]));
+    } catch (e) {
+      throw Error('There was an error pressing the key');
     }
   }
 
