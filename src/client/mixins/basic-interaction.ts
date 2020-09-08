@@ -74,7 +74,7 @@ export class BasicInteractionAware {
     try {
       await this.client.keyboard.type(String.fromCharCode(keyCodes[key]));
     } catch (e) {
-      throw Error('There was an error pressing the key');
+      throw e;
     }
   }
 
