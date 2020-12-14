@@ -95,9 +95,9 @@ jobs:
             crank cog:install $IMAGE_NAME:local-test
             crank cog:install automatoninc/marketo:0.5.2
             crank cog:install automatoninc/hubspot:0.4.1
-      - run:
-          name: Run all test scenarios
-          command: crank run ./test/scenarios
+      # - run:
+      #     name: Run all test scenarios
+      #     command: crank run ./test/scenarios
 
   publish-dev:
     executor: docker-publisher
@@ -170,6 +170,13 @@ workflows:
             branches:
               only: master
       - build:
+          filters:
+            branches:
+              only: master
+      - run-test-scenarios:
+          context: web-cog-sandbox-env-credentials
+          requires:
+            - build
           filters:
             branches:
               only: master
