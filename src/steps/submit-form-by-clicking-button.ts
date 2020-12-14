@@ -24,7 +24,6 @@ export class SubmitFormByClickingButton extends BaseStep implements StepInterfac
       field: 'submittedAt',
       description: 'The datetime when the form was submitted',
       type: FieldDefinition.Type.DATETIME,
-      optionality: FieldDefinition.Optionality.OPTIONAL,
     }],
   }];
 
@@ -35,7 +34,7 @@ export class SubmitFormByClickingButton extends BaseStep implements StepInterfac
 
     try {
       await this.client.submitFormByClickingButton(selector);
-      submittedAt = Date.now();
+      submittedAt = Date.now(); // Track it on successful submit
 
       const keyValueRecord = this.keyValue('form', 'Form Metadata', {
         selector, submittedAt,
@@ -44,6 +43,7 @@ export class SubmitFormByClickingButton extends BaseStep implements StepInterfac
       const binaryRecord = this.binary('screenshot', 'Screenshot', 'image/jpeg', screenshot);
       return this.pass('Successfully submitted form by clicking button %s', [selector], [binaryRecord, keyValueRecord]);
     } catch (e) {
+      submittedAt = Date.now(); // Track it when it fails
       const screenshot = await this.client.client.screenshot({ type: 'jpeg', encoding: 'binary', quality: 60 });
       const binaryRecord = this.binary('screenshot', 'Screenshot', 'image/jpeg', screenshot);
       const keyValueRecord = this.keyValue('form', 'Form Metadata', {
