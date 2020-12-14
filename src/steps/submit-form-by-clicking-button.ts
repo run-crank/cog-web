@@ -1,5 +1,5 @@
-import { BaseStep, Field, StepInterface } from '../core/base-step';
-import { Step, RunStepResponse, FieldDefinition, StepDefinition, StepRecord } from '../proto/cog_pb';
+import { BaseStep, ExpectedRecord, Field, StepInterface } from '../core/base-step';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition } from '../proto/cog_pb';
 
 export class SubmitFormByClickingButton extends BaseStep implements StepInterface {
 
@@ -12,19 +12,44 @@ export class SubmitFormByClickingButton extends BaseStep implements StepInterfac
     type: FieldDefinition.Type.STRING,
     description: "Button's DOM Query Selector",
   }];
+  protected expectedRecords: ExpectedRecord[] = [{
+    id: 'form',
+    type: RecordDefinition.Type.KEYVALUE,
+    dynamicFields: false,
+    fields: [{
+      field: 'selector',
+      description: 'The Submit Button Selector',
+      type: FieldDefinition.Type.STRING,
+    }, {
+      field: 'submittedAt',
+      description: 'The datetime when the form was submitted',
+      type: FieldDefinition.Type.DATETIME,
+      optionality: FieldDefinition.Optionality.OPTIONAL,
+    }],
+  }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
+    let submittedAt;
     const stepData: any = step.getData().toJavaScript();
     const selector: string = stepData.domQuerySelector;
+
     try {
       await this.client.submitFormByClickingButton(selector);
+      submittedAt = Date.now();
+
+      const keyValueRecord = this.keyValue('form', 'Form Metadata', {
+        selector, submittedAt,
+      });
       const screenshot = await this.client.client.screenshot({ type: 'jpeg', encoding: 'binary', quality: 60 });
       const binaryRecord = this.binary('screenshot', 'Screenshot', 'image/jpeg', screenshot);
-      return this.pass('Successfully submitted form by clicking button %s', [selector], [binaryRecord]);
+      return this.pass('Successfully submitted form by clicking button %s', [selector], [binaryRecord, keyValueRecord]);
     } catch (e) {
       const screenshot = await this.client.client.screenshot({ type: 'jpeg', encoding: 'binary', quality: 60 });
       const binaryRecord = this.binary('screenshot', 'Screenshot', 'image/jpeg', screenshot);
-      return this.error('There was a problem submitting the form: %s', [e.toString()], [binaryRecord]);
+      const keyValueRecord = this.keyValue('form', 'Form Metadata', {
+        selector, submittedAt,
+      });
+      return this.error('There was a problem submitting the form: %s', [e.toString()], [binaryRecord, keyValueRecord]);
     }
   }
 
