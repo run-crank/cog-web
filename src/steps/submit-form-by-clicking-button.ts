@@ -1,6 +1,8 @@
 import { BaseStep, ExpectedRecord, Field, StepInterface } from '../core/base-step';
 import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition } from '../proto/cog_pb';
 
+import * as moment from 'moment';
+
 export class SubmitFormByClickingButton extends BaseStep implements StepInterface {
 
   protected stepName: string = 'Submit a form by clicking a button';
@@ -34,7 +36,7 @@ export class SubmitFormByClickingButton extends BaseStep implements StepInterfac
 
     try {
       await this.client.submitFormByClickingButton(selector);
-      submittedAt = Date.now(); // Track it on successful submit
+      submittedAt = moment().utc().format(); // Track it on successful submit
 
       const keyValueRecord = this.keyValue('form', 'Form Metadata', {
         selector, submittedAt,
@@ -43,7 +45,7 @@ export class SubmitFormByClickingButton extends BaseStep implements StepInterfac
       const binaryRecord = this.binary('screenshot', 'Screenshot', 'image/jpeg', screenshot);
       return this.pass('Successfully submitted form by clicking button %s', [selector], [binaryRecord, keyValueRecord]);
     } catch (e) {
-      submittedAt = Date.now(); // Track it when it fails
+      submittedAt = moment().utc().format(); // Track it when it fails
       const screenshot = await this.client.client.screenshot({ type: 'jpeg', encoding: 'binary', quality: 60 });
       const binaryRecord = this.binary('screenshot', 'Screenshot', 'image/jpeg', screenshot);
       const keyValueRecord = this.keyValue('form', 'Form Metadata', {

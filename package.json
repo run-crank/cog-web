@@ -65,6 +65,7 @@
     "google-protobuf": "^3.8.0",
     "grpc": "^1.24.3",
     "lighthouse": "^5.6.0",
+    "moment": "^2.29.1",
     "puppeteer": "^1.18.1",
     "puppeteer-cluster": "^0.16.0",
     "ts-node": "^8.3.0"
