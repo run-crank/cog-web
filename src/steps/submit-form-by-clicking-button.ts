@@ -35,8 +35,8 @@ export class SubmitFormByClickingButton extends BaseStep implements StepInterfac
     const selector: string = stepData.domQuerySelector;
 
     try {
-      await this.client.submitFormByClickingButton(selector);
       submittedAt = moment.utc(moment()).format(); // Track it on successful submit
+      await this.client.submitFormByClickingButton(selector);
 
       const keyValueRecord = this.keyValue('form', 'Form Metadata', {
         selector, submittedAt,
