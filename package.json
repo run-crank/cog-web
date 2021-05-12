@@ -63,7 +63,7 @@
     "@run-crank/utilities": "^0.1.6",
     "bluebird": "^3.5.5",
     "google-protobuf": "^3.8.0",
-    "grpc": "^1.24.3",
+    "grpc": "^1.24.9",
     "lighthouse": "^5.6.0",
     "moment": "^2.29.1",
     "puppeteer": "^1.18.1",
