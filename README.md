@@ -49,6 +49,7 @@ This Cog does not require any authentication details.
 | **Navigate to a webpage**<br>(`NavigateToPage`) | `navigate to (?<webPageUrl>.+)` | - `webPageUrl`: Page URL |
 | **Scroll to a percentage depth of a web page**<br>(`ScrollTo`) | `scroll to (?<depth>\d+)% of the page` | - `depth`: Percent Depth |
 | **Submit a form by clicking a button**<br>(`SubmitFormByClickingButton`) | `submit the form by clicking (?<domQuerySelector>.+)` | - `domQuerySelector`: Button's DOM Query Selector |
+| **Check all network requests**<br>(`CheckAllNetworkRequestsStep`) | `there should be network requests from the page` | - `none` |
 <!-- stepDetailsEnd -->
 
 ## Development and Contributing
