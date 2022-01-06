@@ -33,7 +33,7 @@ export class NetworkAware {
     return result;
   }
 
-  evaluateRequests(requests, expectedParams) {
+  evaluateRequests(requests, expectedParams = {}) {
     const matches = [];
     requests.forEach((request) => {
       let actualParams = {};
@@ -61,7 +61,7 @@ export class NetworkAware {
 
       let matched = true;
 
-      if (!isNullOrUndefined(expectedParams)) {
+      if (!isNullOrUndefined(expectedParams) && Object.keys(expectedParams).length > 0) {
         const intersection = Object.keys(actualParams).filter(f => Object.keys(expectedParams).includes(f));
 
         //// No properties matched; No way requests are matching
