@@ -39,6 +39,7 @@ export class CheckNetworkRequestStep extends BaseStep implements StepInterface {
     try {
       //// This will ensure that NavigateTo was called
       await this.client.getCurrentPageInfo('url');
+      
       console.log('reqCount', reqCount);
       console.log('baseUrl', baseUrl);
       console.log('pathContains', pathContains);
