@@ -22,6 +22,9 @@ describe('NavigateToPage', () => {
     clientWrapperStub.client = sinon.stub();
     clientWrapperStub.client.screenshot = sinon.stub();
     clientWrapperStub.client.screenshot.returns('anyBinary');
+    clientWrapperStub.client['___lastResponse'] = sinon.stub();
+    clientWrapperStub.client['___lastResponse']['status'] = sinon.stub();
+    clientWrapperStub.client['___lastResponse']['status'].returns(200);
     stepUnderTest = new Step(clientWrapperStub);
     protoStep = new ProtoStep();
   });
@@ -54,7 +57,21 @@ describe('NavigateToPage', () => {
     protoStep.setData(Struct.fromJavaScript({webPageUrl: 'https://mayaswell.exist'}));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
+    console.log(response.getOutcome());
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
+  });
+
+  it('should fail when the page returns a status 404', async () => {
+    // Stub a response that matches expectations.
+    clientWrapperStub.navigateToUrl.resolves();
+    clientWrapperStub.client['___lastResponse']['status'].returns(404);
+
+    // Set step data corresponding to expectations
+    protoStep.setData(Struct.fromJavaScript({webPageUrl: 'https://mayaswell.exist'}));
+
+    const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
+    console.log(response.getOutcome());
+    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.FAILED);
   });
 
   it('should respond with error if puppeteer is unable to navigate', async () => {
