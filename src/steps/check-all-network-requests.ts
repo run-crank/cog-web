@@ -5,12 +5,21 @@ export class CheckAllNetworkRequestsStep extends BaseStep implements StepInterfa
 
   protected stepName: string = 'Check for all network requests';
   // tslint:disable-next-line:max-line-length
-  protected stepExpression: string = 'there should be network requests from the page';
+  protected stepExpression: string = 'there should be consistent network requests from the page';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
-  protected expectedFields: Field[] = [];
+  protected expectedFields: Field[] = [{
+    field: 'previousRequests',
+    type: FieldDefinition.Type.MAP,
+    description: 'Previous Network Requests',
+    optionality: FieldDefinition.Optionality.OPTIONAL,
+  }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
+    const stepData: any = step.getData().toJavaScript();
+    const previousRequests = stepData.previousRequests;
     const sources = {};
+    const missingSources = {};
+    const newSources = {};
 
     try {
       //// This will ensure that NavigateTo was called
@@ -42,14 +51,50 @@ export class CheckAllNetworkRequestsStep extends BaseStep implements StepInterfa
           records);
       }
       if (urls.length > 0) {
-        records.push(this.createTable(sources));
+        if (previousRequests) {
+          const previousUrls = Object.keys(previousRequests);
+          let passing = urls.length === previousUrls.length;
+          urls.forEach((newUrl) => {
+            if (!previousUrls.includes(newUrl)) {
+              passing = false;
+              newSources[newUrl] = { url: newUrl, count: sources[newUrl].count };
+            }
+          });
+          previousUrls.forEach((oldUrl) => {
+            if (!urls.includes(oldUrl)) {
+              passing = false;
+              missingSources[oldUrl] = { url: oldUrl, count: previousRequests[oldUrl] };
+            }
+          });
+          if (passing) {
+            records.push(this.createTable('pixels', 'Network Sources', sources));
+            return this.pass(
+              '%d sources found, as expected',
+              [
+                urls.length,
+              ],
+              records);
+          } else {
+            records.push(this.createTable('pixels', 'Network Sources', sources));
+            records.push(this.createTable('newPixels', 'New Network Sources', newSources));
+            records.push(this.createTable('missingPixels', 'Missing Network Sources', missingSources));
+            return this.fail(
+              'Network Sources have changes since the last run of this scenario',
+              [
+                (urls.length),
+              ],
+              records);
+          }
+        } else {
+          records.push(this.createTable('pixels', 'Network Sources', sources));
+          return this.pass(
+            '%d sources found, as expected',
+            [
+              urls.length,
+            ],
+            records);
+        }
       }
-      return this.pass(
-        '%d sources found, as expected',
-        [
-          urls.length,
-        ],
-        records);
     } catch (e) {
       return this.error('There was a problem checking network request: %s', [
         e.toString(),
@@ -57,7 +102,7 @@ export class CheckAllNetworkRequestsStep extends BaseStep implements StepInterfa
     }
   }
 
-  private createTable(sources) {
+  private createTable(id, name, sources) {
     const headers = {};
     const rows = [];
     headers['fires'] = 'fires';
@@ -73,7 +118,7 @@ export class CheckAllNetworkRequestsStep extends BaseStep implements StepInterfa
     headerKeys.forEach((key: string) => {
       headers[key] = key;
     });
-    return this.table('pixels', 'Network Sources', headers, rows);
+    return this.table(id, name, headers, rows);
   }
 }
 
