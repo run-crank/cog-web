@@ -29,7 +29,7 @@ describe('CheckAllNetworkRequests', () => {
       const stepDef: StepDefinition = stepUnderTest.getDefinition();
       expect(stepDef.getStepId()).to.equal('CheckAllNetworkRequestsStep');
       expect(stepDef.getName()).to.equal('Check for all network requests');
-      expect(stepDef.getExpression()).to.equal('there should be network requests from the page');
+      expect(stepDef.getExpression()).to.equal('there should be consistent network requests from the page');
       expect(stepDef.getType()).to.equal(StepDefinition.Type.VALIDATION);
     });
 
@@ -39,7 +39,10 @@ describe('CheckAllNetworkRequests', () => {
         return field.toObject();
       });
 
-      expect(fields.length).to.equal(0);
+      // previousRequests field
+      const previousRequests: any = fields.filter(f => f.key === 'previousRequests')[0];
+      expect(previousRequests.optionality).to.equal(FieldDefinition.Optionality.OPTIONAL);
+      expect(previousRequests.type).to.equal(FieldDefinition.Type.MAP);
     });
   });
 
@@ -48,8 +51,7 @@ describe('CheckAllNetworkRequests', () => {
       beforeEach(() => {
         clientWrapperStub.getCurrentPageInfo.throws();
         protoStep.setData(Struct.fromJavaScript({
-          reqCount: 1,
-          baseUrl: 'http://thisisjust.atomatest.com',
+          previousRequests: {},
         }));
       });
 
@@ -59,10 +61,13 @@ describe('CheckAllNetworkRequests', () => {
       });
     });
 
-    describe('Zero requests should result in an error', () => {
+    describe('Zero requests should result in a fail', () => {
       beforeEach(() => {
         clientWrapperStub.getCurrentPageInfo.returns(Promise.resolve('http://thisisjust.atomatest.com'));
         clientWrapperStub.getFinishedRequests.returns(Promise.resolve([]));
+        protoStep.setData(Struct.fromJavaScript({
+          previousRequests: {},
+        }));
       });
 
       it('should respond with fail', async () => {
@@ -75,7 +80,9 @@ describe('CheckAllNetworkRequests', () => {
       beforeEach(() => {
         clientWrapperStub.getCurrentPageInfo.returns(Promise.resolve('http://thisisjust.atomatest.com'));
         clientWrapperStub.getFinishedRequests.returns(Promise.resolve([{ url: 'https://www.someurl.com' }]));
-        // tslint:disable-next-line:prefer-array-literal
+        protoStep.setData(Struct.fromJavaScript({
+          previousRequests: { 'https://www.someurl.com': 1 },
+        }));
       });
 
       it('should respond with pass', async () => {
