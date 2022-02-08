@@ -46,9 +46,9 @@ export class NavigateToPage extends BaseStep implements StepInterface {
           [
             url,
             e.toString(),
-          ],);
+          ],
+        );
       }
-      
     }
   }
 
