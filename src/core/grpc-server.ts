@@ -3,6 +3,9 @@ import { Cluster } from 'puppeteer-cluster';
 import { CogServiceService as CogService } from '../proto/cog_grpc_pb';
 import { Cog } from './cog';
 import { ClientWrapper } from '../client/client-wrapper';
+import puppeteerExtra from 'puppeteer-extra';
+import puppeteerExtraPluginRecaptcha  from 'puppeteer-extra-plugin-recaptcha';
+const stealthPlugin = require('puppeteer-extra-plugin-stealth'); // needs to use require
 
 const server = new grpc.Server();
 const port = process.env.PORT || 28866;
@@ -22,7 +25,23 @@ if (process.env.USE_SSL) {
 }
 
 async function instantiateCluster(): Promise<Cluster> {
+
+  const captchaToken = process.env.CAPTCHA_TOKEN || null;
+  // add stealth and recaptcha plugins
+  puppeteerExtra.use(stealthPlugin());
+  if (captchaToken) {
+    puppeteerExtra.use(
+      puppeteerExtraPluginRecaptcha({
+        provider: {
+          id: '2captcha',
+          token: captchaToken,
+        },
+      }),
+    );
+  }
+
   return await Cluster.launch({
+    puppeteer: puppeteerExtra, // Use the puppeteer-extra instance that has plugins
     concurrency: Cluster.CONCURRENCY_CONTEXT,
     maxConcurrency: process.env.hasOwnProperty('CLUSTER_MAX_CONCURRENCY') ? Number(process.env.CLUSTER_MAX_CONCURRENCY) : 4,
     retryLimit: process.env.hasOwnProperty('CLUSTER_RETRY_LIMIT') ? Number(process.env.CLUSTER_RETRY_LIMIT) : 3,
