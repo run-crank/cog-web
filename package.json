@@ -15,7 +15,7 @@
     "build-ts": "tsc",
     "lint": "tslint -c tslint.json -p tsconfig.json",
     "start": "check-engine package.json && ts-node src/core/grpc-server.ts",
-    "test": "nyc mocha -r ts-node/register test/*.ts test/**/*.ts",
+    "test": "nyc mocha -r ts-node/register src/core/grpc-server.ts test/*.ts test/**/*.ts ",
     "version": "crank cog:readme automatoninc/web && git add README.md"
   },
   "nyc": {
@@ -57,7 +57,7 @@
     "ts-sinon": "^1.0.17",
     "tslint": "^5.20.0",
     "tslint-config-airbnb": "^5.11.1",
-    "typescript": "^3.5.1"
+    "typescript": "^3.7"
   },
   "dependencies": {
     "@run-crank/utilities": "^0.4.5",
@@ -68,6 +68,9 @@
     "moment": "^2.29.1",
     "puppeteer": "^1.18.1",
     "puppeteer-cluster": "^0.16.0",
+    "puppeteer-extra": "^3.2.3",
+    "puppeteer-extra-plugin-recaptcha": "^3.5.0",
+    "puppeteer-extra-plugin-stealth": "^2.9.0",
     "ts-node": "^8.3.0"
   }
 }

@@ -136,6 +136,10 @@ export class BasicInteractionAware {
     await this.client.setUserAgent(ua.replace(' Chrome', ' AutomatonChrome'));
     await this.client.setViewport({ width: 1280, height: 960 });
     const response = await this.client.goto(url, { waitUntil: 'networkidle0', timeout: 90000 });
+    // Run solveRecaptchas() as soon as page loads, will automatically solve captchas even if they appear later
+    if (process.env.CAPTCHA_TOKEN) {
+      await this.client.solveRecaptchas();
+    }
 
     // Stash this response on the client. Adding the data to the client is the
     // only way to persist this response object between steps.
