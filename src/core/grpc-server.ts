@@ -35,7 +35,7 @@ async function instantiateCluster(): Promise<Cluster> {
           id: '2captcha',
           token: process.env.CAPTCHA_TOKEN,
         },
-        solveInactiveChallenges: true
+        solveInactiveChallenges: true,
       }),
     );
   }
@@ -54,10 +54,10 @@ async function instantiateCluster(): Promise<Cluster> {
         '--disable-setuid-sandbox',
         '--disable-dev-shm-usage',
         '--disable-features=IsolateOrigins,site-per-process',
-        '--flag-switches-begin --disable-site-isolation-trials --flag-switches-end'
+        '--flag-switches-begin --disable-site-isolation-trials --flag-switches-end',
       ] : [
         '--disable-features=IsolateOrigins,site-per-process',
-        '--flag-switches-begin --disable-site-isolation-trials --flag-switches-end'
+        '--flag-switches-begin --disable-site-isolation-trials --flag-switches-end',
       ],
     },
   });
