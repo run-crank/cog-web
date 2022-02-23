@@ -139,6 +139,10 @@ export class BasicInteractionAware {
     // Run solveRecaptchas() as soon as page loads, will automatically solve captchas even if they appear later
     if (process.env.CAPTCHA_TOKEN) {
       await this.client.solveRecaptchas();
+      // Also loops through all iFrames to solve captchas within
+      for (const frame of this.client.mainFrame().childFrames()) {
+        await frame.solveRecaptchas();
+      }
     }
 
     // Stash this response on the client. Adding the data to the client is the

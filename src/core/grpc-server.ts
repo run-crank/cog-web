@@ -26,16 +26,16 @@ if (process.env.USE_SSL) {
 
 async function instantiateCluster(): Promise<Cluster> {
 
-  const captchaToken = process.env.CAPTCHA_TOKEN || null;
   // add stealth and recaptcha plugins
   puppeteerExtra.use(stealthPlugin());
-  if (captchaToken) {
+  if (process.env.CAPTCHA_TOKEN) {
     puppeteerExtra.use(
       puppeteerExtraPluginRecaptcha({
         provider: {
           id: '2captcha',
-          token: captchaToken,
+          token: process.env.CAPTCHA_TOKEN,
         },
+        solveInactiveChallenges: true,
       }),
     );
   }
@@ -53,7 +53,12 @@ async function instantiateCluster(): Promise<Cluster> {
         '--no-sandbox',
         '--disable-setuid-sandbox',
         '--disable-dev-shm-usage',
-      ] : [],
+        '--disable-features=IsolateOrigins,site-per-process',
+        '--flag-switches-begin --disable-site-isolation-trials --flag-switches-end',
+      ] : [
+        '--disable-features=IsolateOrigins,site-per-process',
+        '--flag-switches-begin --disable-site-isolation-trials --flag-switches-end',
+      ],
     },
   });
 }
