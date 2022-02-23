@@ -18,6 +18,13 @@ export class ClickOnElement extends BaseStep implements StepInterface {
     const selector: string = stepData.domQuerySelector;
 
     try {
+      // Run solveRecaptchas() again before clicking anything, in case a new captcha appeared
+      if (process.env.CAPTCHA_TOKEN) {
+        await this.client.client.solveRecaptchas();
+        for (const frame of this.client.client.mainFrame().childFrames()) {
+          await frame.solveRecaptchas();
+        }
+      }
       await this.client.clickElement(selector);
       const screenshot = await this.client.client.screenshot({ type: 'jpeg', encoding: 'binary', quality: 60 });
       const binaryRecord = this.binary('screenshot', 'Screenshot', 'image/jpeg', screenshot);

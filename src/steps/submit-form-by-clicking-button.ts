@@ -35,6 +35,13 @@ export class SubmitFormByClickingButton extends BaseStep implements StepInterfac
     const selector: string = stepData.domQuerySelector;
 
     try {
+      // Run solveRecaptchas() again before submitting form, in case a new captcha appeared
+      if (process.env.CAPTCHA_TOKEN) {
+        await this.client.client.solveRecaptchas();
+        for (const frame of this.client.client.mainFrame().childFrames()) {
+          await frame.solveRecaptchas();
+        }
+      }
       submittedAt = moment.utc(moment()).format(); // Track it on successful submit
       await this.client.submitFormByClickingButton(selector);
 
