@@ -70,7 +70,7 @@
     "puppeteer-cluster": "^0.16.0",
     "puppeteer-extra": "^3.2.3",
     "puppeteer-extra-plugin-recaptcha": "^3.5.0",
-    "puppeteer-extra-plugin-stealth": "^2.9.0",
+    "puppeteer-extra-plugin-stealth": "^2.4.5",
     "ts-node": "^8.3.0"
   }
 }
