@@ -27,7 +27,7 @@ if (process.env.USE_SSL) {
 async function instantiateCluster(): Promise<Cluster> {
 
   // add stealth and recaptcha plugins
-  puppeteerExtra.use(stealthPlugin());
+  // puppeteerExtra.use(stealthPlugin()); disablling stealth plugin for bug 4626
   if (process.env.CAPTCHA_TOKEN) {
     puppeteerExtra.use(
       puppeteerExtraPluginRecaptcha({
