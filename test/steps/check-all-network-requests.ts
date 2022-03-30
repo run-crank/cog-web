@@ -81,7 +81,7 @@ describe('CheckAllNetworkRequests', () => {
         clientWrapperStub.getCurrentPageInfo.returns(Promise.resolve('http://thisisjust.atomatest.com'));
         clientWrapperStub.getFinishedRequests.returns(Promise.resolve([{ url: 'https://www.someurl.com' }]));
         protoStep.setData(Struct.fromJavaScript({
-          previousRequests: { 'https://www.someurl.com': 1 },
+          previousRequests: { 'someurl.com': 1 },
         }));
       });
 
