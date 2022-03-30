@@ -465,6 +465,11 @@ describe('ClientWrapper', () => {
         url: sinon.stub(),
         text: sinon.stub(),
       };
+      pageStub.___currentFrame = {
+        status: sinon.stub(),
+        url: sinon.stub(),
+        text: sinon.stub(),
+      };
 
       // Stub out event emitter.
       pageStub.listenerCount = sinon.stub();
@@ -474,7 +479,7 @@ describe('ClientWrapper', () => {
 
     it('sadPath:noPageContext', () => {
       // Set up test instance.
-      delete pageStub.___lastResponse;
+      delete pageStub.___currentFrame;
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
       pageStub.addListener.resolves();
       pageStub.listeners.resolves();
@@ -486,7 +491,7 @@ describe('ClientWrapper', () => {
 
     it('sadPath:unknownDetail', () => {
       // Set up test instance.
-      delete pageStub.___lastResponse;
+      delete pageStub.___currentFrame;
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
       pageStub.listeners.resolves();
       pageStub.addListener.resolves();
@@ -500,7 +505,7 @@ describe('ClientWrapper', () => {
       const expectedUrl = 'https://example.com';
 
       // Set up test instance.
-      pageStub.___lastResponse.url.resolves(expectedUrl);
+      pageStub.___currentFrame.url.resolves(expectedUrl);
       pageStub.listeners.resolves([]);
       pageStub.addListener.resolves();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
@@ -514,7 +519,7 @@ describe('ClientWrapper', () => {
       const expectedContent = '<html><body>Example</body></html>';
 
       // Set up test instance.
-      pageStub.___lastResponse.text.resolves(expectedContent);
+      pageStub.___currentFrame.text.resolves(expectedContent);
       pageStub.listeners.resolves([]);
       pageStub.addListener.resolves();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
@@ -528,7 +533,7 @@ describe('ClientWrapper', () => {
       const expectedStatus = '200';
 
       // Set up test instance.
-      pageStub.___lastResponse.status.resolves(expectedStatus);
+      pageStub.___currentFrame.status.resolves(expectedStatus);
       pageStub.listeners.resolves([]);
       pageStub.addListener.resolves();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
