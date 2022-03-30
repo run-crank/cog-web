@@ -1,6 +1,8 @@
 import { BaseStep, Field, StepInterface } from '../core/base-step';
 import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../proto/cog_pb';
 
+import * as psl from 'psl';
+
 export class CheckAllNetworkRequestsStep extends BaseStep implements StepInterface {
 
   protected stepName: string = 'Check for all network requests';
@@ -22,20 +24,26 @@ export class CheckAllNetworkRequestsStep extends BaseStep implements StepInterfa
     const newSources = {};
 
     try {
-      //// This will ensure that NavigateTo was called
-      await this.client.getCurrentPageInfo('url');
+      // This will ensure that NavigateTo was called
+      const url = await this.client.getCurrentPageInfo('url');
+      const parsed = psl.parse(url.split('/')[2]);
 
       const networkRequests = await this.client.getFinishedRequests();
+
+      // The following array will be used to filter out requests that contain certain string snippets.
+      const excludeArray = ['data:image/png', '.svg', parsed.domain];
+
       // Get all network requests fired by the webpage
       networkRequests.forEach((request) => {
-        if (request.url) {
-          const removeHttp = request.url.split('://');
-          // Collect sources and count by baseUrl
-          const baseUrl = removeHttp[1] ? `${removeHttp[0]}://${removeHttp[1].split('/')[0]}` : removeHttp[0];
-          if (!Object.keys(sources).includes(baseUrl)) {
-            sources[baseUrl] = { url: baseUrl, count: 1 };
+        if (request.url && !excludeArray.some(snippet => request.url.includes(snippet))) {
+          // If the url does not contain a snippet from the excludeArray,
+          // collect and sort by domain
+          const domain = psl.parse(request.url.split('/')[2]).domain;
+
+          if (!Object.keys(sources).includes(domain)) {
+            sources[domain] = { url: domain, count: 1 };
           } else {
-            sources[baseUrl].count += 1;
+            sources[domain].count += 1;
           }
         }
       });
