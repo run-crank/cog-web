@@ -12,7 +12,6 @@ export class ResponseAware {
     }
 
     if (detail === 'url') {
-      console.log(this.client);
       return await this.client['___currentFrame']['url']();
     }
 
