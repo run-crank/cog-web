@@ -15,7 +15,7 @@ export class ResponseAware {
       if (this.client['___currentFrame'].hasOwnProperty('_url')) {
         return await this.client['___currentFrame']['url']();
       } else {
-        throw 'Url is not present in current page'
+        throw 'Url is not present in current page';
       }
     }
 
@@ -23,15 +23,15 @@ export class ResponseAware {
       if (this.client['___currentFrame'].hasOwnProperty('_text')) {
         return await this.client['___currentFrame']['text']();
       } else {
-        throw 'Text is not present in current page'
+        throw 'Text is not present in current page';
       }
-    } 
+    }
 
     if (detail === 'status') {
       if (this.client['___currentFrame'].hasOwnProperty('_status')) {
         return await this.client['___currentFrame']['status']();
       } else {
-        throw 'Status is not present in current page'
+        throw 'Status is not present in current page';
       }
     }
 
