@@ -462,13 +462,19 @@ describe('ClientWrapper', () => {
       pageStub.addListener = sinon.stub();
       pageStub.___lastResponse = {
         status: sinon.stub(),
+        _status: sinon.stub(),
         url: sinon.stub(),
+        _url: sinon.stub(),
         text: sinon.stub(),
+        _text: sinon.stub(),
       };
       pageStub.___currentFrame = {
         status: sinon.stub(),
+        _status: sinon.stub(),
         url: sinon.stub(),
+        _url: sinon.stub(),
         text: sinon.stub(),
+        _text: sinon.stub(),
       };
 
       // Stub out event emitter.

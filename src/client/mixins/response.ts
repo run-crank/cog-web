@@ -20,7 +20,7 @@ export class ResponseAware {
     }
 
     if (detail === 'text') {
-      if (this.client['___currentFrame'].hasOwnProperty('_Text')) {
+      if (this.client['___currentFrame'].hasOwnProperty('_text')) {
         return await this.client['___currentFrame']['text']();
       } else {
         throw 'Text is not present in current page'
