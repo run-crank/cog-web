@@ -12,15 +12,27 @@ export class ResponseAware {
     }
 
     if (detail === 'url') {
-      return await this.client['___currentFrame']['url']();
+      if (this.client['___currentFrame'].hasOwnProperty('_url')) {
+        return await this.client['___currentFrame']['url']();
+      } else {
+        throw 'Url is not present in current page'
+      }
     }
 
     if (detail === 'text') {
-      return await this.client['___currentFrame']['text']();
-    }
+      if (this.client['___currentFrame'].hasOwnProperty('_Text')) {
+        return await this.client['___currentFrame']['text']();
+      } else {
+        throw 'Text is not present in current page'
+      }
+    } 
 
     if (detail === 'status') {
-      return await this.client['___currentFrame']['status']();
+      if (this.client['___currentFrame'].hasOwnProperty('_status')) {
+        return await this.client['___currentFrame']['status']();
+      } else {
+        throw 'Status is not present in current page'
+      }
     }
 
     throw new Error(`Unknown page detail: ${detail}. Should be one of: url, text, or status.`);
