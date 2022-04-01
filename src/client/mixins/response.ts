@@ -7,32 +7,20 @@ export class ResponseAware {
    */
   public async getCurrentPageInfo(detail: string): Promise<String> {
     // Immediately throw an error if we don't have a response stashed.
-    if (!this.client['___currentFrame']) {
+    if (!this.client['___lastResponse']) {
       throw new Error('No page context. Ensure this step is preceded by a page navigation step.');
     }
 
     if (detail === 'url') {
-      if (this.client['___currentFrame'].hasOwnProperty('_url')) {
-        return await this.client['___currentFrame']['url']();
-      } else {
-        throw 'Url is not present in current page';
-      }
+      return await this.client['___lastResponse']['url']();
     }
 
     if (detail === 'text') {
-      if (this.client['___currentFrame'].hasOwnProperty('_text')) {
-        return await this.client['___currentFrame']['text']();
-      } else {
-        throw 'Text is not present in current page';
-      }
+      return await this.client['___lastResponse']['text']();
     }
 
     if (detail === 'status') {
-      if (this.client['___currentFrame'].hasOwnProperty('_status')) {
-        return await this.client['___currentFrame']['status']();
-      } else {
-        throw 'Status is not present in current page';
-      }
+      return await this.client['___lastResponse']['status']();
     }
 
     throw new Error(`Unknown page detail: ${detail}. Should be one of: url, text, or status.`);

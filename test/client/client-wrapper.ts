@@ -485,7 +485,7 @@ describe('ClientWrapper', () => {
 
     it('sadPath:noPageContext', () => {
       // Set up test instance.
-      delete pageStub.___currentFrame;
+      delete pageStub.___lastResponse;
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
       pageStub.addListener.resolves();
       pageStub.listeners.resolves();
@@ -497,7 +497,7 @@ describe('ClientWrapper', () => {
 
     it('sadPath:unknownDetail', () => {
       // Set up test instance.
-      delete pageStub.___currentFrame;
+      delete pageStub.___lastResponse;
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
       pageStub.listeners.resolves();
       pageStub.addListener.resolves();
@@ -511,7 +511,7 @@ describe('ClientWrapper', () => {
       const expectedUrl = 'https://example.com';
 
       // Set up test instance.
-      pageStub.___currentFrame.url.resolves(expectedUrl);
+      pageStub.___lastResponse.url.resolves(expectedUrl);
       pageStub.listeners.resolves([]);
       pageStub.addListener.resolves();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
@@ -525,7 +525,7 @@ describe('ClientWrapper', () => {
       const expectedContent = '<html><body>Example</body></html>';
 
       // Set up test instance.
-      pageStub.___currentFrame.text.resolves(expectedContent);
+      pageStub.___lastResponse.text.resolves(expectedContent);
       pageStub.listeners.resolves([]);
       pageStub.addListener.resolves();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
@@ -539,7 +539,7 @@ describe('ClientWrapper', () => {
       const expectedStatus = '200';
 
       // Set up test instance.
-      pageStub.___currentFrame.status.resolves(expectedStatus);
+      pageStub.___lastResponse.status.resolves(expectedStatus);
       pageStub.listeners.resolves([]);
       pageStub.addListener.resolves();
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
