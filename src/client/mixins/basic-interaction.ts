@@ -147,7 +147,7 @@ export class BasicInteractionAware {
 
     // Stash this response on the client. Adding the data to the client is the
     // only way to persist this response object between steps.
-    // @see this.getCurrentPageDetails()
+    // @see this.getCurrentPageInfo()
     this.client['___lastResponse'] = response;
 
     // Set the current active frame by:
@@ -251,6 +251,19 @@ export class BasicInteractionAware {
       [
         new Promise((res, rej) => {
           this.client['___currentFrame'].waitForNavigation({ timeout: 15000 })
+            .then((response) => {
+              if (!response) {
+                throw new Error;
+              }
+              // Stash this response on the client. Adding the data to the client is the
+              // only way to persist this response object between steps.
+              // @see this.getCurrentPageInfo()
+              this.client['___lastResponse'] = response;
+
+              // Set the current active frame by:
+              this.client['___currentFrame'] = this.client.mainFrame();
+              // console.log(this.client['___currentFrame']);
+            })
             .then(res)
             .catch(e => rej(Error('Page did not redirect')));
         }),
