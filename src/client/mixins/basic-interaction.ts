@@ -262,7 +262,6 @@ export class BasicInteractionAware {
 
               // Set the current active frame by:
               this.client['___currentFrame'] = this.client.mainFrame();
-              // console.log(this.client['___currentFrame']);
             })
             .then(res)
             .catch(e => rej(Error('Page did not redirect')));
