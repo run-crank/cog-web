@@ -623,6 +623,7 @@ describe('ClientWrapper', () => {
       pageStub['___currentFrame'] = sinon.stub();
       pageStub['___currentFrame'].evaluate = sinon.stub();
       pageStub['___currentFrame'].waitFor = sinon.stub();
+      pageStub['___currentFrame'].waitForNavigation = sinon.stub();
 
       // Stub out event emitter.
       pageStub.listenerCount = sinon.stub();
@@ -637,6 +638,7 @@ describe('ClientWrapper', () => {
 
       beforeEach(() => {
         pageStub['___currentFrame'].waitFor.resolves();
+        pageStub['___currentFrame'].waitFor.resolves('httpResponse');
         pageStub['___currentFrame'].evaluate.resolves();
       });
 

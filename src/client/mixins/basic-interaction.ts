@@ -106,6 +106,13 @@ export class BasicInteractionAware {
     } catch (e) {
       throw Error('Element may not be visible or clickable');
     }
+    const response = await this.client['___currentFrame'].waitForNavigation({ timeout: 15000 });
+    if (response) {
+      // Stash this response on the client. Adding the data to the client is the
+      // only way to persist this response object between steps.
+      // @see this.getCurrentPageInfo()
+      this.client['___lastResponse'] = response;
+    }
   }
 
   /**
@@ -259,9 +266,6 @@ export class BasicInteractionAware {
               // only way to persist this response object between steps.
               // @see this.getCurrentPageInfo()
               this.client['___lastResponse'] = response;
-
-              // Set the current active frame by:
-              this.client['___currentFrame'] = this.client.mainFrame();
             })
             .then(res)
             .catch(e => rej(Error('Page did not redirect')));
