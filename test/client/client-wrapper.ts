@@ -368,6 +368,7 @@ describe('ClientWrapper', () => {
       pageStub.waitForNavigation = sinon.stub();
       pageStub.waitForFunction = sinon.stub();
       pageStub.waitFor = sinon.stub();
+      pageStub.mainFrame = sinon.stub();
 
       pageStub.listenerCount = sinon.stub();
       pageStub.listenerCount.onFirstCall().returns(0);
@@ -389,13 +390,15 @@ describe('ClientWrapper', () => {
 
     it('happyPath:submitFormAndPageRedirects', async () => {
       const expectedButtonSelector = 'button[type=submit]';
+      const response = 'httpResponse';
 
       // Set up test instance.
-      pageStub['___currentFrame'].waitForNavigation.resolves();
-      pageStub['___currentFrame'].waitForFunction.resolves();
+      pageStub['___currentFrame'].waitForNavigation.resolves(response);
+      pageStub['___currentFrame'].waitForFunction.resolves(true);
       pageStub['___currentFrame'].waitFor.rejects();
       pageStub['___currentFrame'].listeners.resolves([]);
       pageStub['___currentFrame'].addListener.resolves();
+      pageStub.mainFrame.returns('mainFrame');
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata);
 
       // Call the method and make assertions.
@@ -620,6 +623,7 @@ describe('ClientWrapper', () => {
       pageStub['___currentFrame'] = sinon.stub();
       pageStub['___currentFrame'].evaluate = sinon.stub();
       pageStub['___currentFrame'].waitFor = sinon.stub();
+      pageStub['___currentFrame'].waitForNavigation = sinon.stub();
 
       // Stub out event emitter.
       pageStub.listenerCount = sinon.stub();
@@ -634,6 +638,7 @@ describe('ClientWrapper', () => {
 
       beforeEach(() => {
         pageStub['___currentFrame'].waitFor.resolves();
+        pageStub['___currentFrame'].waitFor.resolves('httpResponse');
         pageStub['___currentFrame'].evaluate.resolves();
       });
 
