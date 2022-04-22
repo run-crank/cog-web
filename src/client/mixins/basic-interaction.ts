@@ -106,7 +106,12 @@ export class BasicInteractionAware {
     } catch (e) {
       throw Error('Element may not be visible or clickable');
     }
-    const response = await this.client['___currentFrame'].waitForNavigation({ timeout: 15000 });
+    let response;
+    try {
+      response = await this.client['___currentFrame'].waitForNavigation({ timeout: 15000 });
+    } catch (e) {
+      // If the button click does not navigate to a new page, do nothing.
+    }
     if (response) {
       // Stash this response on the client. Adding the data to the client is the
       // only way to persist this response object between steps.
