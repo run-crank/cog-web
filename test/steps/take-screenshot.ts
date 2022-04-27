@@ -42,7 +42,7 @@ describe('TakeScreenshot', () => {
 
       it('should call scroll to with expectedArgs', async () => {
         await stepUnderTest.executeStep(protoStep);
-        expect(clientWrapperStub.client.screenshot).to.have.been.calledWith({ type: 'jpeg', encoding: 'binary', quality: 60 });
+        expect(clientWrapperStub.client.screenshot).to.have.been.calledWith({ type: 'jpeg', encoding: 'binary', quality: 60, fullPage: true });
       });
 
       it('should respond with pass', async () => {

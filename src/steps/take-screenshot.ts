@@ -12,7 +12,7 @@ export class TakeScreenshot extends BaseStep implements StepInterface {
 
   async executeStep(step: Step): Promise<RunStepResponse> {
     try {
-      const screenshot = await this.client.client.screenshot({ type: 'jpeg', encoding: 'binary', quality: 60 });
+      const screenshot = await this.client.client.screenshot({ type: 'jpeg', encoding: 'binary', quality: 60, fullPage: true });
       const binaryRecord = this.binary('showScreenshot', 'Screenshot', 'image/jpeg', screenshot);
       return this.pass('Successfully took a screenshot', [], [binaryRecord]);
     } catch (e) {
