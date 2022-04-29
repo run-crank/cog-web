@@ -5,7 +5,7 @@ export class CheckLinkedInConversionPixelFiredStep extends BaseStep implements S
 
   protected stepName: string = 'Check that the LinkedIn Conversion Pixel fired';
   // tslint:disable-next-line:max-line-length
-  protected stepExpression: string = 'the linkedin conversion pixel for partner id (?<pid>\\d+) should have fired';
+  protected stepExpression: string = 'the linkedin conversion pixel for partner id (?<pid>.+) should have fired';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
   protected expectedFields: Field[] = [{
     field: 'pid',
