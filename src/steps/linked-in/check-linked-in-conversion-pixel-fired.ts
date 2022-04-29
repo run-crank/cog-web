@@ -5,22 +5,22 @@ export class CheckLinkedInConversionPixelFiredStep extends BaseStep implements S
 
   protected stepName: string = 'Check that the LinkedIn Conversion Pixel fired';
   // tslint:disable-next-line:max-line-length
-  protected stepExpression: string = 'the linkedin conversion pixel for partner id (?<pid>\\d+) should have fired';
+  protected stepExpression: string = 'the linkedin conversion pixel for partner id (?<pid>.+) should have fired';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
   protected expectedFields: Field[] = [{
     field: 'pid',
-    type: FieldDefinition.Type.NUMERIC,
+    type: FieldDefinition.Type.STRING,
     description: 'LinkedIn Partner ID',
   }, {
     field: 'cid',
-    type: FieldDefinition.Type.NUMERIC,
+    type: FieldDefinition.Type.STRING,
     description: 'LinkedIn Conversion ID',
   }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
     const stepData: any = step.getData().toJavaScript();
-    const pid: number = stepData.pid;
-    const cid: number = stepData.cid;
+    const pid: string = stepData.pid;
+    const cid: string = stepData.cid;
 
     try {
       await this.client.getCurrentPageInfo('url'); //// Ensure context have been navigated to page and have URL

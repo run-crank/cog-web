@@ -5,17 +5,17 @@ export class CheckLinkedInInsightTagFiredStep extends BaseStep implements StepIn
 
   protected stepName: string = 'Check that the LinkedIn Insight tag fired';
   // tslint:disable-next-line:max-line-length
-  protected stepExpression: string = 'the linkedin insight tag for partner id (?<pid>\\d+) should have fired';
+  protected stepExpression: string = 'the linkedin insight tag for partner id (?<pid>.+) should have fired';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
   protected expectedFields: Field[] = [{
     field: 'pid',
-    type: FieldDefinition.Type.NUMERIC,
+    type: FieldDefinition.Type.STRING,
     description: 'LinkedIn Partner ID',
   }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
     const stepData: any = step.getData().toJavaScript();
-    const pid: number = stepData.pid;
+    const pid: string = stepData.pid;
 
     try {
       await this.client.getCurrentPageInfo('url'); //// Ensure context have been navigated to page and have URL
