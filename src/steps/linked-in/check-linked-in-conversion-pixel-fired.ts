@@ -9,18 +9,18 @@ export class CheckLinkedInConversionPixelFiredStep extends BaseStep implements S
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
   protected expectedFields: Field[] = [{
     field: 'pid',
-    type: FieldDefinition.Type.NUMERIC,
+    type: FieldDefinition.Type.STRING,
     description: 'LinkedIn Partner ID',
   }, {
     field: 'cid',
-    type: FieldDefinition.Type.NUMERIC,
+    type: FieldDefinition.Type.STRING,
     description: 'LinkedIn Conversion ID',
   }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
     const stepData: any = step.getData().toJavaScript();
-    const pid: number = stepData.pid;
-    const cid: number = stepData.cid;
+    const pid: string = stepData.pid;
+    const cid: string = stepData.cid;
 
     try {
       await this.client.getCurrentPageInfo('url'); //// Ensure context have been navigated to page and have URL
