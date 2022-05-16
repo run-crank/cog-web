@@ -108,7 +108,7 @@ export class BasicInteractionAware {
     }
     let response;
     try {
-      response = await this.client['___currentFrame'].waitForNavigation({ timeout: 15000 });
+      response = await this.client['___currentFrame'].waitForNavigation({ timeout: 45000 });
     } catch (e) {
       // If the button click does not navigate to a new page, do nothing.
     }
@@ -262,7 +262,7 @@ export class BasicInteractionAware {
     await Bluebird.some(
       [
         new Promise((res, rej) => {
-          this.client['___currentFrame'].waitForNavigation({ timeout: 15000 })
+          this.client['___currentFrame'].waitForNavigation({ timeout: 45000 })
             .then((response) => {
               if (!response) {
                 throw new Error;
@@ -281,7 +281,7 @@ export class BasicInteractionAware {
               const el = document.querySelector(selector);
               return !el || el.offsetParent === null;
             },
-            { timeout: 15000 },
+            { timeout: 45000 },
             selector,
           )
             .then(res)
