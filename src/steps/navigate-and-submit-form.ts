@@ -5,7 +5,7 @@ export class NavigateAndSubmitForm extends BaseStep implements StepInterface {
 
   protected stepName: string = 'Navigate and submit form';
   // tslint:disable-next-line:max-line-length
-  protected stepExpression: string = 'navigate to (?<webPageUrl>.+) and find a form';
+  protected stepExpression: string = 'navigate and find a form at (?<webPageUrl>.+)';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
   protected expectedFields: Field[] = [{
     field: 'webPageUrl',
@@ -22,6 +22,10 @@ export class NavigateAndSubmitForm extends BaseStep implements StepInterface {
       await this.client.navigateToUrl(url);
       const screenshot = await this.client.client.screenshot({ type: 'jpeg', encoding: 'binary', quality: 60 });
       const binaryRecord = this.binary('screenshot', 'Screenshot', 'image/jpeg', screenshot);
+      const status = await this.client.client['___lastResponse']['status']();
+      if (status === 404) {
+        return this.fail('%s returned an Error: 404 Not Found', [url], [binaryRecord]);
+      }
       return this.pass('Successfully navigated to %s', [url], [binaryRecord]);
     } catch (e) {
       const screenshot = await this.client.client.screenshot({ type: 'jpeg', encoding: 'binary', quality: 60 });

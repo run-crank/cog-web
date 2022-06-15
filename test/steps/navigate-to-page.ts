@@ -52,12 +52,12 @@ describe('NavigateToPage', () => {
   it('should pass when puppeteer successfully navigates to page', async () => {
     // Stub a response that matches expectations.
     clientWrapperStub.navigateToUrl.resolves();
+    clientWrapperStub.client['___lastResponse']['status'].returns(200);
 
     // Set step data corresponding to expectations
     protoStep.setData(Struct.fromJavaScript({webPageUrl: 'https://mayaswell.exist'}));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    console.log(response.getOutcome());
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
   });
 
@@ -70,7 +70,6 @@ describe('NavigateToPage', () => {
     protoStep.setData(Struct.fromJavaScript({webPageUrl: 'https://mayaswell.exist'}));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    console.log(response.getOutcome());
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.FAILED);
   });
 

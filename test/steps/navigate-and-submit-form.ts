@@ -22,6 +22,9 @@ describe('NavigateAndSubmitForm', () => {
     clientWrapperStub.client = sinon.stub();
     clientWrapperStub.client.screenshot = sinon.stub();
     clientWrapperStub.client.screenshot.returns('anyBinary');
+    clientWrapperStub.client['___lastResponse'] = sinon.stub();
+    clientWrapperStub.client['___lastResponse']['status'] = sinon.stub();
+    clientWrapperStub.client['___lastResponse']['status'].returns(200);
     stepUnderTest = new Step(clientWrapperStub);
     protoStep = new ProtoStep();
   });
@@ -30,7 +33,7 @@ describe('NavigateAndSubmitForm', () => {
     const stepDef: StepDefinition = stepUnderTest.getDefinition();
     expect(stepDef.getStepId()).to.equal('NavigateAndSubmitForm');
     expect(stepDef.getName()).to.equal('Navigate and submit form');
-    expect(stepDef.getExpression()).to.equal('navigate to (?<webPageUrl>.+) and find a form');
+    expect(stepDef.getExpression()).to.equal('navigate and find a form at (?<webPageUrl>.+)');
     expect(stepDef.getType()).to.equal(StepDefinition.Type.ACTION);
   });
 
@@ -49,12 +52,25 @@ describe('NavigateAndSubmitForm', () => {
   it('should pass when puppeteer successfully navigates to page', async () => {
     // Stub a response that matches expectations.
     clientWrapperStub.navigateToUrl.resolves();
+    clientWrapperStub.client['___lastResponse']['status'].returns(200);
 
     // Set step data corresponding to expectations
     protoStep.setData(Struct.fromJavaScript({webPageUrl: 'https://mayaswell.exist'}));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
+  });
+
+  it('should fail when the page returns a status 404', async () => {
+    // Stub a response that matches expectations.
+    clientWrapperStub.navigateToUrl.resolves();
+    clientWrapperStub.client['___lastResponse']['status'].returns(404);
+
+    // Set step data corresponding to expectations
+    protoStep.setData(Struct.fromJavaScript({webPageUrl: 'https://mayaswell.exist'}));
+
+    const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
+    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.FAILED);
   });
 
   it('should respond with error if puppeteer is unable to navigate', async () => {
