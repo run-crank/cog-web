@@ -33,7 +33,7 @@ describe('NavigateAndSubmitForm', () => {
     const stepDef: StepDefinition = stepUnderTest.getDefinition();
     expect(stepDef.getStepId()).to.equal('NavigateAndSubmitForm');
     expect(stepDef.getName()).to.equal('Navigate and submit form');
-    expect(stepDef.getExpression()).to.equal('navigate to (?<webPageUrl>.+) and find a form');
+    expect(stepDef.getExpression()).to.equal('navigate and find a form at (?<webPageUrl>.+)');
     expect(stepDef.getType()).to.equal(StepDefinition.Type.ACTION);
   });
 
