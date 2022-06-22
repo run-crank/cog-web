@@ -88,7 +88,7 @@ export class BasicInteractionAware {
             response = await this.client['___currentFrame'].waitForNavigation({ timeout: 15000 });
             res(null);
           } catch (e) {
-            console.log('did not navigate');
+            // If the page does not navigate, resolve and do nothing
             res(null);
           }
         }),
