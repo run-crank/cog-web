@@ -80,43 +80,50 @@ export class BasicInteractionAware {
 
   public async clickElement(selector: string) {
     try {
+      let response;
       await this.client['___currentFrame'].waitFor(selector);
-      await this.client['___currentFrame'].evaluate(
-        (selector) => {
-          return new Promise((resolve, reject) => {
-            try {
-              // In the event a click handler prevents others from firing,
-              // always resolve after 5s.
-              setTimeout(resolve.bind(null, true), 5000);
+      await Promise.all([
+        new Promise(async (res) => {
+          try {
+            response = await this.client['___currentFrame'].waitForNavigation({ timeout: 15000 });
+            res(null);
+          } catch (e) {
+            // If the page does not navigate, resolve and do nothing
+            res(null);
+          }
+        }),
+        this.client['___currentFrame'].evaluate(
+          (selector) => {
+            return new Promise((resolve, reject) => {
+              try {
+                // In the event a click handler prevents others from firing,
+                // always resolve after 5s.
+                setTimeout(resolve.bind(null, true), 5000);
 
-              // Bind a click handler to the element that resolves the promise.
-              document.querySelector(selector).addEventListener('click', resolve.bind(null, true));
+                // Bind a click handler to the element that resolves the promise.
+                document.querySelector(selector).addEventListener('click', resolve.bind(null, true));
 
-              // Okay, now actually click the element.
-              document.querySelector(selector).click();
-            } catch (e) {
-              // Stringify the error so that it yields useful info when caught
-              // outside the context of the evaulation.
-              reject(e.toString());
-            }
-          });
-        },
-        selector,
-      );
+                // Okay, now actually click the element.
+                document.querySelector(selector).click();
+              } catch (e) {
+                // Stringify the error so that it yields useful info when caught
+                // outside the context of the evaulation.
+                reject(e.toString());
+              }
+            });
+          },
+          selector,
+        ),
+      ]);
+      if (response) {
+        // Stash this response on the client. Adding the data to the client is the
+        // only way to persist this response object between steps.
+        // @see this.getCurrentPageInfo()
+        this.client['___lastResponse'] = response;
+      }
     } catch (e) {
+      console.log(e);
       throw Error('Element may not be visible or clickable');
-    }
-    let response;
-    try {
-      response = await this.client['___currentFrame'].waitForNavigation({ timeout: 15000 });
-    } catch (e) {
-      // If the button click does not navigate to a new page, do nothing.
-    }
-    if (response) {
-      // Stash this response on the client. Adding the data to the client is the
-      // only way to persist this response object between steps.
-      // @see this.getCurrentPageInfo()
-      this.client['___lastResponse'] = response;
     }
   }
 
