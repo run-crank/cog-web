@@ -640,6 +640,7 @@ describe('ClientWrapper', () => {
         pageStub['___currentFrame'].waitFor.resolves();
         pageStub['___currentFrame'].waitFor.resolves('httpResponse');
         pageStub['___currentFrame'].evaluate.resolves();
+        pageStub['___currentFrame'].waitForNavigation.resolves();
       });
 
       it('should call with expectedArgs', async () => {
