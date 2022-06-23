@@ -39,6 +39,12 @@ export class CheckAllNetworkRequestsStep extends BaseStep implements StepInterfa
           // If the url does not contain a snippet from the excludeArray,
           // collect and sort by domain
           const domain = psl.parse(request.url.split('/')[2]).domain;
+          if (!domain) {
+            // If there is no domain, ignore and do nothing.
+            // This happens sometimes with embedded and encoded fonts that start with
+            // something like data:application/x-font-ttf;charset=utf-8;base64
+            return;
+          }
 
           if (!Object.keys(sources).includes(domain)) {
             sources[domain] = { url: domain, count: 1 };
