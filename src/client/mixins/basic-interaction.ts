@@ -50,7 +50,7 @@ export class BasicInteractionAware {
               if (sameCount > 2) {
                 // Once a scroll completes, regardless of if it landed at the
                 // exact right location, we can consider the scroll complete.
-                return resolve();
+                return resolve(null);
               }
             } else {
               // Otherwise, reset our counter and set our current position.
@@ -81,7 +81,7 @@ export class BasicInteractionAware {
   public async clickElement(selector: string) {
     try {
       let response;
-      await this.client['___currentFrame'].waitFor(selector);
+      await this.client['___currentFrame'].waitForTimeout(selector);
       await Promise.all([
         new Promise(async (res) => {
           try {
@@ -100,8 +100,7 @@ export class BasicInteractionAware {
 
             // Okay, now actually click the element.
             await this.client['___currentFrame'].waitForSelector(selector);
-            const buttonClick = await this.client['___currentFrame'].$(selector);
-            await buttonClick.click();
+            await this.client['___currentFrame'].click(selector);
 
             resolve(null);
           } catch (e) {

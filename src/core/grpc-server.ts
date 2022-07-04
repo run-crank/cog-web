@@ -4,7 +4,7 @@ import { CogServiceService as CogService } from '../proto/cog_grpc_pb';
 import { Cog } from './cog';
 import { ClientWrapper } from '../client/client-wrapper';
 import puppeteerExtra from 'puppeteer-extra';
-import puppeteerExtraPluginRecaptcha  from 'puppeteer-extra-plugin-recaptcha';
+import puppeteerExtraPluginRecaptcha from 'puppeteer-extra-plugin-recaptcha';
 const stealthPlugin = require('puppeteer-extra-plugin-stealth'); // needs to use require
 
 const server = new grpc.Server();
