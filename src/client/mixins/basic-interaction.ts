@@ -92,28 +92,24 @@ export class BasicInteractionAware {
             res(null);
           }
         }),
-        this.client['___currentFrame'].evaluate(
-          (selector) => {
-            return new Promise((resolve, reject) => {
-              try {
-                // In the event a click handler prevents others from firing,
-                // always resolve after 5s.
-                setTimeout(resolve.bind(null, true), 5000);
+        new Promise(async (resolve, reject) => {
+          try {
+            // In the event a click handler prevents others from firing,
+            // always resolve after 5s.
+            setTimeout(resolve.bind(null, true), 5000);
 
-                // Bind a click handler to the element that resolves the promise.
-                document.querySelector(selector).addEventListener('click', resolve.bind(null, true));
+            // Okay, now actually click the element.
+            await this.client['___currentFrame'].waitForSelector(selector);
+            const buttonClick = await this.client['___currentFrame'].$(selector);
+            await buttonClick.click();
 
-                // Okay, now actually click the element.
-                document.querySelector(selector).click();
-              } catch (e) {
-                // Stringify the error so that it yields useful info when caught
-                // outside the context of the evaulation.
-                reject(e.toString());
-              }
-            });
-          },
-          selector,
-        ),
+            resolve(null);
+          } catch (e) {
+            // Stringify the error so that it yields useful info when caught
+            // outside the context of the evaulation.
+            reject(e.toString());
+          }
+        }),
       ]);
       if (response) {
         // Stash this response on the client. Adding the data to the client is the
@@ -122,7 +118,6 @@ export class BasicInteractionAware {
         this.client['___lastResponse'] = response;
       }
     } catch (e) {
-      console.log(e);
       throw Error('Element may not be visible or clickable');
     }
   }
