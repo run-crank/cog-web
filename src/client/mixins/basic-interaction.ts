@@ -99,10 +99,11 @@ export class BasicInteractionAware {
             setTimeout(resolve.bind(null, true), 5000);
 
             // Okay, now actually click the element.
-            await this.client.waitForSelector(selector);
-            const buttonClick = await this.client.$(selector);
+            await this.client['___currentFrame'].waitForSelector(selector);
+            const buttonClick = await this.client['___currentFrame'].$(selector);
             await buttonClick.click();
-            resolve.bind(null, true);
+
+            resolve(null);
           } catch (e) {
             // Stringify the error so that it yields useful info when caught
             // outside the context of the evaulation.

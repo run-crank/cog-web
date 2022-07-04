@@ -369,7 +369,7 @@ describe('ClientWrapper', () => {
       pageStub.waitForFunction = sinon.stub();
       pageStub.waitFor = sinon.stub();
       pageStub.mainFrame = sinon.stub();
-
+      
       pageStub.listenerCount = sinon.stub();
       pageStub.listenerCount.onFirstCall().returns(0);
       pageStub.listenerCount.onSecondCall().returns(1);
@@ -624,6 +624,9 @@ describe('ClientWrapper', () => {
       pageStub['___currentFrame'].evaluate = sinon.stub();
       pageStub['___currentFrame'].waitFor = sinon.stub();
       pageStub['___currentFrame'].waitForNavigation = sinon.stub();
+      pageStub['___currentFrame'].waitForSelector = sinon.stub();
+      pageStub['___currentFrame'].$ = sinon.stub();
+      
 
       // Stub out event emitter.
       pageStub.listenerCount = sinon.stub();
@@ -635,18 +638,22 @@ describe('ClientWrapper', () => {
 
     describe('happyPath:selectorClicked', () => {
       const expectedSelector = 'button';
-
       beforeEach(() => {
+        const elementStub = {
+          click: sinon.stub(),
+        };
+
         pageStub['___currentFrame'].waitFor.resolves();
         pageStub['___currentFrame'].waitFor.resolves('httpResponse');
-        pageStub['___currentFrame'].evaluate.resolves();
+        pageStub['___currentFrame'].$.resolves(elementStub);
+        pageStub['___currentFrame'].waitForSelector.resolves();
         pageStub['___currentFrame'].waitForNavigation.resolves();
+        elementStub.click.resolves();
       });
 
       it('should call with expectedArgs', async () => {
         await clientWrapperUnderTest.clickElement(expectedSelector);
-        expect(pageStub['___currentFrame'].waitFor).to.have.been.calledWith(expectedSelector);
-        expect(pageStub['___currentFrame'].evaluate).to.have.been.calledWith(sinon.match.any, expectedSelector);
+        expect(pageStub['___currentFrame'].waitForSelector).to.have.been.calledWith(expectedSelector);
       });
     });
 
