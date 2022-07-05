@@ -622,10 +622,10 @@ describe('ClientWrapper', () => {
       pageStub.evaluate = sinon.stub();
       pageStub['___currentFrame'] = sinon.stub();
       pageStub['___currentFrame'].evaluate = sinon.stub();
-      pageStub['___currentFrame'].waitFor = sinon.stub();
+      pageStub['___currentFrame'].waitForTimeout = sinon.stub();
       pageStub['___currentFrame'].waitForNavigation = sinon.stub();
       pageStub['___currentFrame'].waitForSelector = sinon.stub();
-      pageStub['___currentFrame'].$ = sinon.stub();
+      pageStub['___currentFrame'].click = sinon.stub();
       
 
       // Stub out event emitter.
@@ -639,16 +639,11 @@ describe('ClientWrapper', () => {
     describe('happyPath:selectorClicked', () => {
       const expectedSelector = 'button';
       beforeEach(() => {
-        const elementStub = {
-          click: sinon.stub(),
-        };
-
-        pageStub['___currentFrame'].waitFor.resolves();
-        pageStub['___currentFrame'].waitFor.resolves('httpResponse');
-        pageStub['___currentFrame'].$.resolves(elementStub);
+        pageStub['___currentFrame'].waitForTimeout.resolves();
+        pageStub['___currentFrame'].waitForTimeout.resolves('httpResponse');
+        pageStub['___currentFrame'].click.resolves();
         pageStub['___currentFrame'].waitForSelector.resolves();
         pageStub['___currentFrame'].waitForNavigation.resolves();
-        elementStub.click.resolves();
       });
 
       it('should call with expectedArgs', async () => {
@@ -661,7 +656,7 @@ describe('ClientWrapper', () => {
       const expectedSelector = 'button';
 
       beforeEach(() => {
-        pageStub['___currentFrame'].waitFor.rejects();
+        pageStub['___currentFrame'].waitForTimeout.rejects();
         pageStub['___currentFrame'].evaluate.resolves();
       });
 
@@ -676,7 +671,7 @@ describe('ClientWrapper', () => {
     const expectedSelector = 'button';
 
     beforeEach(() => {
-      pageStub['___currentFrame'].waitFor.resolves();
+      pageStub['___currentFrame'].waitForTimeout.resolves();
       pageStub['___currentFrame'].evaluate.rejects();
     });
 

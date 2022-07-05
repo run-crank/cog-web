@@ -15,14 +15,14 @@ export class CheckMarketoMunchkinId extends BaseStep implements StepInterface {
       await this.client.waitForNetworkIdle(10000, false);
       const actual = await this.client.getFinishedRequests();
       // Filter by munchkin host
-      const munchkinFilteredUrl = actual.map(request => request.url).find(url => url.includes('://munchkin.marketo.net') && url.includes('munchkin.js'));
+      const munchkinFilteredUrl = actual.map((request) => request.url).find((url) => url.includes('://munchkin.marketo.net') && url.includes('munchkin.js'));
       if (!munchkinFilteredUrl) {
         return this.fail('The munchkin.js script was never requested.');
       }
       // Filter by ID
-      const munchkinResponse = actual.map(request => request.url).find(url => url.includes('.mktoresp.com/webevents/visitWebPage'));
+      const munchkinResponse = actual.map((request) => request.url).find((url) => url.includes('.mktoresp.com/webevents/visitWebPage'));
       if (!munchkinResponse) {
-        const record = this.createTable(actual.map(request => request.url).filter(url => url.includes('.mktoresp.com/webevents/visitWebPage')));
+        const record = this.createTable(actual.map((request) => request.url).filter((url) => url.includes('.mktoresp.com/webevents/visitWebPage')));
         return this.fail('No munchkin was logged', [], [record]);
       }
       munchkinId = munchkinResponse.toString().split('.')[0].split('//')[1];

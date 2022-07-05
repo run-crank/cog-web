@@ -50,7 +50,7 @@ export class BasicInteractionAware {
               if (sameCount > 2) {
                 // Once a scroll completes, regardless of if it landed at the
                 // exact right location, we can consider the scroll complete.
-                return resolve();
+                return resolve(null);
               }
             } else {
               // Otherwise, reset our counter and set our current position.
@@ -81,15 +81,15 @@ export class BasicInteractionAware {
   public async clickElement(selector: string) {
     try {
       let response;
-      await this.client['___currentFrame'].waitFor(selector);
+      await this.client['___currentFrame'].waitForTimeout(selector);
       await Promise.all([
-        new Promise(async (res) => {
+        new Promise(async (resolve, reject) => {
           try {
             response = await this.client['___currentFrame'].waitForNavigation({ timeout: 15000 });
-            res(null);
+            resolve(null);
           } catch (e) {
             // If the page does not navigate, resolve and do nothing
-            res(null);
+            resolve(null);
           }
         }),
         new Promise(async (resolve, reject) => {
@@ -100,8 +100,7 @@ export class BasicInteractionAware {
 
             // Okay, now actually click the element.
             await this.client['___currentFrame'].waitForSelector(selector);
-            const buttonClick = await this.client['___currentFrame'].$(selector);
-            await buttonClick.click();
+            await this.client['___currentFrame'].click(selector);
 
             resolve(null);
           } catch (e) {
@@ -275,7 +274,7 @@ export class BasicInteractionAware {
               this.client['___lastResponse'] = response;
             })
             .then(res)
-            .catch(e => rej(Error('Page did not redirect')));
+            .catch((e) => rej(Error('Page did not redirect')));
         }),
         new Promise((res, rej) => {
           this.client['___currentFrame'].waitForFunction(
@@ -287,7 +286,7 @@ export class BasicInteractionAware {
             selector,
           )
             .then(res)
-            .catch(e => rej(Error('Submit button still there')));
+            .catch((e) => rej(Error('Submit button still there')));
         }),
         new Promise((res, rej) => {
           this.client['___currentFrame'].waitForFunction(
@@ -303,12 +302,12 @@ export class BasicInteractionAware {
             selector,
           )
             .then(res)
-            .catch(e => rej(Error('Unable to click submit button')));
+            .catch((e) => rej(Error('Unable to click submit button')));
         }),
         new Promise((res, rej) => {
           this.client['___currentFrame'].waitFor(10000)
             .then(res)
-            .catch(e => rej(Error('Waited for 10 seconds')));
+            .catch((e) => rej(Error('Waited for 10 seconds')));
         }),
       ],
       3,

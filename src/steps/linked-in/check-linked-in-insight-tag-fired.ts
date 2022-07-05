@@ -36,7 +36,7 @@ export class CheckLinkedInInsightTagFiredStep extends BaseStep implements StepIn
   private createTable(urls) {
     const headers = {};
     const rows = [];
-    const mappedUrls = urls.map(url => url.href);
+    const mappedUrls = urls.map((url) => url.href);
     const headerKeys = Object.keys(this.getUrlParams(mappedUrls[0]));
     headerKeys.forEach((key: string) => {
       headers[key] = key;

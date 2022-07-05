@@ -13,6 +13,18 @@
     ],
     "no-else-after-return":[
       false
+    ],
+    "arrow-parens": [
+      false
+    ],
+    "object-curly-spacing": [
+      false
+    ],
+    "ter-indent": [
+      false
+    ],
+    "brace-style": [
+      false
     ]
   },
   "rulesDirectory": []

@@ -60,7 +60,7 @@ export class CheckGoogleFloodlightTag extends BaseStep implements StepInterface 
       }
       // Variable checks
       if (!isNullOrUndefined(variables)) {
-        const variableCheckedUrls = actual.filter(url => this.client.includesParameters(url, variables));
+        const variableCheckedUrls = actual.filter((url) => this.client.includesParameters(url, variables));
         if (variableCheckedUrls.length == 0) {
           return this.fail('A Floodlight tag fire was detected for advertiser %d, group %s, and activity %s, but it did not match the expected variables.\n\n%s', [
             aid,

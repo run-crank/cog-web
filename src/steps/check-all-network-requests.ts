@@ -35,7 +35,7 @@ export class CheckAllNetworkRequestsStep extends BaseStep implements StepInterfa
 
       // Get all network requests fired by the webpage
       networkRequests.forEach((request) => {
-        if (request.url && !excludeArray.some(snippet => request.url.includes(snippet))) {
+        if (request.url && !excludeArray.some((snippet) => request.url.includes(snippet))) {
           // If the url does not contain a snippet from the excludeArray,
           // collect and sort by domain
           const domain = psl.parse(request.url.split('/')[2]).domain;

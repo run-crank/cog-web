@@ -33,7 +33,7 @@ export class Cog implements ICogServiceServer {
 
     // Note: this filters out files that do not match the above (e.g. READMEs
     // or .js.map files in built folder, etc).
-    return steps.filter(s => s !== undefined);
+    return steps.filter((s) => s !== undefined);
   }
 
   getManifest(
@@ -78,7 +78,7 @@ export class Cog implements ICogServiceServer {
 
     this.cluster.queue(({ page }) => {
       return new Promise((resolve) => {
-        call.on('data', async (runStepRequest: RunStepRequest) => {
+        call.on('data', async (runStepRequest: RunStepRequest) => { // tslint:disable-line
           processing = processing + 1;
 
           const step: Step = runStepRequest.getStep();
@@ -90,7 +90,7 @@ export class Cog implements ICogServiceServer {
           // If this was the last step to process and the client has ended the stream, then end our
           // stream as well.
           if (processing === 0 && clientEnded) {
-            resolve();
+            resolve(null);
             call.end();
           }
         });
@@ -100,7 +100,7 @@ export class Cog implements ICogServiceServer {
 
           // Only end the stream if we are done processing all steps.
           if (processing === 0) {
-            resolve();
+            resolve(null);
             call.end();
           }
         });
@@ -114,10 +114,10 @@ export class Cog implements ICogServiceServer {
   ) {
     const step: Step = call.request.getStep();
     this.cluster.queue(({ page }) => {
-      return new Promise(async (resolve) => {
+      return new Promise(async (resolve, reject) => {
         const response: RunStepResponse = await this.dispatchStep(step, page, call.metadata);
         callback(null, response);
-        resolve();
+        resolve(null);
       });
     });
   }
