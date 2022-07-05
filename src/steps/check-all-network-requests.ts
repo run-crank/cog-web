@@ -31,14 +31,15 @@ export class CheckAllNetworkRequestsStep extends BaseStep implements StepInterfa
       const networkRequests = await this.client.getFinishedRequests();
 
       // The following array will be used to filter out requests that contain certain string snippets.
-      const excludeArray = ['data:image/png', '.svg', parsed.domain];
+      const excludeArray = ['data:image', '.svg', parsed.domain];
 
       // Get all network requests fired by the webpage
       networkRequests.forEach((request) => {
         if (request.url && !excludeArray.some(snippet => request.url.includes(snippet))) {
           // If the url does not contain a snippet from the excludeArray,
           // collect and sort by domain
-          const domain = psl.parse(request.url.split('/')[2]).domain;
+          const splitUrl = request.url.split('/');
+          const domain = splitUrl[2] ? psl.parse(splitUrl[2]).domain : null;
           if (!domain) {
             // If there is no domain, ignore and do nothing.
             // This happens sometimes with embedded and encoded fonts that start with
