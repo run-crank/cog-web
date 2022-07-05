@@ -12,10 +12,10 @@ export class NetworkAware {
     await (this as any).waitForNetworkIdle(10000, false);
     const requests = await (this as any).getFinishedRequests();
 
-    let matchedRequests = requests.filter(r => r.url.startsWith(baseUrl));
+    let matchedRequests = requests.filter((r) => r.url.startsWith(baseUrl));
 
     if (pathContains) {
-      matchedRequests = matchedRequests.filter(r => (new URL(r.url).pathname.includes(pathContains) && pathContains));
+      matchedRequests = matchedRequests.filter((r) => (new URL(r.url).pathname.includes(pathContains) && pathContains));
     }
 
     return matchedRequests;
@@ -41,7 +41,7 @@ export class NetworkAware {
         actualParams = this.convertParamsToObject(new URL(request.url).searchParams);
       } else if (OTHER_REQUEST_METHODS.includes(request.method)) {
         const contentType = request.rawRequest._headers['content-type'];
-        const requestHasValidContentType = SUPPORTED_CONTENT_TYPES.filter(f => f.includes(contentType) || contentType.includes(f)).length > 0;
+        const requestHasValidContentType = SUPPORTED_CONTENT_TYPES.filter((f) => f.includes(contentType) || contentType.includes(f)).length > 0;
         const postData = request.postData ? JSON.parse(request.postData) : this.convertParamsToObject(new URL(request.url).searchParams);
         if (requestHasValidContentType) {
           try {
@@ -62,7 +62,7 @@ export class NetworkAware {
       let matched = true;
 
       if (!isNullOrUndefined(expectedParams) && Object.keys(expectedParams).length > 0) {
-        const intersection = Object.keys(actualParams).filter(f => Object.keys(expectedParams).includes(f));
+        const intersection = Object.keys(actualParams).filter((f) => Object.keys(expectedParams).includes(f));
 
         //// No properties matched; No way requests are matching
         if (intersection.length == 0 || intersection.length != Object.keys(expectedParams).length) {

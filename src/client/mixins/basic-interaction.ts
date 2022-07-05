@@ -83,13 +83,13 @@ export class BasicInteractionAware {
       let response;
       await this.client['___currentFrame'].waitForTimeout(selector);
       await Promise.all([
-        new Promise(async (res) => {
+        new Promise(async (resolve, reject) => {
           try {
             response = await this.client['___currentFrame'].waitForNavigation({ timeout: 15000 });
-            res(null);
+            resolve(null);
           } catch (e) {
             // If the page does not navigate, resolve and do nothing
-            res(null);
+            resolve(null);
           }
         }),
         new Promise(async (resolve, reject) => {
@@ -274,7 +274,7 @@ export class BasicInteractionAware {
               this.client['___lastResponse'] = response;
             })
             .then(res)
-            .catch(e => rej(Error('Page did not redirect')));
+            .catch((e) => rej(Error('Page did not redirect')));
         }),
         new Promise((res, rej) => {
           this.client['___currentFrame'].waitForFunction(
@@ -286,7 +286,7 @@ export class BasicInteractionAware {
             selector,
           )
             .then(res)
-            .catch(e => rej(Error('Submit button still there')));
+            .catch((e) => rej(Error('Submit button still there')));
         }),
         new Promise((res, rej) => {
           this.client['___currentFrame'].waitForFunction(
@@ -302,12 +302,12 @@ export class BasicInteractionAware {
             selector,
           )
             .then(res)
-            .catch(e => rej(Error('Unable to click submit button')));
+            .catch((e) => rej(Error('Unable to click submit button')));
         }),
         new Promise((res, rej) => {
           this.client['___currentFrame'].waitFor(10000)
             .then(res)
-            .catch(e => rej(Error('Waited for 10 seconds')));
+            .catch((e) => rej(Error('Waited for 10 seconds')));
         }),
       ],
       3,

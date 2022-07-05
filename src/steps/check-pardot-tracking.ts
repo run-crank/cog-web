@@ -71,13 +71,13 @@ export class CheckPardotTrackingStep extends BaseStep implements StepInterface {
       }
       const evaluatedRequests = this.client.evaluateRequests(matchingRequests, params);
       if (evaluatedRequests.length == 0) {
-        const tableRecord = this.createTable(matchingRequests.map(request => request.url));
+        const tableRecord = this.createTable(matchingRequests.map((request) => request.url));
         return this.fail(
           'Expected Pardot tracking request to load for account %d, and campaign %d, but no tracking loaded. \n\n%s',
           [
             aid,
             cid,
-            matchingRequests.map(request => decodeURIComponent(request.url)).join('\n\n'),
+            matchingRequests.map((request) => decodeURIComponent(request.url)).join('\n\n'),
           ],
           [
             tableRecord,

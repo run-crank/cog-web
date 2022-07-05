@@ -44,14 +44,14 @@ export class CheckGoogleAnalyticsPageView extends BaseStep implements StepInterf
     try {
       await this.client.waitForNetworkIdle(10000, false);
       const requests = await this.client.getNetworkRequests('https://www.google-analytics.com', '/collect');
-      const filteredRequest = this.client.evaluateRequests(requests, requiredParams).map(r => r.url);
+      const filteredRequest = this.client.evaluateRequests(requests, requiredParams).map((r) => r.url);
       result = filteredRequest;
 
       let records = [];
       let filteredRequestsWithParams = [];
       if (!isNullOrUndefined(expectedParams)) {
         if (Object.keys(expectedParams).length > 0) {
-          filteredRequestsWithParams = filteredRequest.filter(u => this.includesParameters(u, expectedParams));
+          filteredRequestsWithParams = filteredRequest.filter((u) => this.includesParameters(u, expectedParams));
           result = filteredRequestsWithParams;
         }
       }
