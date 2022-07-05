@@ -13,7 +13,8 @@
     ],
     "no-else-after-return":[
       false
-    ]
+    ],
+    "arrow-parens": false
   },
   "rulesDirectory": []
 }

@@ -90,7 +90,7 @@ export class Cog implements ICogServiceServer {
           // If this was the last step to process and the client has ended the stream, then end our
           // stream as well.
           if (processing === 0 && clientEnded) {
-            resolve();
+            resolve(null);
             call.end();
           }
         });
@@ -100,7 +100,7 @@ export class Cog implements ICogServiceServer {
 
           // Only end the stream if we are done processing all steps.
           if (processing === 0) {
-            resolve();
+            resolve(null);
             call.end();
           }
         });
@@ -117,7 +117,7 @@ export class Cog implements ICogServiceServer {
       return new Promise(async (resolve) => {
         const response: RunStepResponse = await this.dispatchStep(step, page, call.metadata);
         callback(null, response);
-        resolve();
+        resolve(null);
       });
     });
   }
