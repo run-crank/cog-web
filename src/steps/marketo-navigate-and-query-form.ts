@@ -1,11 +1,11 @@
 import { BaseStep, Field, StepInterface } from '../core/base-step';
 import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../proto/cog_pb';
 
-export class NavigateAndSubmitForm extends BaseStep implements StepInterface {
+export class MarketoNavigateAndQueryForm extends BaseStep implements StepInterface {
 
-  protected stepName: string = 'Navigate and submit form';
+  protected stepName: string = 'Navigate and Query Marketo Form Fields';
   // tslint:disable-next-line:max-line-length
-  protected stepExpression: string = 'navigate and find a form at (?<webPageUrl>.+)';
+  protected stepExpression: string = 'navigate marketo form and query fields at (?<webPageUrl>.+)';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
   protected expectedFields: Field[] = [{
     field: 'webPageUrl',
@@ -54,4 +54,4 @@ export class NavigateAndSubmitForm extends BaseStep implements StepInterface {
 
 }
 
-export { NavigateAndSubmitForm as Step };
+export { MarketoNavigateAndQueryForm as Step };
