@@ -1,7 +1,7 @@
 import * as grpc from 'grpc';
 import { BasicInteractionAware, DomAware, ResponseAware, MarketoAware, GoogleAnalyticsAware, LighthouseAware, LinkedInAwareMixin, NetworkAware, GoogleAdsAware } from './mixins';
 import { Field } from '../core/base-step';
-import { Page, HTTPRequest } from 'puppeteer';
+import { Page, Request } from 'puppeteer';
 import * as Lighthouse from 'lighthouse';
 
 class ClientWrapper {
@@ -18,7 +18,7 @@ class ClientWrapper {
     this.client['__networkRequestsInflight'] = this.client['__networkRequestsInflight'] || 0;
 
     if (this.client.listenerCount('request') === 0) {
-      this.client.addListener('request', (request: HTTPRequest) => {
+      this.client.addListener('request', (request: Request) => {
         if (!request.isNavigationRequest()) {
           // Used to support this.waitForNetworkIdle() method.
           this.client['__networkRequestsInflight'] = this.client['__networkRequestsInflight'] + 1;
@@ -34,7 +34,7 @@ class ClientWrapper {
     }
 
     if (this.client.listenerCount('requestfinished') === 0) {
-      this.client.addListener('requestfinished', (request: HTTPRequest) => {
+      this.client.addListener('requestfinished', (request: Request) => {
         // Used to support this.waitForNetworkIdle() method.
         this.client['__networkRequestsInflight'] = Math.max(0, this.client['__networkRequestsInflight'] - 1);
 
