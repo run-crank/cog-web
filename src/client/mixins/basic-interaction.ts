@@ -128,10 +128,13 @@ export class BasicInteractionAware {
    * @param {String} url - The URL of the page to nagivate to.
    */
   public async navigateToUrl(url: string) {
+    console.log('>>>>> inside navigateToUrl basic interaction');
+    console.timeLog('time');
     this.client['__networkRequests'] = null;
     const browser = await this.client.browser();
     const ua = await browser.userAgent();
-
+    console.log('>>>>> checkpoint 1: finished setting up browser');
+    console.timeLog('time');
     // Connect to Chrome DevTools and set throttling. Consider making this its
     // own step in the future.
     // @see https://fdalvi.github.io/blog/2018-02-05-puppeteer-network-throttle/
@@ -148,7 +151,11 @@ export class BasicInteractionAware {
     // configuration blocks requests from UAs matching that pattern.
     await this.client.setUserAgent(ua.replace(' Chrome', ' AutomatonChrome'));
     await this.client.setViewport({ width: 1280, height: 960 });
+    console.log('>>>>> checkpoint 2: finished setting UA and viewport');
+    console.timeLog('time');
     const response = await this.client.goto(url, { waitUntil: 'networkidle0', timeout: 90000 });
+    console.log('>>>>> checkpoint 3: finished navigating to page or timed out after 90s');
+    console.timeLog('time');
     // Run solveRecaptchas() as soon as page loads, will automatically solve captchas even if they appear later
     if (process.env.CAPTCHA_TOKEN) {
       await this.client.solveRecaptchas();
@@ -157,6 +164,8 @@ export class BasicInteractionAware {
         await frame.solveRecaptchas();
       }
     }
+    console.log('>>>>> checkpoint 4: finished finding/solving captchas');
+    console.timeLog('time');
 
     // Stash this response on the client. Adding the data to the client is the
     // only way to persist this response object between steps.
@@ -165,6 +174,8 @@ export class BasicInteractionAware {
 
     // Set the current active frame by:
     this.client['___currentFrame'] = this.client.mainFrame();
+    console.log('>>>>> checkpoint 5: end of navigateToUrl basic interaction');
+    console.timeLog('time');
   }
 
   /**
