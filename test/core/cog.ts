@@ -17,11 +17,13 @@ describe('Cog:GetManifest', () => {
   let cogUnderTest: Cog;
   let clusterStub: any;
   let clientWrapperStub: any;
+  const stepMap = {};
+  const blobContainerClient = {};
 
   beforeEach(() => {
     clusterStub = sinon.stub();
     clusterStub.launch = sinon.stub();
-    cogUnderTest = new Cog(clusterStub, clientWrapperStub);
+    cogUnderTest = new Cog(clusterStub, clientWrapperStub, stepMap, blobContainerClient);
   });
 
   it('should return expected cog metadata', (done) => {
@@ -75,12 +77,25 @@ describe('Cog:RunStep', () => {
   let cogUnderTest: Cog;
   let pageStub: any;
   let clusterStub: any;
+  let stepMap: any;
   let clientWrapperStub: any;
+  const requestId: string = '1';
+  const scenarioId: string = '2';
+  const requestorId: string = '3';
+  const idMap: any = {
+    requestId,
+    scenarioId,
+    requestorId,
+  };
+  let blobContainerClient = {};
 
   beforeEach(() => {
     protoStep = new ProtoStep();
     grpcUnaryCall.request = {
       getStep: function () {return protoStep},
+      getRequestId () { return requestId; },
+      getScenarioId () { return scenarioId; },
+      getRequestorId () { return requestorId; },
       metadata: null
     };
     pageStub = sinon.stub();
@@ -88,12 +103,12 @@ describe('Cog:RunStep', () => {
     clusterStub = sinon.stub();
     clusterStub.queue = sinon.stub();
     clusterStub.queue.callsArgWith(0, {page: pageStub});
-    cogUnderTest = new Cog(clusterStub, clientWrapperStub);
+    cogUnderTest = new Cog(clusterStub, clientWrapperStub, stepMap, blobContainerClient);
   });
 
   it('"authenticates" client wrapper with page/metadata', (done) => {
     cogUnderTest.runStep(grpcUnaryCall, (err, response: RunStepResponse) => {
-      expect(clientWrapperStub).to.have.been.calledWith(pageStub, grpcUnaryCall.metadata);
+      expect(clientWrapperStub).to.have.been.calledWith(pageStub, grpcUnaryCall.metadata, idMap, blobContainerClient);
       done();
     });
   });
@@ -115,7 +130,7 @@ describe('Cog:RunStep', () => {
     const mockTestStepMap: any = {TestStepId: sinon.stub()}
     mockTestStepMap.TestStepId.returns(mockStepExecutor);
 
-    cogUnderTest = new Cog(clusterStub, clientWrapperStub, mockTestStepMap);
+    cogUnderTest = new Cog(clusterStub, clientWrapperStub, mockTestStepMap, blobContainerClient);
     protoStep.setStepId('TestStepId');
 
     cogUnderTest.runStep(grpcUnaryCall, (err, response: RunStepResponse) => {
@@ -132,7 +147,7 @@ describe('Cog:RunStep', () => {
     const mockTestStepMap: any = {TestStepId: sinon.stub()}
     mockTestStepMap.TestStepId.returns(mockStepExecutor);
 
-    cogUnderTest = new Cog(clusterStub, clientWrapperStub, mockTestStepMap);
+    cogUnderTest = new Cog(clusterStub, clientWrapperStub, mockTestStepMap, blobContainerClient);
     protoStep.setStepId('TestStepId');
 
     cogUnderTest.runStep(grpcUnaryCall, (err, response: RunStepResponse) => {
@@ -152,6 +167,8 @@ describe('Cog:RunSteps', () => {
   let clusterStub: any;
   let pageStub: any;
   let clientWrapperStub: any;
+  let stepMap: any;
+  let blobContainerClient: any;
 
   beforeEach(() => {
     protoStep = new ProtoStep();
@@ -165,7 +182,7 @@ describe('Cog:RunSteps', () => {
     clusterStub = sinon.stub();
     clusterStub.queue = sinon.stub();
     clusterStub.queue.callsArgWith(0, {page: pageStub});
-    cogUnderTest = new Cog(clusterStub, clientWrapperStub);
+    cogUnderTest = new Cog(clusterStub, clientWrapperStub, stepMap, blobContainerClient);
   });
 
   it('"authenticates" client wrapper with page/metadata', (done) => {
@@ -209,7 +226,7 @@ describe('Cog:RunSteps', () => {
     mockStepExecutor.executeStep.resolves(expectedResponse);
     const mockTestStepMap: any = {TestStepId: sinon.stub()}
     mockTestStepMap.TestStepId.returns(mockStepExecutor);
-    cogUnderTest = new Cog(clusterStub, clientWrapperStub, mockTestStepMap);
+    cogUnderTest = new Cog(clusterStub, clientWrapperStub, mockTestStepMap, blobContainerClient);
     protoStep.setStepId('TestStepId');
     runStepRequest.setStep(protoStep);
 
@@ -235,7 +252,7 @@ describe('Cog:RunSteps', () => {
     mockStepExecutor.executeStep.throws()
     const mockTestStepMap: any = {TestStepId: sinon.stub()}
     mockTestStepMap.TestStepId.returns(mockStepExecutor);
-    cogUnderTest = new Cog(clusterStub, clientWrapperStub, mockTestStepMap);
+    cogUnderTest = new Cog(clusterStub, clientWrapperStub, mockTestStepMap, blobContainerClient);
     protoStep.setStepId('TestStepId');
     runStepRequest.setStep(protoStep);
 

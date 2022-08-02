@@ -14,7 +14,7 @@ export class Cog implements ICogServiceServer {
 
   private steps: StepInterface[];
 
-  constructor (private cluster: Cluster, private clientWrapperClass, private stepMap: any = {}) {
+  constructor (private cluster: Cluster, private clientWrapperClass, private stepMap: any = {}, private blobContainerClient) {
     this.steps = [].concat(...Object.values(this.getSteps(`${__dirname}/../steps`, clientWrapperClass)));
   }
 
@@ -75,14 +75,27 @@ export class Cog implements ICogServiceServer {
   runSteps(call: grpc.ServerDuplexStream<RunStepRequest, RunStepResponse>) {
     let processing = 0;
     let clientEnded = false;
+    let client: any = null;
+    let idMap: any = null;
+    let clientCreated = false;
 
     this.cluster.queue(({ page }) => {
       return new Promise((resolve) => {
         call.on('data', async (runStepRequest: RunStepRequest) => { // tslint:disable-line
           processing = processing + 1;
 
+          if (!clientCreated) {
+            idMap = {
+              requestId: runStepRequest.getRequestId(),
+              scenarioId: runStepRequest.getScenarioId(),
+              requestorId: runStepRequest.getRequestorId(),
+            };
+            client = await this.getClientWrapper(page, call.metadata, idMap, this.blobContainerClient);
+            clientCreated = true;
+          }
+
           const step: Step = runStepRequest.getStep();
-          const response: RunStepResponse = await this.dispatchStep(step, page, call.metadata);
+          const response: RunStepResponse = await this.dispatchStep(step, page, runStepRequest, call.metadata, client);
           call.write(response);
 
           processing = processing - 1;
@@ -115,7 +128,7 @@ export class Cog implements ICogServiceServer {
     const step: Step = call.request.getStep();
     this.cluster.queue(({ page }) => {
       return new Promise(async (resolve, reject) => {
-        const response: RunStepResponse = await this.dispatchStep(step, page, call.metadata);
+        const response: RunStepResponse = await this.dispatchStep(step, page, call.request, call.metadata);
         callback(null, response);
         resolve(null);
       });
@@ -125,9 +138,21 @@ export class Cog implements ICogServiceServer {
   private async dispatchStep(
     step: Step,
     page: Page,
+    runStepRequest: RunStepRequest,
     metadata: grpc.Metadata,
+    client = null,
   ): Promise<RunStepResponse> {
-    const client = this.getClientWrapper(page, metadata);
+    let wrapper = client;
+    if (!client) {
+      // Get scoped IDs for building cache keys
+      const idMap: {} = {
+        requestId: runStepRequest.getRequestId(),
+        scenarioId: runStepRequest.getScenarioId(),
+        requestorId: runStepRequest.getRequestorId(),
+      };
+      wrapper = this.getClientWrapper(page, metadata, idMap, this.blobContainerClient);
+    }
+
     const stepId = step.getStepId();
     let response: RunStepResponse = new RunStepResponse();
 
@@ -139,7 +164,7 @@ export class Cog implements ICogServiceServer {
     }
 
     try {
-      const stepExecutor: StepInterface = new this.stepMap[stepId](client);
+      const stepExecutor: StepInterface = new this.stepMap[stepId](wrapper);
       response = await stepExecutor.executeStep(step);
     } catch (e) {
       response.setOutcome(RunStepResponse.Outcome.ERROR);
@@ -149,8 +174,8 @@ export class Cog implements ICogServiceServer {
     return response;
   }
 
-  private getClientWrapper(page: Page, auth: grpc.Metadata) {
-    return new this.clientWrapperClass(page, auth);
+  private getClientWrapper(page: Page, auth: grpc.Metadata, idMap: {} = null, blobContainerClient: any) {
+    return new this.clientWrapperClass(page, auth, idMap, blobContainerClient);
   }
 
 }
