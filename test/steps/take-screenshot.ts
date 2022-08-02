@@ -38,11 +38,12 @@ describe('TakeScreenshot', () => {
   describe('ExecuteStep', () => {
     describe('Take a Screenshot', () => {
       beforeEach(() => {
+        protoStep.setData(Struct.fromJavaScript({__stepOrder: 2}));
       });
 
-      it('should call scroll to with expectedArgs', async () => {
+      it('should call screenshot to with expectedArgs', async () => {
         await stepUnderTest.executeStep(protoStep);
-        expect(clientWrapperStub.client.screenshot).to.have.been.calledWith({ type: 'jpeg', encoding: 'binary', quality: 60, fullPage: true });
+        expect(clientWrapperStub.client.screenshot).to.have.been.calledWith({ type: 'jpeg', encoding: 'binary', quality: 40, fullPage: true });
       });
 
       it('should respond with pass', async () => {
@@ -53,6 +54,7 @@ describe('TakeScreenshot', () => {
 
     describe('Screenshot to did not occur', () => {
       beforeEach(() => {
+        protoStep.setData(Struct.fromJavaScript({__stepOrder: 2}));
         clientWrapperStub.client.screenshot.throws();
       });
 

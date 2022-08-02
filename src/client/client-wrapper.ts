@@ -10,9 +10,13 @@ class ClientWrapper {
 
   public client: Page;
   public lighthouse: any;
+  public idMap: any;
+  public blobContainerClient: any;
 
-  constructor (page: Page, auth: grpc.Metadata, lighthouse = Lighthouse) {
+  constructor (page: Page, auth: grpc.Metadata, idMap: any, blobContainerClient: any, lighthouse = Lighthouse) {
     this.client = page;
+    this.idMap = idMap;
+    this.blobContainerClient = blobContainerClient;
     this.lighthouse = lighthouse;
     // Keeps track of the number of inflight requests. @see this.waitForNetworkIdle()
     this.client['__networkRequestsInflight'] = this.client['__networkRequestsInflight'] || 0;
