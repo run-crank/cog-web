@@ -15,8 +15,8 @@ const host = process.env.HOST || '0.0.0.0';
 const azureTenantId = process.env.AZURE_TENANT_ID || null;
 const azureClientId = process.env.AZURE_CLIENT_ID || null;
 const azureClientSecret = process.env.AZURE_CLIENT_SECRET || null;
-const azureStorageAccount = process.env.AZURE_STORAGE_ACCOUNT || null;
-const azureContainerName = process.env.AZURE_CONTAINER_NAME || null;
+const azureStorageAccount = process.env.AZURE_BLOB_STORAGE_ACCOUNT || null;
+const azureContainerName = process.env.AZURE_BLOB_STORAGE_CONTAINER || null;
 let blobContainerClient;
 let credentials: grpc.ServerCredentials;
 
@@ -32,7 +32,7 @@ if (process.env.USE_SSL) {
   credentials = grpc.ServerCredentials.createInsecure();
 }
 
-if (azureTenantId && azureClientId && azureClientSecret && azureStorageAccount) {
+if (azureTenantId && azureClientId && azureClientSecret && azureStorageAccount && azureContainerName) {
   const defaultAzureCredential = new DefaultAzureCredential();
 
   const blobServiceClient = new BlobServiceClient(
