@@ -49,7 +49,6 @@ export class CompareValues extends BaseStep implements StepInterface {
       return this.error('There was an error while comparing values: %s', [e.message]);
     }
   }
-
 }
 
 export { CompareValues as Step };
