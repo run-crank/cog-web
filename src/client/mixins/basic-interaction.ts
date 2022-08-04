@@ -98,9 +98,30 @@ export class BasicInteractionAware {
             // always resolve after 5s.
             setTimeout(resolve.bind(null, true), 5000);
 
-            // Okay, now actually click the element.
-            await this.client['___currentFrame'].waitForSelector(selector);
-            await this.client['___currentFrame'].click(selector);
+            let clickSuccess;
+            // First, try clicking using document.querySelector().click()
+            try {
+              clickSuccess = await this.client['___currentFrame'].waitForFunction(
+                (selector) => {
+                  try {
+                    document.querySelector(selector).click();
+                    return true;
+                  } catch (e) {
+                    return false;
+                  }
+                },
+                { timeout: 2500},
+                selector,
+              );
+            } catch (error) {
+              clickSuccess = false;
+            }
+
+            // If the first click fails, try using the frame.click from puppeteer
+            if (!clickSuccess) {
+              await this.client['___currentFrame'].waitForSelector(selector);
+              await this.client['___currentFrame'].click(selector);
+            }
 
             resolve(null);
           } catch (e) {
