@@ -62,7 +62,7 @@
   "dependencies": {
     "@azure/identity": "^2.1.0",
     "@azure/storage-blob": "^12.11.0",
-    "@run-crank/utilities": "^0.4.5",
+    "@run-crank/utilities": "^0.4.8",
     "bluebird": "^3.5.5",
     "google-protobuf": "^3.8.0",
     "grpc": "^1.24.11",

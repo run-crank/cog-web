@@ -2,6 +2,7 @@ import { isNullOrUndefined } from 'util';
 import { ClientWrapper } from '../client/client-wrapper';
 import { StepDefinition, FieldDefinition, RecordDefinition, Step as PbStep, RunStepResponse, StepRecord, TableRecord, BinaryRecord } from '../proto/cog_pb';
 import { Struct, Value } from 'google-protobuf/google/protobuf/struct_pb';
+import * as util from '@run-crank/utilities';
 
 export interface StepInterface {
   getId(): string;
@@ -75,6 +76,10 @@ export abstract class BaseStep {
     });
 
     return stepDefinition;
+  }
+
+  assert(operator: string, actualValue: string, expectedValue: string, field: string): util.AssertionResult {
+    return util.assert(operator, actualValue, expectedValue, field);
   }
 
   protected pass(message: string, messageArgs: any[] = [], records: StepRecord[] = []): RunStepResponse {
