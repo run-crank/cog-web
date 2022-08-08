@@ -260,6 +260,13 @@ export class BasicInteractionAware {
         try {
           await this.client['___currentFrame'].waitForSelector(selector, { visible: true, timeout: 5000 });
           await this.client['___currentFrame'].type(selector, value);
+          await this.client['___currentFrame'].evaluate(
+            (selector, value) => {
+              document.querySelector(selector).blur();
+              return true;
+            },
+            selector, value,
+          );
         } catch (e) {
           try {
             await this.client['___currentFrame'].evaluate(
