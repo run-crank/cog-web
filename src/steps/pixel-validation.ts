@@ -16,6 +16,11 @@ export class PixelValidationStep extends BaseStep implements StepInterface {
     type: FieldDefinition.Type.MAP,
     description: 'Parameters Include',
     optionality: FieldDefinition.Optionality.OPTIONAL,
+  }, {
+    field: 'customDomain',
+    type: FieldDefinition.Type.URL,
+    description: 'Custom Tracker Domain',
+    optionality: FieldDefinition.Optionality.OPTIONAL,
   }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
@@ -81,8 +86,11 @@ export class PixelValidationStep extends BaseStep implements StepInterface {
         ]);
     }
 
-    const baseUrls = pixelMap[pixelName].baseUrls || '';
+    const baseUrls = pixelMap[pixelName].baseUrls || [];
     const pathContains = pixelMap[pixelName].pathContains || '';
+    if (stepData.customDomain) {
+      baseUrls.push(stepData.customDomain);
+    }
 
     try {
       //// This will ensure that NavigateTo was called
@@ -105,9 +113,8 @@ export class PixelValidationStep extends BaseStep implements StepInterface {
       }
       records.push(this.createTable(evaluatedRequests));
       return this.pass(
-        '%d network requests found for the %s pixel, as expected',
+        'Network requests found for the %s pixel, as expected',
         [
-          evaluatedRequests.length,
           pixelName,
         ],
         records);
