@@ -47,6 +47,10 @@ describe('PixelValidationStep', () => {
       const withParameters: any = fields.filter(f => f.key === 'withParameters')[0];
       expect(withParameters.optionality).to.equal(FieldDefinition.Optionality.OPTIONAL);
       expect(withParameters.type).to.equal(FieldDefinition.Type.MAP);
+
+      const customDomain: any = fields.filter(f => f.key === 'customDomain')[0];
+      expect(customDomain.optionality).to.equal(FieldDefinition.Optionality.OPTIONAL);
+      expect(customDomain.type).to.equal(FieldDefinition.Type.URL);
     });
   });
 
