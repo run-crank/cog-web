@@ -11,17 +11,23 @@ export class NavigateToPage extends BaseStep implements StepInterface {
     field: 'webPageUrl',
     type: FieldDefinition.Type.URL,
     description: 'Page URL',
+  }, {
+    field: 'throttle',
+    type: FieldDefinition.Type.BOOLEAN,
+    description: 'Throttle Browser',
+    optionality: FieldDefinition.Optionality.OPTIONAL,
   }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
     const stepData: any = step.getData().toJavaScript();
     const url: string = stepData.webPageUrl;
+    const throttle: boolean = stepData.throttle || false;
 
     // Navigate to URL.
     try {
       console.time('time');
       console.log('>>>>> STARTED TIMER FOR NAVIGATE-TO-PAGE STEP');
-      await this.client.navigateToUrl(url);
+      await this.client.navigateToUrl(url, throttle);
       const screenshot = await this.client.client.screenshot({ type: 'jpeg', encoding: 'binary', quality: 60 });
       const binaryRecord = this.binary('screenshot', 'Screenshot', 'image/jpeg', screenshot);
       console.log('>>>>> checkpoint 6: finished taking screenshot and making binary record');

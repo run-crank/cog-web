@@ -147,8 +147,9 @@ export class BasicInteractionAware {
    * throws an error. Otherwise, it will resolve on successful navigation.
    *
    * @param {String} url - The URL of the page to nagivate to.
+   * @param {Boolean} throttle - Will throttle down the browser speed. Defaults to false.
    */
-  public async navigateToUrl(url: string) {
+  public async navigateToUrl(url: string, throttle: boolean = false) {
     console.log('>>>>> inside navigateToUrl basic interaction');
     console.timeLog('time');
     this.client['__networkRequests'] = null;
@@ -156,16 +157,18 @@ export class BasicInteractionAware {
     const ua = await browser.userAgent();
     console.log('>>>>> checkpoint 1: finished setting up browser');
     console.timeLog('time');
-    // Connect to Chrome DevTools and set throttling. Consider making this its
-    // own step in the future.
-    // @see https://fdalvi.github.io/blog/2018-02-05-puppeteer-network-throttle/
-    // const devTools = await this.client.target().createCDPSession();
-    // await devTools.send('Network.emulateNetworkConditions', {
-    //   'offline': false,
-    //   'downloadThroughput': 1.5 * 1024 * 1024 / 8,
-    //   'uploadThroughput': 750 * 1024 / 8,
-    //   'latency': 40
-    // });
+    if (throttle) {
+      // Connect to Chrome DevTools and set throttling. Consider making this its
+      // own step in the future.
+      // @see https://fdalvi.github.io/blog/2018-02-05-puppeteer-network-throttle/
+      const devTools = await this.client.target().createCDPSession();
+      await devTools.send('Network.emulateNetworkConditions', {
+        offline: false,
+        downloadThroughput: 1.5 * 1024 * 1024 / 8,
+        uploadThroughput: 750 * 1024 / 8,
+        latency: 40,
+      });
+    }
 
     // Make ourselves identifiable and set a more realistic desktop browser size.
     // Note: We do not use "Headless" in our UA name, because Marketo's Cloudfront
