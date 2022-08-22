@@ -16,13 +16,22 @@ export class MarketoNavigateAndQueryForm extends BaseStep implements StepInterfa
   async executeStep(step: Step): Promise<RunStepResponse> {
     const stepData: any = step.getData().toJavaScript();
     const url: string = stepData.webPageUrl;
+    const throttle: boolean = stepData.throttle || false;
+    const maxInflightRequests: number = stepData.maxInflightRequests || 0;
+    const networkIdleTime: number = stepData.networkIdleTime || 500;
 
     // Navigate to URL.
     try {
-      await this.client.navigateToUrl(url);
+      console.time('time');
+      console.log('>>>>> STARTED TIMER FOR MARKETOO-NAVIGATE-AND-QUERY-FORM STEP');
+      await this.client.navigateToUrl(url, throttle, maxInflightRequests, networkIdleTime);
       const screenshot = await this.client.client.screenshot({ type: 'jpeg', encoding: 'binary', quality: 60 });
       const binaryRecord = this.binary('screenshot', 'Screenshot', 'image/jpeg', screenshot);
+      console.log('>>>>> checkpoint 6: finished taking screenshot and making binary record');
+      console.timeLog('time');
       const status = await this.client.client['___lastResponse']['status']();
+      console.log('>>>>> checkpoint 7: finished getting status, ending timer');
+      console.timeEnd('time');
       if (status === 404) {
         return this.fail('%s returned an Error: 404 Not Found', [url], [binaryRecord]);
       }

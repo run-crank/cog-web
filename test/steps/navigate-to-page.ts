@@ -47,11 +47,6 @@ describe('NavigateToPage', () => {
     const pageUrl: any = fields.filter(f => f.key === 'webPageUrl')[0];
     expect(pageUrl.optionality).to.equal(FieldDefinition.Optionality.REQUIRED);
     expect(pageUrl.type).to.equal(FieldDefinition.Type.URL);
-
-    // Throttle Browser field
-    const throttle: any = fields.filter(f => f.key === 'throttle')[0];
-    expect(throttle.optionality).to.equal(FieldDefinition.Optionality.OPTIONAL);
-    expect(throttle.type).to.equal(FieldDefinition.Type.BOOLEAN);
   });
 
   it('should pass when puppeteer successfully navigates to page', async () => {
