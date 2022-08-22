@@ -107,6 +107,8 @@ describe('ClientWrapper', () => {
       pageStub.goto = sinon.stub();
       pageStub.mainFrame = sinon.stub();
       pageStub.addListener = sinon.stub();
+      pageStub.on = sinon.stub();
+      pageStub.removeListener = sinon.stub();
 
       // Stub out event emitter.
       pageStub.listenerCount = sinon.stub();
@@ -131,7 +133,7 @@ describe('ClientWrapper', () => {
       expect(pageStub.setUserAgent).to.have.been.calledWith(expectedUserAgent);
       expect(pageStub.setViewport).to.have.been.calledWith(sinon.match.has('width', 1280));
       expect(pageStub.setViewport).to.have.been.calledWith(sinon.match.has('height', 960));
-      expect(pageStub.goto).to.have.been.calledWith(expectedUrl, { waitUntil: 'networkidle0', timeout: 90000 });
+      expect(pageStub.goto).to.have.been.calledWith(expectedUrl);
       expect(pageStub.___lastResponse).to.be.string(expectedLastResponse);
     });
 
@@ -145,7 +147,7 @@ describe('ClientWrapper', () => {
       clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap, blobContainerClient);
 
       // Call the method and make assertions.
-      return expect(clientWrapperUnderTest.navigateToUrl(expectedUrl)).to.be.rejected;
+      expect(clientWrapperUnderTest.navigateToUrl(expectedUrl)).to.be.rejected;
     });
 
   });

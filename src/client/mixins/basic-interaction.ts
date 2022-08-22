@@ -148,8 +148,10 @@ export class BasicInteractionAware {
    *
    * @param {String} url - The URL of the page to nagivate to.
    * @param {Boolean} throttle - Will throttle down the browser speed. Defaults to false.
+   * @param {Number} maxInflightRequests - Max number of network connections in flight before navigation is considered done. Defaults to 0.
+   * @param {Number} networkIdleTime - Time in ms that the network must be idle before navigation is considered done. Defaults to 500.
    */
-  public async navigateToUrl(url: string, throttle: boolean = false) {
+  public async navigateToUrl(url: string, throttle: boolean = false, maxInflightRequests: number = 0, networkIdleTime: number = 500) {
     console.log('>>>>> inside navigateToUrl basic interaction');
     console.timeLog('time');
     this.client['__networkRequests'] = null;
@@ -177,7 +179,14 @@ export class BasicInteractionAware {
     await this.client.setViewport({ width: 1280, height: 960 });
     console.log('>>>>> checkpoint 2: finished setting UA and viewport');
     console.timeLog('time');
-    const response = await this.client.goto(url, { waitUntil: 'networkidle0', timeout: 90000 });
+    let response;
+    await Promise.all([
+      new Promise<void>(async (res, rej) => {
+        response = await this.client.goto(url);
+        res();
+      }),
+      this.waitForNavigateNetworkIdle(this.client, 90000, 1000, networkIdleTime, maxInflightRequests),
+    ]);
     console.log('>>>>> checkpoint 3: finished navigating to page or timed out after 90s');
     console.timeLog('time');
     // Run solveRecaptchas() as soon as page loads, will automatically solve captchas even if they appear later
@@ -383,5 +392,79 @@ export class BasicInteractionAware {
       },
       selector,
     );
+  }
+
+  /**
+   * A self-baked network-idle watcher
+   *
+   * @param page- Puppeteer Page Client.
+   * @param timeout - Maximum navigation time in milliseconds. Defaults to 90000 (90 seconds).
+   * @param waitForFirstRequest - Max time in milliseconds to wait for the first network request. Defaults to 1000ms.
+   * @param waitForLastRequest - Max time in milliseconds to wait for the last network request. Defaults to 500ms
+   * @param maxInflightRequests - Max number of network connections in flight before navigation is considered done.
+   *
+   */
+
+  public waitForNavigateNetworkIdle(page, timeout = 90000, waitForFirstRequest = 1000, waitForLastRequest = 500, maxInflightRequests = 0) {
+    let inflight = 0;
+    let resolve;
+    let reject;
+    let firstRequestTimeoutId;
+    let lastRequestTimeoutId;
+    let timeoutId;
+    const maxRequests = Math.max(maxInflightRequests, 0);
+
+    function cleanup() {
+      clearTimeout(timeoutId);
+      clearTimeout(firstRequestTimeoutId);
+      clearTimeout(lastRequestTimeoutId);
+      /* eslint-disable no-use-before-define */
+      page.removeListener('request', onRequestStarted);
+      page.removeListener('requestfinished', onRequestFinished);
+      page.removeListener('requestfailed', onRequestFinished);
+      /* eslint-enable no-use-before-define */
+    }
+
+    function check() {
+      if (inflight <= maxRequests) {
+        clearTimeout(lastRequestTimeoutId);
+        lastRequestTimeoutId = setTimeout(onLastRequestTimeout, waitForLastRequest);
+      }
+    }
+
+    function onRequestStarted() {
+      clearTimeout(firstRequestTimeoutId);
+      clearTimeout(lastRequestTimeoutId);
+      inflight += 1;
+    }
+
+    function onRequestFinished() {
+      inflight -= 1;
+      check();
+    }
+
+    function onTimeout() {
+      cleanup();
+      reject(new Error('Timeout'));
+    }
+
+    function onFirstRequestTimeout() {
+      cleanup();
+      resolve();
+    }
+
+    function onLastRequestTimeout() {
+      cleanup();
+      resolve();
+    }
+
+    page.on('request', onRequestStarted);
+    page.on('requestfinished', onRequestFinished);
+    page.on('requestfailed', onRequestFinished);
+
+    timeoutId = setTimeout(onTimeout, timeout); // Overall page timeout
+    firstRequestTimeoutId = setTimeout(onFirstRequestTimeout, waitForFirstRequest);
+
+    return new Promise((res, rej) => { resolve = res; reject = rej; });
   }
 }
