@@ -18,13 +18,12 @@ export class NavigateAndSubmitForm extends BaseStep implements StepInterface {
     const url: string = stepData.webPageUrl;
     const throttle: boolean = stepData.throttle || false;
     const maxInflightRequests: number = stepData.maxInflightRequests || 0;
-    const networkIdleTime: number = stepData.networkIdleTime || 500;
 
     // Navigate to URL.
     try {
       console.time('time');
       console.log('>>>>> STARTED TIMER FOR NAVIGATE-AND-SUBMIT-FORM STEP');
-      await this.client.navigateToUrl(url, throttle, maxInflightRequests, networkIdleTime);
+      await this.client.navigateToUrl(url, throttle, maxInflightRequests);
       const screenshot = await this.client.client.screenshot({ type: 'jpeg', encoding: 'binary', quality: 60 });
       const binaryRecord = this.binary('screenshot', 'Screenshot', 'image/jpeg', screenshot);
       console.log('>>>>> checkpoint 6: finished taking screenshot and making binary record');
