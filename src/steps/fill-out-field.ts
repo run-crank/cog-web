@@ -1,5 +1,5 @@
-import { BaseStep, Field, StepInterface } from '../core/base-step';
-import { Step, RunStepResponse, FieldDefinition, StepDefinition, StepRecord } from '../proto/cog_pb';
+import { BaseStep, ExpectedRecord, Field, StepInterface } from '../core/base-step';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition, StepRecord, RecordDefinition } from '../proto/cog_pb';
 
 export class EnterValueIntoField extends BaseStep implements StepInterface {
 
@@ -15,6 +15,21 @@ export class EnterValueIntoField extends BaseStep implements StepInterface {
     field: 'value',
     type: FieldDefinition.Type.ANYSCALAR,
     description: 'Field Value',
+  }];
+
+  protected expectedRecords: ExpectedRecord[] = [{
+    id: 'form',
+    type: RecordDefinition.Type.KEYVALUE,
+    fields: [{
+      field: 'selector',
+      type: FieldDefinition.Type.STRING,
+      description: 'Selector of the element',
+    },{
+      field: 'input',
+      type: FieldDefinition.Type.STRING,
+      description: 'Value input on the Field',
+    }],
+    dynamicFields: true,
   }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {

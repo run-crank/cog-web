@@ -1,5 +1,5 @@
-import { BaseStep, Field, StepInterface } from '../core/base-step';
-import { Step, RunStepResponse, FieldDefinition, StepDefinition, StepRecord } from '../proto/cog_pb';
+import { BaseStep, ExpectedRecord, Field, StepInterface } from '../core/base-step';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition, StepRecord, RecordDefinition } from '../proto/cog_pb';
 
 export class NavigateToPage extends BaseStep implements StepInterface {
 
@@ -11,6 +11,17 @@ export class NavigateToPage extends BaseStep implements StepInterface {
     field: 'webPageUrl',
     type: FieldDefinition.Type.URL,
     description: 'Page URL',
+  }];
+
+  protected expectedRecords: ExpectedRecord[] = [{
+    id: 'form',
+    type: RecordDefinition.Type.KEYVALUE,
+    fields: [{
+      field: 'url',
+      type: FieldDefinition.Type.STRING,
+      description: 'The Contact List\'s ID',
+    }],
+    dynamicFields: true,
   }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {

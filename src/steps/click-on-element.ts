@@ -1,5 +1,5 @@
-import { BaseStep, Field, StepInterface } from '../core/base-step';
-import { Step, RunStepResponse, FieldDefinition, StepDefinition, StepRecord } from '../proto/cog_pb';
+import { BaseStep, ExpectedRecord, Field, StepInterface } from '../core/base-step';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition, StepRecord, RecordDefinition } from '../proto/cog_pb';
 
 export class ClickOnElement extends BaseStep implements StepInterface {
 
@@ -11,6 +11,17 @@ export class ClickOnElement extends BaseStep implements StepInterface {
     field: 'domQuerySelector',
     type: FieldDefinition.Type.STRING,
     description: 'Element\'s DOM Query Selector',
+  }];
+
+  protected expectedRecords: ExpectedRecord[] = [{
+    id: 'form',
+    type: RecordDefinition.Type.KEYVALUE,
+    fields: [{
+      field: 'selector',
+      type: FieldDefinition.Type.STRING,
+      description: 'Selector of the element',
+    }],
+    dynamicFields: true,
   }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {

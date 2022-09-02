@@ -13,6 +13,17 @@ export class MarketoNavigateAndQueryForm extends BaseStep implements StepInterfa
     description: 'Page URL',
   }];
 
+  protected expectedRecords: ExpectedRecord[] = [{
+    id: 'form',
+    type: RecordDefinition.Type.KEYVALUE,
+    fields: [{
+      field: 'url',
+      type: FieldDefinition.Type.STRING,
+      description: 'Url to navigate to',
+    }],
+    dynamicFields: true,
+  }];
+
   async executeStep(step: Step): Promise<RunStepResponse> {
     const stepData: any = step.getData().toJavaScript();
     const url: string = stepData.webPageUrl;
