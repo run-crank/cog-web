@@ -21,7 +21,9 @@ export class FocusOnFrame extends BaseStep implements StepInterface {
       await this.client.focusFrame(iframeSelector);
       const screenshot = await this.client.client.screenshot({ type: 'jpeg', encoding: 'binary', quality: 60 });
       const binaryRecord = this.binary('screenshot', 'Screenshot', 'image/jpeg', screenshot);
-      return this.pass('Successfully focused on frame %s', [iframeSelector], [binaryRecord]);
+      const record = this.createRecord(iframeSelector);
+      const orderedRecord = this.createOrderedRecord(iframeSelector, stepData['__stepOrder']);
+      return this.pass('Successfully focused on frame %s', [iframeSelector], [binaryRecord, record, orderedRecord]);
     } catch (e) {
       const screenshot = await this.client.client.screenshot({ type: 'jpeg', encoding: 'binary', quality: 60 });
       const binaryRecord = this.binary('screenshot', 'Screenshot', 'image/jpeg', screenshot);
@@ -35,6 +37,24 @@ export class FocusOnFrame extends BaseStep implements StepInterface {
           binaryRecord,
         ]);
     }
+  }
+
+  public createRecord(frame): StepRecord {
+    const obj = {
+      frame
+    };
+    const record = this.keyValue('form', 'Focused on Frame', obj);
+
+    return record;
+  }
+
+  public createOrderedRecord(frame, stepOrder = 1): StepRecord {
+    const obj = {
+      frame
+    };
+    const record = this.keyValue(`form.${stepOrder}`, `Focused on Frame from Step ${stepOrder}`, obj);
+
+    return record;
   }
 
 }
