@@ -1,5 +1,5 @@
-import { BaseStep, Field, StepInterface } from '../core/base-step';
-import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../proto/cog_pb';
+import { BaseStep, ExpectedRecord, Field, StepInterface } from '../core/base-step';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition, StepRecord, RecordDefinition } from '../proto/cog_pb';
 
 export class NavigateToPage extends BaseStep implements StepInterface {
 
@@ -11,6 +11,17 @@ export class NavigateToPage extends BaseStep implements StepInterface {
     field: 'webPageUrl',
     type: FieldDefinition.Type.URL,
     description: 'Page URL',
+  }];
+
+  protected expectedRecords: ExpectedRecord[] = [{
+    id: 'form',
+    type: RecordDefinition.Type.KEYVALUE,
+    fields: [{
+      field: 'url',
+      type: FieldDefinition.Type.STRING,
+      description: 'Url to navigate to',
+    }],
+    dynamicFields: true,
   }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
@@ -34,7 +45,9 @@ export class NavigateToPage extends BaseStep implements StepInterface {
       if (status === 404) {
         return this.fail('%s returned an Error: 404 Not Found', [url], [binaryRecord]);
       }
-      return this.pass('Successfully navigated to %s', [url], [binaryRecord]);
+      const record = this.createRecord(url);
+      const orderedRecord = this.createOrderedRecord(url, stepData['__stepOrder']);
+      return this.pass('Successfully navigated to %s', [url], [binaryRecord, record, orderedRecord]);
     } catch (e) {
       try {
         const screenshot = await this.client.client.screenshot({ type: 'jpeg', encoding: 'binary', quality: 60 });
@@ -58,6 +71,24 @@ export class NavigateToPage extends BaseStep implements StepInterface {
         );
       }
     }
+  }
+
+  public createRecord(url): StepRecord {
+    const obj = {
+      url,
+    };
+    const record = this.keyValue('form', 'Navigated to Page', obj);
+
+    return record;
+  }
+
+  public createOrderedRecord(url, stepOrder = 1): StepRecord {
+    const obj = {
+      url,
+    };
+    const record = this.keyValue(`form.${stepOrder}`, `Navigated to Page from Step ${stepOrder}`, obj);
+
+    return record;
   }
 
 }

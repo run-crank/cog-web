@@ -1,5 +1,5 @@
-import { BaseStep, Field, StepInterface } from '../core/base-step';
-import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../proto/cog_pb';
+import { BaseStep, ExpectedRecord, Field, StepInterface } from '../core/base-step';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition, StepRecord, RecordDefinition } from '../proto/cog_pb';
 
 export class ClickOnElement extends BaseStep implements StepInterface {
 
@@ -11,6 +11,17 @@ export class ClickOnElement extends BaseStep implements StepInterface {
     field: 'domQuerySelector',
     type: FieldDefinition.Type.STRING,
     description: 'Element\'s DOM Query Selector',
+  }];
+
+  protected expectedRecords: ExpectedRecord[] = [{
+    id: 'form',
+    type: RecordDefinition.Type.KEYVALUE,
+    fields: [{
+      field: 'selector',
+      type: FieldDefinition.Type.STRING,
+      description: 'Selector of the element',
+    }],
+    dynamicFields: true,
   }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
@@ -28,7 +39,9 @@ export class ClickOnElement extends BaseStep implements StepInterface {
       await this.client.clickElement(selector);
       const screenshot = await this.client.client.screenshot({ type: 'jpeg', encoding: 'binary', quality: 60 });
       const binaryRecord = this.binary('screenshot', 'Screenshot', 'image/jpeg', screenshot);
-      return this.pass('Successfully clicked element: %s', [selector], [binaryRecord]);
+      const record = this.createRecord(selector);
+      const orderedRecord = this.createOrderedRecord(selector, stepData['__stepOrder']);
+      return this.pass('Successfully clicked element: %s', [selector], [binaryRecord, record, orderedRecord]);
     } catch (e) {
       const screenshot = await this.client.client.screenshot({ type: 'jpeg', encoding: 'binary', quality: 60 });
       const binaryRecord = this.binary('screenshot', 'Screenshot', 'image/jpeg', screenshot);
@@ -42,6 +55,24 @@ export class ClickOnElement extends BaseStep implements StepInterface {
           binaryRecord,
         ]);
     }
+  }
+
+  public createRecord(selector): StepRecord {
+    const obj = {
+      selector,
+    };
+    const record = this.keyValue('form', 'Clicked Element', obj);
+
+    return record;
+  }
+
+  public createOrderedRecord(selector, stepOrder = 1): StepRecord {
+    const obj = {
+      selector,
+    };
+    const record = this.keyValue(`form.${stepOrder}`, `Clicked Element from Step ${stepOrder}`, obj);
+
+    return record;
   }
 
 }
