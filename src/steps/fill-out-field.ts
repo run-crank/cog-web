@@ -24,7 +24,7 @@ export class EnterValueIntoField extends BaseStep implements StepInterface {
       field: 'selector',
       type: FieldDefinition.Type.STRING,
       description: 'Selector of the element',
-    },{
+    }, {
       field: 'input',
       type: FieldDefinition.Type.STRING,
       description: 'Value input on the Field',

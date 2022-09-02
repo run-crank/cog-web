@@ -67,7 +67,7 @@ export class SubmitFormByClickingButton extends BaseStep implements StepInterfac
   public createRecord(selector, submittedAt): StepRecord {
     const obj = {
       selector,
-      submittedAt
+      submittedAt,
     };
     const record = this.keyValue('form', 'Clicked Submit', obj);
 
@@ -77,7 +77,7 @@ export class SubmitFormByClickingButton extends BaseStep implements StepInterfac
   public createOrderedRecord(selector, submittedAt, stepOrder = 1): StepRecord {
     const obj = {
       selector,
-      submittedAt
+      submittedAt,
     };
     const record = this.keyValue(`form.${stepOrder}`, `Clicked Submit from Step ${stepOrder}`, obj);
 
