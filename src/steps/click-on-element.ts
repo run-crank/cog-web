@@ -48,7 +48,7 @@ export class ClickOnElement extends BaseStep implements StepInterface {
 
   public createRecord(selector): StepRecord {
     const obj = {
-      selector
+      selector,
     };
     const record = this.keyValue('form', 'Clicked Element', obj);
 
@@ -57,7 +57,7 @@ export class ClickOnElement extends BaseStep implements StepInterface {
 
   public createOrderedRecord(selector, stepOrder = 1): StepRecord {
     const obj = {
-      selector
+      selector,
     };
     const record = this.keyValue(`form.${stepOrder}`, `Clicked Element from Step ${stepOrder}`, obj);
 

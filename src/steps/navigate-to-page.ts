@@ -64,7 +64,7 @@ export class NavigateToPage extends BaseStep implements StepInterface {
 
   public createRecord(url): StepRecord {
     const obj = {
-      url
+      url,
     };
     const record = this.keyValue('form', 'Navigated to Page', obj);
 
@@ -73,7 +73,7 @@ export class NavigateToPage extends BaseStep implements StepInterface {
 
   public createOrderedRecord(url, stepOrder = 1): StepRecord {
     const obj = {
-      url
+      url,
     };
     const record = this.keyValue(`form.${stepOrder}`, `Navigated to Page from Step ${stepOrder}`, obj);
 

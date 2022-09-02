@@ -49,7 +49,7 @@ export class EnterValueIntoField extends BaseStep implements StepInterface {
   public createRecord(selector, input): StepRecord {
     const obj = {
       selector,
-      input
+      input,
     };
     const record = this.keyValue('form', 'Filled out Field', obj);
 
@@ -59,7 +59,7 @@ export class EnterValueIntoField extends BaseStep implements StepInterface {
   public createOrderedRecord(selector, input, stepOrder = 1): StepRecord {
     const obj = {
       selector,
-      input
+      input,
     };
     const record = this.keyValue(`form.${stepOrder}`, `Filled out Field from Step ${stepOrder}`, obj);
 

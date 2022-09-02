@@ -41,7 +41,7 @@ export class FocusOnFrame extends BaseStep implements StepInterface {
 
   public createRecord(frame): StepRecord {
     const obj = {
-      frame
+      frame,
     };
     const record = this.keyValue('form', 'Focused on Frame', obj);
 
@@ -50,7 +50,7 @@ export class FocusOnFrame extends BaseStep implements StepInterface {
 
   public createOrderedRecord(frame, stepOrder = 1): StepRecord {
     const obj = {
-      frame
+      frame,
     };
     const record = this.keyValue(`form.${stepOrder}`, `Focused on Frame from Step ${stepOrder}`, obj);
 
