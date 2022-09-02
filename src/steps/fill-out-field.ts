@@ -1,5 +1,5 @@
 import { BaseStep, Field, StepInterface } from '../core/base-step';
-import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../proto/cog_pb';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition, StepRecord } from '../proto/cog_pb';
 
 export class EnterValueIntoField extends BaseStep implements StepInterface {
 
@@ -27,7 +27,9 @@ export class EnterValueIntoField extends BaseStep implements StepInterface {
       await this.client.fillOutField(selector, value);
       const screenshot = await this.client.client.screenshot({ type: 'jpeg', encoding: 'binary', quality: 60 });
       const binaryRecord = this.binary('screenshot', 'Screenshot', 'image/jpeg', screenshot);
-      return this.pass('Successfully filled out %s with %s', [selector, value], [binaryRecord]);
+      const record = this.createRecord(selector, value);
+      const orderedRecord = this.createOrderedRecord(selector, value, stepData['__stepOrder']);
+      return this.pass('Successfully filled out %s with %s', [selector, value], [binaryRecord, record, orderedRecord]);
     } catch (e) {
       const screenshot = await this.client.client.screenshot({ type: 'jpeg', encoding: 'binary', quality: 60 });
       const binaryRecord = this.binary('screenshot', 'Screenshot', 'image/jpeg', screenshot);
@@ -42,6 +44,26 @@ export class EnterValueIntoField extends BaseStep implements StepInterface {
           binaryRecord,
         ]);
     }
+  }
+
+  public createRecord(selector, input): StepRecord {
+    const obj = {
+      selector,
+      input,
+    };
+    const record = this.keyValue('form', 'Filled out Field', obj);
+
+    return record;
+  }
+
+  public createOrderedRecord(selector, input, stepOrder = 1): StepRecord {
+    const obj = {
+      selector,
+      input,
+    };
+    const record = this.keyValue(`form.${stepOrder}`, `Filled out Field from Step ${stepOrder}`, obj);
+
+    return record;
   }
 
 }
