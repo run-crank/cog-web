@@ -1,5 +1,5 @@
-import { BaseStep, Field, StepInterface } from '../core/base-step';
-import { Step, RunStepResponse, FieldDefinition, StepDefinition, StepRecord } from '../proto/cog_pb';
+import { BaseStep, ExpectedRecord, Field, StepInterface } from '../core/base-step';
+import { FieldDefinition, RecordDefinition, RunStepResponse, Step, StepDefinition, StepRecord } from '../proto/cog_pb';
 
 export class MarketoNavigateAndQueryForm extends BaseStep implements StepInterface {
 

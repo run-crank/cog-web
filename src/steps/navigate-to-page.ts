@@ -19,7 +19,7 @@ export class NavigateToPage extends BaseStep implements StepInterface {
     fields: [{
       field: 'url',
       type: FieldDefinition.Type.STRING,
-      description: 'The Contact List\'s ID',
+      description: 'Url to navigate to',
     }],
     dynamicFields: true,
   }];
