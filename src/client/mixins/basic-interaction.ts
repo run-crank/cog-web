@@ -180,6 +180,7 @@ export class BasicInteractionAware {
     console.log('>>>>> checkpoint 2: finished setting UA and viewport');
     console.timeLog('time');
     const response = await this.client.goto(url, { waitUntil: waitUntilSetting, timeout: 90000 });
+    console.log('>>>>> RESPONSE:', response)
     console.log('>>>>> checkpoint 3: finished navigating to page or timed out after 90s');
     console.timeLog('time');
     // Run solveRecaptchas() as soon as page loads, will automatically solve captchas even if they appear later
