@@ -49,6 +49,10 @@ export class PixelValidationStep extends BaseStep implements StepInterface {
         baseUrls: ['https://cdn.bizible.com'],
         pathContains: '',
       },
+      'google ads': {
+        baseUrls: ['https://googleads.g.doubleclick.net'],
+        pathContains: 'pagead',
+      },
       'google analytics': {
         baseUrls: ['https://www.google-analytics.com'],
         pathContains: 'collect',
@@ -56,6 +60,10 @@ export class PixelValidationStep extends BaseStep implements StepInterface {
       'google floodlight': {
         baseUrls: ['https://ad.doubleclick.net', 'https://fls.doubleclick.net'],
         pathContains: 'analytics.js',
+      },
+      'google remarketing': {
+        baseUrls: ['https://www.googleadservices.com'],
+        pathContains: 'pagead',
       },
       'linkedin insight': {
         baseUrls: ['https://px.ads.linkedin.com', 'https://dc.ads.linkedin.com'],
@@ -77,6 +85,10 @@ export class PixelValidationStep extends BaseStep implements StepInterface {
         baseUrls: ['https://cdn.heapanalytics.com'],
         pathContains: 'js',
       },
+      mouseflow: {
+        baseUrls: ['https://n2.mouseflow.com'],
+        pathContains: 'event',
+      }
     };
 
     if (!pixelMap[pixelName]) {
