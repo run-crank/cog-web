@@ -88,7 +88,19 @@ export class PixelValidationStep extends BaseStep implements StepInterface {
       mouseflow: {
         baseUrls: ['https://n2.mouseflow.com'],
         pathContains: 'event',
-      }
+      },
+      quora: {
+        baseUrls: ['https://q.quora.com'],
+        pathContains: 'ad',
+      },
+      salesloft: {
+        baseUrls: ['https://scout-cdn.salesloft.com'],
+        pathContains: 'sl.js',
+      },
+      drift: {
+        baseUrls: ['https://event.api.drift.com'],
+        pathContains: 'track',
+      },
     };
 
     if (!pixelMap[pixelName]) {
