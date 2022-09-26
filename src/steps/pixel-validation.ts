@@ -5,7 +5,7 @@ import { URL } from 'url';
 export class PixelValidationStep extends BaseStep implements StepInterface {
 
   protected stepName: string = 'Check for a pixel';
-  protected stepExpression: string = 'there should be matching network requests for the (?<pixelName>.+) pixel';
+  protected stepExpression: string = 'there should be network requests for the (?<pixelName>.+) pixel';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
   protected expectedFields: Field[] = [{
     field: 'pixelName',
@@ -26,7 +26,7 @@ export class PixelValidationStep extends BaseStep implements StepInterface {
   async executeStep(step: Step): Promise<RunStepResponse> {
     const stepData: any = step.getData().toJavaScript();
     const pixelName = stepData.pixelName.toLowerCase();
-    const withParameters = stepData.pathContains;
+    const withParameters = stepData.withParameters || {};
 
     const pixelMap = {
       'marketo munchkin': {
@@ -53,9 +53,15 @@ export class PixelValidationStep extends BaseStep implements StepInterface {
         baseUrls: ['https://googleads.g.doubleclick.net'],
         pathContains: 'pagead',
       },
-      'google analytics': {
+      'google analytics ua': {
         baseUrls: ['https://www.google-analytics.com'],
         pathContains: 'collect',
+        params: {v: 1},
+      },
+      'google analytics ga4': {
+        baseUrls: ['https://www.google-analytics.com'],
+        pathContains: 'collect',
+        params: {v: 2},
       },
       'google floodlight': {
         baseUrls: ['https://ad.doubleclick.net', 'https://fls.doubleclick.net'],
@@ -114,6 +120,13 @@ export class PixelValidationStep extends BaseStep implements StepInterface {
     const pathContains = pixelMap[pixelName].pathContains || '';
     if (stepData.customDomain) {
       baseUrls.push(stepData.customDomain);
+    }
+
+    // Add any parameters required by the pixel to the user defined "withParameters" object
+    if (pixelMap[pixelName].params) {
+      for (const key in pixelMap[pixelName].params) {
+        withParameters[key] = pixelMap[pixelName].params[key];
+      }
     }
 
     try {
