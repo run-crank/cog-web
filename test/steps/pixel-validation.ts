@@ -30,7 +30,7 @@ describe('PixelValidationStep', () => {
       const stepDef: StepDefinition = stepUnderTest.getDefinition();
       expect(stepDef.getStepId()).to.equal('PixelValidationStep');
       expect(stepDef.getName()).to.equal('Check for a pixel');
-      expect(stepDef.getExpression()).to.equal('there should be matching network requests for the (?<pixelName>.+) pixel');
+      expect(stepDef.getExpression()).to.equal('there should be network requests for the (?<pixelName>.+) pixel');
       expect(stepDef.getType()).to.equal(StepDefinition.Type.VALIDATION);
     });
 
@@ -97,16 +97,16 @@ describe('PixelValidationStep', () => {
         it('should respond with pass', async () => {
           clientWrapperStub.evaluateRequests.returns([
             {
-              url: 'https://www.google-analytics.com/collect?anyKey=anyValue',
+              url: 'https://www.google-analytics.com/collect?v=1&anyKey=anyValue',
               method: 'GET',
             },
             {
-              url: 'https://www.google-analytics.com/collect?anyKey=anyValue',
+              url: 'https://www.google-analytics.com/collect?v=1&anyKey=anyValue',
               method: 'GET',
             },
           ]);
           protoStep.setData(Struct.fromJavaScript({
-            pixelName: 'google analytics',
+            pixelName: 'google analytics ua',
             withParameters: {anyKey: 'anyValue'},
           }));
           const response = await stepUnderTest.executeStep(protoStep);
@@ -119,19 +119,19 @@ describe('PixelValidationStep', () => {
             clientWrapperStub.evaluateRequests.returns([
               {
                 rawRequest: { _headers: { 'content-type': 'application/json' } },
-                url: 'https://www.google-analytics.com/collect',
+                url: 'https://www.google-analytics.com/collect?v=1',
                 method: 'POST',
                 postData: '{"anyKey":"anyValue"}',
               },
               {
                 rawRequest: { _headers: { 'content-type': 'application/json' } },
-                url: 'https://www.google-analytics.com/collect',
+                url: 'https://www.google-analytics.com/collect?v=1',
                 method: 'POST',
                 postData: '{"anyKey":"anyValue"}',
               },
             ]);
             protoStep.setData(Struct.fromJavaScript({
-              pixelName: 'google analytics',
+              pixelName: 'google analytics ua',
               withParameters: {},
             }));
             const response = await stepUnderTest.executeStep(protoStep);
@@ -143,19 +143,19 @@ describe('PixelValidationStep', () => {
             clientWrapperStub.evaluateRequests.returns([
               {
                 rawRequest: { _headers: { 'content-type': 'anyContentType' } },
-                url: 'https://www.google-analytics.com/collect',
+                url: 'https://www.google-analytics.com/collect?v=1',
                 method: 'POST',
                 postData: 'anyKey=anyValue',
               },
               {
                 rawRequest: { _headers: { 'content-type': 'anyContentType' } },
-                url: 'https://www.google-analytics.com/collect',
+                url: 'https://www.google-analytics.com/collect?v=1',
                 method: 'POST',
                 postData: 'anyKey=anyValue',
               },
             ]);
             protoStep.setData(Struct.fromJavaScript({
-              pixelName: 'google analytics',
+              pixelName: 'google analytics ua',
               withParameters: {},
             }));
             const response = await stepUnderTest.executeStep(protoStep);
