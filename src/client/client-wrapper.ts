@@ -3,6 +3,7 @@ import { BasicInteractionAware, DomAware, ResponseAware, MarketoAware, GoogleAna
 import { Field } from '../core/base-step';
 import { Page, Request } from 'puppeteer';
 import * as Lighthouse from 'lighthouse';
+import * as Marketo from 'node-marketo-rest';
 
 class ClientWrapper {
 
@@ -12,12 +13,30 @@ class ClientWrapper {
   public lighthouse: any;
   public idMap: any;
   public blobContainerClient: any;
+  public marketoClient: Marketo;
+  public marketoConnected: boolean = false;
+  public delayInSeconds: number;
 
-  constructor (page: Page, auth: grpc.Metadata, idMap: any, blobContainerClient: any, lighthouse = Lighthouse) {
+  constructor (page: Page, auth: grpc.Metadata, idMap: any, blobContainerClient: any, lighthouse = Lighthouse, delayInSeconds = 3) {
     this.client = page;
     this.idMap = idMap;
     this.blobContainerClient = blobContainerClient;
     this.lighthouse = lighthouse;
+
+    // Make a marketo connection if the auth metadata is passed.
+    if (auth.get('endpoint').length && auth.get('clientId').length && auth.get('clientSecret').length) {
+      this.marketoClient = new Marketo({
+        endpoint: `${auth.get('endpoint')[0]}/rest`,
+        identity: `${auth.get('endpoint')[0]}/identity`,
+        clientId: auth.get('clientId')[0],
+        clientSecret: auth.get('clientSecret')[0],
+        ...(!!auth.get('partnerId')[0] && { partnerId: auth.get('partnerId')[0] }),
+      });
+      this.marketoConnected = true;
+    }
+
+    this.delayInSeconds = delayInSeconds;
+
     // Keeps track of the number of inflight requests. @see this.waitForNetworkIdle()
     this.client['__networkRequestsInflight'] = this.client['__networkRequestsInflight'] || 0;
 
