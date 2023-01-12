@@ -3,10 +3,13 @@ import { FieldDefinition, RecordDefinition, RunStepResponse, Step, StepDefinitio
 
 export class MarketoNavigateAndQueryForm extends BaseStep implements StepInterface {
 
-  protected stepName: string = 'Navigate and Query Marketo Form Fields';
+  protected stepName: string = 'Navigate and query Marketo form fields';
   // tslint:disable-next-line:max-line-length
   protected stepExpression: string = 'navigate marketo form and query fields at (?<webPageUrl>.+)';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
+  protected actionList: string[] = ['navigate'];
+  protected targetObject: string = 'Navigate and fill out Marketo form';
+
   protected expectedFields: Field[] = [{
     field: 'webPageUrl',
     type: FieldDefinition.Type.URL,

@@ -7,6 +7,8 @@ export class CheckCurrentPageInfo extends BaseStep implements StepInterface {
   // tslint:disable-next-line:max-line-length
   protected stepExpression: string = 'the (?<field>status|text|url) of the current page should (?<operator>contain|not contain|be) (?<expectation>.+)';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
+  protected actionList: string[] = ['check'];
+  protected targetObject: string = 'Page Info';
   protected expectedFields: Field[] = [{
     field: 'field',
     type: FieldDefinition.Type.STRING,

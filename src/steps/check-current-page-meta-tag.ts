@@ -7,6 +7,8 @@ export class CheckCurrentPageMetaTag extends BaseStep implements StepInterface {
   // tslint:disable-next-line:max-line-length
   protected stepExpression: string = 'the (?<metaName>.+) meta tag on the current page should (?<operator>be|contain|not contain|not be longer than|exist) ?(?<expectation>.+)?';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
+  protected actionList: string[] = ['check'];
+  protected targetObject: string = 'Page Meta Tag';
   protected expectedFields: Field[] = [{
     field: 'metaName',
     type: FieldDefinition.Type.STRING,

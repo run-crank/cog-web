@@ -7,6 +7,8 @@ export class CheckLighthousePerformance extends BaseStep implements StepInterfac
   // tslint:disable-next-line:max-line-length
   protected stepExpression: string = 'the (?<throttleTo>mobile|desktop) lighthouse performance score should be (?<expectedScore>\\d{1,3}) or higher';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
+  protected actionList: string[] = ['check'];
+  protected targetObject: string = 'Lighthouse Performance Score';
   protected expectedFields: Field[] = [{
     field: 'throttleTo',
     type: FieldDefinition.Type.STRING,

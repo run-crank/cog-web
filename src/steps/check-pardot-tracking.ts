@@ -8,6 +8,8 @@ export class CheckPardotTrackingStep extends BaseStep implements StepInterface {
   // tslint:disable-next-line:max-line-length
   protected stepExpression: string = 'the tracking code for pardot account (?<aid>\\d+) and campaign (?<cid>\\d+) should have loaded';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
+  protected actionList: string[] = ['check'];
+  protected targetObject: string = 'Pardot Tracking';
   protected expectedFields: Field[] = [{
     field: 'aid',
     type: FieldDefinition.Type.NUMERIC,

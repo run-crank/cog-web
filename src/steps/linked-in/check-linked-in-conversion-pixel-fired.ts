@@ -3,10 +3,12 @@ import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../../pr
 
 export class CheckLinkedInConversionPixelFiredStep extends BaseStep implements StepInterface {
 
-  protected stepName: string = 'Check that the LinkedIn Conversion Pixel fired';
+  protected stepName: string = 'Check that the LinkedIn conversion pixel fired';
   // tslint:disable-next-line:max-line-length
   protected stepExpression: string = 'the linkedin conversion pixel for partner id (?<pid>.+) should have fired';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
+  protected actionList: string[] = ['check'];
+  protected targetObject: string = 'LinkedIn Conversion Pixel';
   protected expectedFields: Field[] = [{
     field: 'pid',
     type: FieldDefinition.Type.STRING,

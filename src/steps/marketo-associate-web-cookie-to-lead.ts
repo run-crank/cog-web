@@ -5,9 +5,11 @@ import { Step, FieldDefinition, StepDefinition, RecordDefinition, StepRecord } f
 
 export class MarketoAssociateWebCookieStep extends BaseStep implements StepInterface {
 
-  protected stepName: string = 'Marketo Associate Web Cookie to Lead';
+  protected stepName: string = 'Marketo associate web cookie to lead';
   protected stepExpression: string = 'associate munchkin cookie to marketo lead (?<email>.+\@.+\..+)';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
+  protected actionList: string[] = ['interact'];
+  protected targetObject: string = 'Associate web cookie to Marketo lead';
   protected expectedFields: Field[] = [
     {
       field: 'email',

@@ -9,6 +9,8 @@ export class SubmitFormByClickingButton extends BaseStep implements StepInterfac
   // tslint:disable-next-line:max-line-length
   protected stepExpression: string = 'submit the form by clicking (?<domQuerySelector>.+)';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
+  protected actionList: string[] = ['interact'];
+  protected targetObject: string = 'Submit form';
   protected expectedFields: Field[] = [{
     field: 'domQuerySelector',
     type: FieldDefinition.Type.STRING,

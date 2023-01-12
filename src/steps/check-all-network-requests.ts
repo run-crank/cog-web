@@ -9,6 +9,8 @@ export class CheckAllNetworkRequestsStep extends BaseStep implements StepInterfa
   // tslint:disable-next-line:max-line-length
   protected stepExpression: string = 'there should be consistent network requests from the page';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
+  protected actionList: string[] = ['check'];
+  protected targetObject: string = 'Network Requests (All)';
   protected expectedFields: Field[] = [{
     field: 'previousRequests',
     type: FieldDefinition.Type.MAP,

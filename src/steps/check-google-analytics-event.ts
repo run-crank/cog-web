@@ -7,6 +7,8 @@ export class CheckGoogleAnalyticsEvent extends BaseStep implements StepInterface
   protected stepName: string = 'Check that Google Analytics tracked an event';
   protected stepExpression: string = 'google analytics should have tracked an event with category (?<ec>.+) and action (?<ea>.+) for tracking id (?<id>[a-zA-Z0-9\-]+)';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
+  protected actionList: string[] = ['check'];
+  protected targetObject: string = 'Google Analytics Event';
   protected expectedFields: Field[] = [
     {
       field: 'ec',

@@ -29,7 +29,7 @@ describe('CheckLinkedInConversionPixelFiredStep', () => {
     it('should return expected step metadata', () => {
       const stepDef: StepDefinition = stepUnderTest.getDefinition();
       expect(stepDef.getStepId()).to.equal('CheckLinkedInConversionPixelFiredStep');
-      expect(stepDef.getName()).to.equal('Check that the LinkedIn Conversion Pixel fired');
+      expect(stepDef.getName()).to.equal('Check that the LinkedIn conversion pixel fired');
       expect(stepDef.getExpression()).to.equal('the linkedin conversion pixel for partner id (?<pid>.+) should have fired');
       expect(stepDef.getType()).to.equal(StepDefinition.Type.VALIDATION);
     });

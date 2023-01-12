@@ -29,7 +29,7 @@ describe('TakeScreenshot', () => {
     it('should return expected step metadata', () => {
       const stepDef: StepDefinition = stepUnderTest.getDefinition();
       expect(stepDef.getStepId()).to.equal('TakeScreenshot');
-      expect(stepDef.getName()).to.equal('Take a Screenshot');
+      expect(stepDef.getName()).to.equal('Take a screenshot');
       expect(stepDef.getExpression()).to.equal('take a screenshot');
       expect(stepDef.getType()).to.equal(StepDefinition.Type.ACTION);
     });

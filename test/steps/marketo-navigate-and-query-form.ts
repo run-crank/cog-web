@@ -32,7 +32,7 @@ describe('MarketoNavigateAndQueryForm', () => {
   it('should return expected step metadata', () => {
     const stepDef: StepDefinition = stepUnderTest.getDefinition();
     expect(stepDef.getStepId()).to.equal('MarketoNavigateAndQueryForm');
-    expect(stepDef.getName()).to.equal('Navigate and Query Marketo Form Fields');
+    expect(stepDef.getName()).to.equal('Navigate and query Marketo form fields');
     expect(stepDef.getExpression()).to.equal('navigate marketo form and query fields at (?<webPageUrl>.+)');
     expect(stepDef.getType()).to.equal(StepDefinition.Type.ACTION);
   });
