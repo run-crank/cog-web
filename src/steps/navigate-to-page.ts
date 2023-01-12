@@ -7,6 +7,8 @@ export class NavigateToPage extends BaseStep implements StepInterface {
   // tslint:disable-next-line:max-line-length
   protected stepExpression: string = 'navigate to (?<webPageUrl>.+)';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
+  protected actionList: string[] = ['navigate'];
+  protected targetObject: string = 'Navigate to page';
   protected expectedFields: Field[] = [{
     field: 'webPageUrl',
     type: FieldDefinition.Type.URL,

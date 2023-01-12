@@ -7,6 +7,8 @@ export class CheckGoogleFloodlightTag extends BaseStep implements StepInterface 
   protected stepName: string = 'Check that a Google Floodlight tag fired';
   protected stepExpression: string = 'a floodlight tag should have fired for advertiser (?<aid>\\d+), group (?<group>[a-zA-Z0-9-_]+), and activity (?<atag>[a-zA-Z0-9-_]+)';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
+  protected actionList: string[] = ['check'];
+  protected targetObject: string = 'Google Floodlight Tag';
   protected expectedFields: Field[] = [
     {
       field: 'aid',

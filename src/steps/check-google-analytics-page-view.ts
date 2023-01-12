@@ -7,6 +7,8 @@ export class CheckGoogleAnalyticsPageView extends BaseStep implements StepInterf
   protected stepName: string = 'Check that Google Analytics tracked a pageview';
   protected stepExpression: string = 'google analytics should have tracked a pageview for tracking id (?<id>[a-zA-Z0-9\-]+)';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
+  protected actionList: string[] = ['check'];
+  protected targetObject: string = 'Google Analytics Pageview';
   protected expectedFields: Field[] = [
     {
       field: 'id',

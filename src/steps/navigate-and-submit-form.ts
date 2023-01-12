@@ -7,6 +7,8 @@ export class NavigateAndSubmitForm extends BaseStep implements StepInterface {
   // tslint:disable-next-line:max-line-length
   protected stepExpression: string = 'navigate and find a form at (?<webPageUrl>.+)';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
+  protected actionList: string[] = ['navigate'];
+  protected targetObject: string = 'Navigate and fill out form';
   protected expectedFields: Field[] = [{
     field: 'webPageUrl',
     type: FieldDefinition.Type.URL,

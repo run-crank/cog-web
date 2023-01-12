@@ -3,10 +3,12 @@ import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../../pr
 
 export class CheckLinkedInInsightTagFiredStep extends BaseStep implements StepInterface {
 
-  protected stepName: string = 'Check that the LinkedIn Insight tag fired';
+  protected stepName: string = 'Check that the LinkedIn insight tag fired';
   // tslint:disable-next-line:max-line-length
   protected stepExpression: string = 'the linkedin insight tag for partner id (?<pid>.+) should have fired';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
+  protected actionList: string[] = ['check'];
+  protected targetObject: string = 'LinkedIn Insight Tag';
   protected expectedFields: Field[] = [{
     field: 'pid',
     type: FieldDefinition.Type.STRING,

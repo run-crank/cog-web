@@ -29,7 +29,7 @@ describe('CheckLinkedInInsightTagFiredStep', () => {
     it('should return expected step metadata', () => {
       const stepDef: StepDefinition = stepUnderTest.getDefinition();
       expect(stepDef.getStepId()).to.equal('CheckLinkedInInsightTagFiredStep');
-      expect(stepDef.getName()).to.equal('Check that the LinkedIn Insight tag fired');
+      expect(stepDef.getName()).to.equal('Check that the LinkedIn insight tag fired');
       expect(stepDef.getExpression()).to.equal('the linkedin insight tag for partner id (?<pid>.+) should have fired');
       expect(stepDef.getType()).to.equal(StepDefinition.Type.VALIDATION);
     });

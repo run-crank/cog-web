@@ -27,7 +27,7 @@ describe('CheckMarketoMunchkinId', () => {
   it('should return expected step metadata', () => {
     const stepDef: StepDefinition = stepUnderTest.getDefinition();
     expect(stepDef.getStepId()).to.equal('CheckMarketoMunchkinId');
-    expect(stepDef.getName()).to.equal('Check Marketo Munchkin Id');
+    expect(stepDef.getName()).to.equal('Check Marketo Munchkin ID');
     expect(stepDef.getType()).to.equal(StepDefinition.Type.ACTION);
     expect(stepDef.getExpression()).to.equal('the tracking code for munchkin account id should load');
   });

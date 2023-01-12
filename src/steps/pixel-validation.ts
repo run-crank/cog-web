@@ -7,6 +7,8 @@ export class PixelValidationStep extends BaseStep implements StepInterface {
   protected stepName: string = 'Check for a pixel';
   protected stepExpression: string = 'there should be network requests for the (?<pixelName>.+) pixel';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
+  protected actionList: string[] = ['check'];
+  protected targetObject: string = 'Pixel';
   protected expectedFields: Field[] = [{
     field: 'pixelName',
     type: FieldDefinition.Type.STRING,

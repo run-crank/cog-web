@@ -237,6 +237,22 @@ message StepDefinition {
    */
   repeated RecordDefinition expected_records = 7;
 
+  /**
+   * An optional-but-encouraged array of strings that contains any actions that the step performs.
+   * This is mostly used for sorting the steps into different "Actions" on a front end web app.
+   * <br><br>
+   * **An example**: For a "Create or Update Marketo Lead" step, the actions would be equal to ['create', 'update'].
+   */
+  repeated string action = 8;
+
+  /**
+   * An optional-but-encouraged string describing the target object.
+   * This is mostly used for sorting the steps into different "Target Objects" on a front end web app.
+   * <br><br>
+   * **An example**: For a "Create or Update Marketo Lead" step, the targetObject would be equal to 'lead'.
+   */
+  string target_object = 9;
+
 }
 
 /**
@@ -320,6 +336,11 @@ message FieldDefinition {
    * **An example**: `This token can be found in your user settings under "API Tokens"`
    */
   string help = 5;
+
+  /**
+   * An optional boolean denoting whether this field can accept bulk tokens when building a scenario.
+   */
+  bool bulksupport = 6;
 
 }
 

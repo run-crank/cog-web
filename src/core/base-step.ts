@@ -14,7 +14,9 @@ export interface Field {
   field: string;
   type: FieldDefinition.Type;
   description: string;
+  help?: string;
   optionality?: number;
+  bulksupport?: boolean;
 }
 
 export interface ExpectedRecord {
@@ -31,6 +33,9 @@ export abstract class BaseStep {
   protected stepType: StepDefinition.Type;
   protected expectedFields: Field[];
   protected expectedRecords?: ExpectedRecord[];
+  protected stepHelp?: string;
+  protected actionList?: string[];
+  protected targetObject?: string;
 
   constructor(protected client: ClientWrapper) {}
 
@@ -45,6 +50,18 @@ export abstract class BaseStep {
     stepDefinition.setType(this.stepType);
     stepDefinition.setExpression(this.stepExpression);
 
+    if (this.stepHelp) {
+      stepDefinition.setHelp(this.stepHelp);
+    }
+
+    if (this.actionList) {
+      stepDefinition.setActionList(this.actionList);
+    }
+
+    if (this.targetObject) {
+      stepDefinition.setTargetObject(this.targetObject);
+    }
+
     this.expectedFields.forEach((field: Field) => {
       const expectedField = new FieldDefinition();
       expectedField.setType(field.type);
@@ -55,6 +72,12 @@ export abstract class BaseStep {
         expectedField.setOptionality(field.optionality);
       } else {
         expectedField.setOptionality(FieldDefinition.Optionality.REQUIRED);
+      }
+
+      if (field.hasOwnProperty('bulksupport')) {
+        expectedField.setBulksupport(field.bulksupport);
+      } else {
+        expectedField.setBulksupport(false);
       }
 
       stepDefinition.addExpectedFields(expectedField);

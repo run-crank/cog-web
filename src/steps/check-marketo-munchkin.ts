@@ -6,6 +6,8 @@ export class CheckMarketoMunchkin extends BaseStep implements StepInterface {
   protected stepName: string = 'Check that Marketo Munchkin tracking loads';
   protected stepExpression: string = 'the tracking code for munchkin account id (?<id>[a-zA-Z0-9\-]+) should load';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
+  protected actionList: string[] = ['check'];
+  protected targetObject: string = 'Marketo Munchkin by ID';
   protected expectedFields: Field[] = [{
     field: 'id',
     type: FieldDefinition.Type.STRING,

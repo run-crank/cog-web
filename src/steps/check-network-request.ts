@@ -8,6 +8,8 @@ export class CheckNetworkRequestStep extends BaseStep implements StepInterface {
   // tslint:disable-next-line:max-line-length
   protected stepExpression: string = 'there should be (?<reqCount>\\d+) matching network requests? for (?<baseUrl>.+)';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
+  protected actionList: string[] = ['check'];
+  protected targetObject: string = 'Network Request (Specific)';
   protected expectedFields: Field[] = [{
     field: 'reqCount',
     type: FieldDefinition.Type.NUMERIC,

@@ -7,6 +7,8 @@ export class ScrollTo extends BaseStep implements StepInterface {
   // tslint:disable-next-line:max-line-length
   protected stepExpression: string = 'scroll to (?<depth>\\d+)% of the page';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
+  protected actionList: string[] = ['interact'];
+  protected targetObject: string = 'Scroll';
   protected expectedFields: Field[] = [{
     field: 'depth',
     type: FieldDefinition.Type.NUMERIC,

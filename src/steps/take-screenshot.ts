@@ -4,10 +4,12 @@ import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../proto
 
 export class TakeScreenshot extends BaseStep implements StepInterface {
 
-  protected stepName: string = 'Take a Screenshot';
+  protected stepName: string = 'Take a screenshot';
   // tslint:disable-next-line:max-line-length
   protected stepExpression: string = 'take a screenshot';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
+  protected actionList: string[] = ['interact'];
+  protected targetObject: string = 'Take screenshot';
   protected expectedFields: Field[] = [];
   protected expectedRecords: ExpectedRecord[] = [];
 

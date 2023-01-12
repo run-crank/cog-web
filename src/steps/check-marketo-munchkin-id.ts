@@ -3,9 +3,11 @@ import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../proto
 
 export class CheckMarketoMunchkinId extends BaseStep implements StepInterface {
 
-  protected stepName: string = 'Check Marketo Munchkin Id';
+  protected stepName: string = 'Check Marketo Munchkin ID';
   protected stepExpression: string = 'the tracking code for munchkin account id should load';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
+  protected actionList: string[] = ['check'];
+  protected targetObject: string = 'Marketo Munchkin exists';
   protected expectedFields: Field[] = [];
 
   async executeStep(step: Step): Promise<RunStepResponse> {

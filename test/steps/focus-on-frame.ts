@@ -30,7 +30,7 @@ describe('FocusOnFrame', () => {
     it('should return expected step metadata', () => {
       const stepDef: StepDefinition = stepUnderTest.getDefinition();
       expect(stepDef.getStepId()).to.equal('FocusOnFrame');
-      expect(stepDef.getName()).to.equal('Focus on Frame');
+      expect(stepDef.getName()).to.equal('Focus on frame');
       expect(stepDef.getExpression()).to.equal('focus on the (?<domQuerySelector>.+) frame');
       expect(stepDef.getType()).to.equal(StepDefinition.Type.ACTION);
     });
