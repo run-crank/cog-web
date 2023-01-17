@@ -51,7 +51,7 @@
     "check-engine": "^1.8.1",
     "grpc_tools_node_protoc_ts": "^2.5.1",
     "grpc-tools": "^1.9.0",
-    "mocha": "^8.0.1",
+    "mocha": "^8.4.0",
     "nyc": "^14.1.1",
     "sinon-chai": "^3.3.0",
     "ts-sinon": "^1.0.17",
