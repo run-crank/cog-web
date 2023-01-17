@@ -12,15 +12,13 @@ class ClientWrapper {
   public client: Page;
   public lighthouse: any;
   public idMap: any;
-  public blobContainerClient: any;
   public marketoClient: Marketo;
   public marketoConnected: boolean = false;
   public delayInSeconds: number;
 
-  constructor (page: Page, auth: grpc.Metadata, idMap: any, blobContainerClient: any, lighthouse = Lighthouse, delayInSeconds = 3) {
+  constructor (page: Page, auth: grpc.Metadata, idMap: any, lighthouse = Lighthouse, delayInSeconds = 3) {
     this.client = page;
     this.idMap = idMap;
-    this.blobContainerClient = blobContainerClient;
     this.lighthouse = lighthouse;
 
     // Make a marketo connection if the auth metadata is passed.

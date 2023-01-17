@@ -14,7 +14,7 @@ export class Cog implements ICogServiceServer {
 
   private steps: StepInterface[];
 
-  constructor (private cluster: Cluster, private clientWrapperClass, private stepMap: any = {}, private blobContainerClient) {
+  constructor (private cluster: Cluster, private clientWrapperClass, private stepMap: any = {}) {
     this.steps = [].concat(...Object.values(this.getSteps(`${__dirname}/../steps`, clientWrapperClass)));
   }
 
@@ -90,7 +90,7 @@ export class Cog implements ICogServiceServer {
               scenarioId: runStepRequest.getScenarioId(),
               requestorId: runStepRequest.getRequestorId(),
             };
-            client = await this.getClientWrapper(page, call.metadata, idMap, this.blobContainerClient);
+            client = await this.getClientWrapper(page, call.metadata, idMap);
             clientCreated = true;
           }
 
@@ -150,7 +150,7 @@ export class Cog implements ICogServiceServer {
         scenarioId: runStepRequest.getScenarioId(),
         requestorId: runStepRequest.getRequestorId(),
       };
-      wrapper = this.getClientWrapper(page, metadata, idMap, this.blobContainerClient);
+      wrapper = this.getClientWrapper(page, metadata, idMap);
     }
 
     const stepId = step.getStepId();
@@ -174,8 +174,8 @@ export class Cog implements ICogServiceServer {
     return response;
   }
 
-  private getClientWrapper(page: Page, auth: grpc.Metadata, idMap: {} = null, blobContainerClient: any) {
-    return new this.clientWrapperClass(page, auth, idMap, blobContainerClient);
+  private getClientWrapper(page: Page, auth: grpc.Metadata, idMap: {} = null) {
+    return new this.clientWrapperClass(page, auth, idMap);
   }
 
 }

@@ -26,7 +26,6 @@ describe('ClientWrapper', () => {
     scenarioId: '2',
     requestorId: '3',
   };
-  const blobContainerClient = {};
   let clientWrapperUnderTest: ClientWrapper;
 
   // describe('constructor', () => {
@@ -85,7 +84,7 @@ describe('ClientWrapper', () => {
     it('getFinishedRequests is called', async () => {
       pageStub['__networkRequests'] = sinon.stub();
       // Set up test instance.
-      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap, blobContainerClient);
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap);
 
       const result = await clientWrapperUnderTest.getFinishedRequests();
 
@@ -126,7 +125,7 @@ describe('ClientWrapper', () => {
       browserStub.userAgent.resolves(originalUserAgent);
       pageStub.setUserAgent.resolves();
       pageStub.goto.resolves(expectedLastResponse);
-      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap, blobContainerClient);
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap);
 
       // Call the method and make assertions.
       await clientWrapperUnderTest.navigateToUrl(expectedUrl);
@@ -144,7 +143,7 @@ describe('ClientWrapper', () => {
       browserStub.userAgent.resolves('AnyUser/Agent x.y.z');
       pageStub.setUserAgent.resolves();
       pageStub.goto.rejects();
-      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap, blobContainerClient);
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap);
 
       // Call the method and make assertions.
       expect(clientWrapperUnderTest.navigateToUrl(expectedUrl)).to.be.rejected;
@@ -193,7 +192,7 @@ describe('ClientWrapper', () => {
       pageStub['___currentFrame'].select.resolves();
       pageStub['___currentFrame'].listeners.resolves([]);
       pageStub['___currentFrame'].addListener.resolves();
-      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap, blobContainerClient);
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap);
 
       // Call the method and make assertions.
       await clientWrapperUnderTest.fillOutField(expectedSelector, expectedValue);
@@ -209,7 +208,7 @@ describe('ClientWrapper', () => {
       pageStub['___currentFrame'].select.rejects();
       pageStub['___currentFrame'].listeners.resolves();
       pageStub['___currentFrame'].addListener.resolves();
-      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap, blobContainerClient);
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap);
 
       // Call the method and make assertions.
       return expect(clientWrapperUnderTest.fillOutField(expectedSelector, expectedValue))
@@ -225,7 +224,7 @@ describe('ClientWrapper', () => {
       pageStub['___currentFrame'].evaluate.onCall(1).resolves();
       pageStub['___currentFrame'].addListener.resolves();
       pageStub['___currentFrame'].listeners.resolves([]);
-      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap, blobContainerClient);
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap);
 
       // Call the method and make assertions.
       await clientWrapperUnderTest.fillOutField(expectedSelector, expectedValue);
@@ -241,7 +240,7 @@ describe('ClientWrapper', () => {
       pageStub['___currentFrame'].evaluate.onCall(1).rejects();
       pageStub['___currentFrame'].addListener.resolves();
       pageStub['___currentFrame'].listeners.resolves([]);
-      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap, blobContainerClient);
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap);
 
       // Call the method and make assertions.
       return expect(clientWrapperUnderTest.fillOutField(expectedSelector, expectedValue))
@@ -257,7 +256,7 @@ describe('ClientWrapper', () => {
       pageStub['___currentFrame'].evaluate.onCall(1).resolves();
       pageStub['___currentFrame'].addListener.resolves();
       pageStub['___currentFrame'].listeners.resolves([]);
-      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap, blobContainerClient);
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap);
 
       // Call the method and make assertions.
       await clientWrapperUnderTest.fillOutField(expectedSelector, expectedValue);
@@ -273,7 +272,7 @@ describe('ClientWrapper', () => {
       pageStub['___currentFrame'].evaluate.onCall(1).resolves();
       pageStub['___currentFrame'].addListener.resolves();
       pageStub['___currentFrame'].listeners.resolves([]);
-      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap, blobContainerClient);
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap);
 
       // Call the method and make assertions.
       await clientWrapperUnderTest.fillOutField(expectedSelector, expectedValue);
@@ -289,7 +288,7 @@ describe('ClientWrapper', () => {
       pageStub['___currentFrame'].evaluate.onCall(1).rejects();
       pageStub['___currentFrame'].addListener.resolves();
       pageStub['___currentFrame'].listeners.resolves([]);
-      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap, blobContainerClient);
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap);
 
       // Call the method and make assertions.
       return expect(clientWrapperUnderTest.fillOutField(expectedSelector, expectedValue))
@@ -306,7 +305,7 @@ describe('ClientWrapper', () => {
       pageStub['___currentFrame'].waitForSelector.resolves();
       pageStub['___currentFrame'].listeners.resolves([]);
       pageStub['___currentFrame'].addListener.resolves();
-      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap, blobContainerClient);
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap);
 
       // Call the method and make assertions.
       await clientWrapperUnderTest.fillOutField(expectedSelector, expectedValue);
@@ -325,7 +324,7 @@ describe('ClientWrapper', () => {
       pageStub['___currentFrame'].evaluate.onCall(1).resolves();
       pageStub['___currentFrame'].listeners.resolves([]);
       pageStub['___currentFrame'].addListener.resolves();
-      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap, blobContainerClient);
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap);
 
       // Call the method and make assertions.
       await clientWrapperUnderTest.fillOutField(expectedSelector, expectedValue);
@@ -342,7 +341,7 @@ describe('ClientWrapper', () => {
       pageStub['___currentFrame'].evaluate.onCall(1).rejects();
       pageStub['___currentFrame'].listeners.resolves([]);
       pageStub['___currentFrame'].addListener.resolves();
-      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap, blobContainerClient);
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap);
 
       // Call the method and make assertions.
       return expect(clientWrapperUnderTest.fillOutField(expectedSelector, expectedValue))
@@ -357,7 +356,7 @@ describe('ClientWrapper', () => {
       pageStub['___currentFrame'].evaluate.onCall(0).rejects();
       pageStub['___currentFrame'].listeners.resolves([]);
       pageStub['___currentFrame'].addListener.resolves();
-      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap, blobContainerClient);
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap);
 
       // Call the method and make assertions.
       return expect(clientWrapperUnderTest.fillOutField(expectedSelector, expectedValue))
@@ -407,7 +406,7 @@ describe('ClientWrapper', () => {
       pageStub['___currentFrame'].listeners.resolves([]);
       pageStub['___currentFrame'].addListener.resolves();
       pageStub.mainFrame.returns('mainFrame');
-      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap, blobContainerClient);
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap);
 
       // Call the method and make assertions.
       await clientWrapperUnderTest.submitFormByClickingButton(expectedButtonSelector);
@@ -423,7 +422,7 @@ describe('ClientWrapper', () => {
       pageStub['___currentFrame'].waitFor.resolves();
       pageStub['___currentFrame'].listeners.resolves([]);
       pageStub['___currentFrame'].addListener.resolves();
-      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap, blobContainerClient);
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap);
 
       // Call the method and make assertions.
       await clientWrapperUnderTest.submitFormByClickingButton(expectedButtonSelector);
@@ -440,7 +439,7 @@ describe('ClientWrapper', () => {
       pageStub['___currentFrame'].waitFor.resolves();
       pageStub['___currentFrame'].listeners.resolves([]);
       pageStub['___currentFrame'].addListener.resolves();
-      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap, blobContainerClient);
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap);
 
       // Call the method and make assertions.
       return expect(clientWrapperUnderTest.submitFormByClickingButton(expectedButtonSelector))
@@ -456,7 +455,7 @@ describe('ClientWrapper', () => {
       pageStub['___currentFrame'].waitFor.resolves();
       pageStub['___currentFrame'].listeners.resolves([]);
       pageStub['___currentFrame'].addListener.resolves();
-      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap, blobContainerClient);
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap);
 
       // Call the method and make assertions.
       return expect(clientWrapperUnderTest.submitFormByClickingButton(expectedButtonSelector))
@@ -497,7 +496,7 @@ describe('ClientWrapper', () => {
     it('sadPath:noPageContext', () => {
       // Set up test instance.
       delete pageStub.___lastResponse;
-      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap, blobContainerClient);
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap);
       pageStub.addListener.resolves();
       pageStub.listeners.resolves();
 
@@ -509,7 +508,7 @@ describe('ClientWrapper', () => {
     it('sadPath:unknownDetail', () => {
       // Set up test instance.
       delete pageStub.___lastResponse;
-      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap, blobContainerClient);
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap);
       pageStub.listeners.resolves();
       pageStub.addListener.resolves();
 
@@ -525,7 +524,7 @@ describe('ClientWrapper', () => {
       pageStub.___lastResponse.url.resolves(expectedUrl);
       pageStub.listeners.resolves([]);
       pageStub.addListener.resolves();
-      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap, blobContainerClient);
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap);
 
       // Call the method and make assertions.
       const actual = await clientWrapperUnderTest.getCurrentPageInfo('url');
@@ -539,7 +538,7 @@ describe('ClientWrapper', () => {
       pageStub.___lastResponse.text.resolves(expectedContent);
       pageStub.listeners.resolves([]);
       pageStub.addListener.resolves();
-      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap, blobContainerClient);
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap);
 
       // Call the method and make assertions.
       const actual = await clientWrapperUnderTest.getCurrentPageInfo('text');
@@ -553,7 +552,7 @@ describe('ClientWrapper', () => {
       pageStub.___lastResponse.status.resolves(expectedStatus);
       pageStub.listeners.resolves([]);
       pageStub.addListener.resolves();
-      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap, blobContainerClient);
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap);
 
       // Call the method and make assertions.
       const actual = await clientWrapperUnderTest.getCurrentPageInfo('status');
@@ -584,7 +583,7 @@ describe('ClientWrapper', () => {
       pageStub['___currentFrame'].evaluate.throws();
       pageStub.listeners.resolves([]);
       pageStub.addListener.resolves();
-      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap, blobContainerClient);
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap);
 
       // Call the method and make assertions.
       return expect(clientWrapperUnderTest.getMetaTagContent.bind(clientWrapperUnderTest, 'title'))
@@ -598,7 +597,7 @@ describe('ClientWrapper', () => {
       pageStub['___currentFrame'].evaluate.resolves(expectedTitle);
       pageStub.listeners.resolves([]);
       pageStub.addListener.resolves();
-      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap, blobContainerClient);
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap);
 
       // Call the method and make assertions.
       const actual = await clientWrapperUnderTest.getMetaTagContent('title');
@@ -612,7 +611,7 @@ describe('ClientWrapper', () => {
       pageStub['___currentFrame'].evaluate.resolves(expectedOgDescription);
       pageStub.listeners.resolves([]);
       pageStub.addListener.resolves();
-      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap, blobContainerClient);
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap);
 
       // Call the method and make assertions.
       const actual = await clientWrapperUnderTest.getMetaTagContent('og:description');
@@ -641,7 +640,7 @@ describe('ClientWrapper', () => {
       pageStub.listenerCount.onFirstCall().returns(0);
       pageStub.listenerCount.onSecondCall().returns(1);
 
-      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap, blobContainerClient);
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap);
     });
 
     describe('happyPath:selectorClicked', () => {
@@ -712,7 +711,7 @@ describe('ClientWrapper', () => {
       lighthouse = sinon.stub();
       lighthouse.returns(Promise.resolve({}));
 
-      clientWrapperUnderTest = new ClientWrapper(pageStub, new Metadata(), idMap, blobContainerClient, lighthouse);
+      clientWrapperUnderTest = new ClientWrapper(pageStub, new Metadata(), idMap, lighthouse);
     });
 
     // it('should call lighthouse with expected url', async () => {
@@ -748,7 +747,7 @@ describe('ClientWrapper', () => {
       pageStub.listenerCount.onFirstCall().returns(0);
       pageStub.listenerCount.onSecondCall().returns(1);
 
-      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap, blobContainerClient);
+      clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap);
     });
 
     describe('main', () => {
@@ -789,7 +788,7 @@ describe('ClientWrapper', () => {
   describe('Check Network Requests', () => {
     describe('GET requests', () => {
       beforeEach(() => {
-        clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap, blobContainerClient);
+        clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap);
       });
 
       it('should return at least 1 request that matched with expected query params', () => {
@@ -829,7 +828,7 @@ describe('ClientWrapper', () => {
 
     describe('POST requests', () => {
       beforeEach(() => {
-        clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap, blobContainerClient);
+        clientWrapperUnderTest = new ClientWrapper(pageStub, metadata, idMap);
       });
 
       it('should return at least 1 request that matched with expected query params', () => {
@@ -939,7 +938,7 @@ describe('ClientWrapper', () => {
             url: 'https://ad.anybaseUrl.net/activity;src=${aid};type=${group};cat=${atag};ord=${ord};num=${num}',
           },
         ];
-        clientWrapperUnderTest = new ClientWrapper(pageStub, new Metadata(), idMap, blobContainerClient);
+        clientWrapperUnderTest = new ClientWrapper(pageStub, new Metadata(), idMap);
         const result = clientWrapperUnderTest.filterGoogleAdsURLs(urls, aid, group, atag);
         expect(result[0]).to.equal(`https://ad.doubleclick.net/activity;src=${aid};type=${group};cat=${atag};ord=${ord};num=${num}`);
       });
@@ -966,7 +965,7 @@ describe('ClientWrapper', () => {
           ord: ordValue,
           num: numValue,
         };
-        clientWrapperUnderTest = new ClientWrapper(pageStub, new Metadata(), idMap, blobContainerClient);
+        clientWrapperUnderTest = new ClientWrapper(pageStub, new Metadata(), idMap);
         const result = clientWrapperUnderTest.getGoogleFloodlightParameters(urls[0].url);
         expect(result['src']).to.equal(expectedResult['src']);
         expect(result['type']).to.equal(expectedResult['type']);
@@ -994,7 +993,7 @@ describe('ClientWrapper', () => {
         const expectedParams = {
           anyKey: 'anyValue',
         };
-        clientWrapperUnderTest = new ClientWrapper(pageStub, new Metadata(), idMap, blobContainerClient);
+        clientWrapperUnderTest = new ClientWrapper(pageStub, new Metadata(), idMap);
         const result = clientWrapperUnderTest.includesParameters(urls[0].url, expectedParams);
         expect(result).to.equal(true);
       });
@@ -1015,7 +1014,7 @@ describe('ClientWrapper', () => {
         const expectedParams = {
           anyKey: 'anyOtherValue',
         };
-        clientWrapperUnderTest = new ClientWrapper(pageStub, new Metadata(), idMap, blobContainerClient);
+        clientWrapperUnderTest = new ClientWrapper(pageStub, new Metadata(), idMap);
         const result = clientWrapperUnderTest.includesParameters(urls[0].url, expectedParams);
         expect(result).to.equal(false);
       });
@@ -1030,7 +1029,7 @@ describe('ClientWrapper', () => {
           const urls = [
             `https://ad.doubleclick.net/activity;src=${aid};type=${group};cat=${atag};ord=${ordValue}`,
           ];
-          clientWrapperUnderTest = new ClientWrapper(pageStub, new Metadata(), idMap, blobContainerClient);
+          clientWrapperUnderTest = new ClientWrapper(pageStub, new Metadata(), idMap);
           const result = clientWrapperUnderTest.conversionMethodUrlFilter('standard', urls);
           expect(result).to.includes(urls[0]);
         });
@@ -1043,7 +1042,7 @@ describe('ClientWrapper', () => {
           const urls = [
             `https://ad.doubleclick.net/activity;src=${aid};type=${group};cat=${atag};ord=${ordValue};num=${numValue}`,
           ];
-          clientWrapperUnderTest = new ClientWrapper(pageStub, new Metadata(), idMap, blobContainerClient);
+          clientWrapperUnderTest = new ClientWrapper(pageStub, new Metadata(), idMap);
           const result = clientWrapperUnderTest.conversionMethodUrlFilter('standard', urls);
           expect(result.length).to.equal(0);
         });
@@ -1058,7 +1057,7 @@ describe('ClientWrapper', () => {
           const urls = [
             `https://ad.doubleclick.net/activity;src=${aid};type=${group};cat=${atag};ord=${ordValue};num=${numValue}`,
           ];
-          clientWrapperUnderTest = new ClientWrapper(pageStub, new Metadata(), idMap, blobContainerClient);
+          clientWrapperUnderTest = new ClientWrapper(pageStub, new Metadata(), idMap);
           const result = clientWrapperUnderTest.conversionMethodUrlFilter('unique', urls);
           expect(result).to.includes(urls[0]);
         });
@@ -1071,7 +1070,7 @@ describe('ClientWrapper', () => {
           const urls = [
             `https://ad.doubleclick.net/activity;src=${aid};type=${group};cat=${atag};ord=${ordValue};num=${numValue}`,
           ];
-          clientWrapperUnderTest = new ClientWrapper(pageStub, new Metadata(), idMap, blobContainerClient);
+          clientWrapperUnderTest = new ClientWrapper(pageStub, new Metadata(), idMap);
           const result = clientWrapperUnderTest.conversionMethodUrlFilter('unique', urls);
           expect(result.length).to.equal(0);
         });
@@ -1085,7 +1084,7 @@ describe('ClientWrapper', () => {
           const urls = [
             `https://ad.doubleclick.net/activity;src=${aid};type=${group};cat=${atag};ord=${ordValue}`,
           ];
-          clientWrapperUnderTest = new ClientWrapper(pageStub, new Metadata(), idMap, blobContainerClient);
+          clientWrapperUnderTest = new ClientWrapper(pageStub, new Metadata(), idMap);
           const result = clientWrapperUnderTest.conversionMethodUrlFilter('per session', urls);
           expect(result).to.includes(urls[0]);
         });
@@ -1097,7 +1096,7 @@ describe('ClientWrapper', () => {
           const urls = [
             `https://ad.doubleclick.net/activity;src=${aid};type=${group};cat=${atag};ord=${ordValue}`,
           ];
-          clientWrapperUnderTest = new ClientWrapper(pageStub, new Metadata(), idMap, blobContainerClient);
+          clientWrapperUnderTest = new ClientWrapper(pageStub, new Metadata(), idMap);
           const result = clientWrapperUnderTest.conversionMethodUrlFilter('per session', urls);
           expect(result.length).to.equal(0);
         });
