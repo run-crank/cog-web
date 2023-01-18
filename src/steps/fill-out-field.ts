@@ -48,7 +48,7 @@ export class EnterValueIntoField extends BaseStep implements StepInterface {
       const orderedRecord = this.createOrderedRecord(selector, value, stepData['__stepOrder']);
       return this.pass('Successfully filled out %s with %s', [selector, value], [binaryRecord, record, orderedRecord]);
     } catch (e) {
-      const screenshot = await this.client.client.screenshot({ type: 'jpeg', encoding: 'binary', quality: 60 });
+      const screenshot = await this.client.client.screenshot({ type: 'jpeg', encoding: 'binary', quality: 60, fullPage: true });
       const binaryRecord = this.binary('screenshot', 'Screenshot', 'image/jpeg', screenshot);
       return this.error(
         'There was a problem filling out %s with %s: %s',
