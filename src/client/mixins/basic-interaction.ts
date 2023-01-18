@@ -78,6 +78,14 @@ export class BasicInteractionAware {
     }
   }
 
+  public async hoverMouse(domQuerySelector: string) {
+    try {
+      await this.client.hover(domQuerySelector);
+    } catch (e) {
+      throw e;
+    }
+  }
+
   public async clickElement(selector: string) {
     try {
       let response;
