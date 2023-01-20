@@ -24,12 +24,12 @@ export class CheckLinkedInInsightTagFiredStep extends BaseStep implements StepIn
       const result = await this.client.filterLinkedInInsightTag(pid);
       if (result.length >= 1) {
         const table = this.createTable(result);
-        return this.pass('LinkedIn Insight tag fired for partner ID %d', [pid], [table]);
+        return this.pass('LinkedIn Insight tag fired for partner ID %s', [pid], [table]);
       }
 
-      return this.fail('Expected LinkedIn Insight tag to fire for partner ID %d, but the tag did not fire.', [pid]);
+      return this.fail('Expected LinkedIn Insight tag to fire for partner ID %s, but the tag did not fire.', [pid]);
     } catch (e) {
-      return this.error('There was a problem checking for LinkedIn Insight tag', [
+      return this.error('There was a problem checking for LinkedIn Insight tag: %s', [
         e.toString(),
       ]);
     }
