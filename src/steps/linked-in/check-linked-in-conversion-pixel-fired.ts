@@ -29,11 +29,11 @@ export class CheckLinkedInConversionPixelFiredStep extends BaseStep implements S
       const result = await this.client.filterLinkedInConversionPixelFired(pid, cid);
       if (result.length >= 1) {
         const table = this.createTable(result);
-        return this.pass('LinkedIn Conversion Pixel fired for partner ID %d and conversion ID %d', [pid, cid], [table]);
+        return this.pass('LinkedIn Conversion Pixel fired for partner ID %s and conversion ID %s', [pid, cid], [table]);
       }
-      return this.fail('Expected LinkedIn Conversion Pixel to fire for partner ID %d and conversion ID %d, but it did not fire.', [pid, cid]);
+      return this.fail('Expected LinkedIn Conversion Pixel to fire for partner ID %s and conversion ID %s, but it did not fire.', [pid, cid]);
     } catch (e) {
-      return this.error('There was a problem checking for LinkedIn Conversion Pixel', [
+      return this.error('There was a problem checking for LinkedIn Conversion Pixel: %s', [
         e.toString(),
       ]);
     }
