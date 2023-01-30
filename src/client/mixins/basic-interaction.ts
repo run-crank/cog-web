@@ -184,7 +184,7 @@ export class BasicInteractionAware {
     // Note: We do not use "Headless" in our UA name, because Marketo's Cloudfront
     // configuration blocks requests from UAs matching that pattern.
     await this.client.setUserAgent(ua.replace(' Chrome', ' AutomatonChrome'));
-    await this.client.setViewport({ width: 1280, height: 960 });
+    await this.client.setViewport({ width: 1920, height: 1080 });
     console.log('>>>>> checkpoint 2: finished setting UA and viewport');
     console.timeLog('time');
     const response = await this.client.goto(url, { waitUntil: waitUntilSetting, timeout: 90000 });
