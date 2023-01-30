@@ -130,8 +130,8 @@ describe('ClientWrapper', () => {
       // Call the method and make assertions.
       await clientWrapperUnderTest.navigateToUrl(expectedUrl);
       expect(pageStub.setUserAgent).to.have.been.calledWith(expectedUserAgent);
-      expect(pageStub.setViewport).to.have.been.calledWith(sinon.match.has('width', 1280));
-      expect(pageStub.setViewport).to.have.been.calledWith(sinon.match.has('height', 960));
+      expect(pageStub.setViewport).to.have.been.calledWith(sinon.match.has('width', 1920));
+      expect(pageStub.setViewport).to.have.been.calledWith(sinon.match.has('height', 1080));
       expect(pageStub.goto).to.have.been.calledWith(expectedUrl);
       expect(pageStub.___lastResponse).to.be.string(expectedLastResponse);
     });
