@@ -30,8 +30,8 @@ describe('ScrollToPage', () => {
     it('should return expected step metadata', () => {
       const stepDef: StepDefinition = stepUnderTest.getDefinition();
       expect(stepDef.getStepId()).to.equal('ScrollTo');
-      expect(stepDef.getName()).to.equal('Scroll to a percentage depth of a web page');
-      expect(stepDef.getExpression()).to.equal('scroll to (?<depth>\\d+)% of the page');
+      expect(stepDef.getName()).to.equal('Scroll on a web page');
+      expect(stepDef.getExpression()).to.equal('scroll to (?<depth>\\d+)(?<units>px|%) of the page');
       expect(stepDef.getType()).to.equal(StepDefinition.Type.ACTION);
     });
 
@@ -44,6 +44,10 @@ describe('ScrollToPage', () => {
       const pageUrl: any = fields.filter(f => f.key === 'depth')[0];
       expect(pageUrl.optionality).to.equal(FieldDefinition.Optionality.REQUIRED);
       expect(pageUrl.type).to.equal(FieldDefinition.Type.NUMERIC);
+
+      const units: any = fields.filter(f => f.key === 'units')[0];
+      expect(units.optionality).to.equal(FieldDefinition.Optionality.OPTIONAL);
+      expect(units.type).to.equal(FieldDefinition.Type.STRING);
     });
   });
 

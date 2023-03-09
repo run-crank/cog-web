@@ -15,19 +15,20 @@ export class BasicInteractionAware {
     }
   }
 
-  public async scrollTo(depth: number) {
+  public async scrollTo(depth: number, units: string = '%') {
     try {
       // Perform scroll.
       await this.client['___currentFrame'].evaluate(
-        (percent) => {
-          const floatValue = percent / 100;
+        (d, units) => {
+          const floatValue = d / 100;
           window.scroll({
             left: 0,
-            top: document.body.scrollHeight * floatValue,
+            top: units === '%' ? document.body.scrollHeight * floatValue : d,
             behavior: 'smooth',
           });
         },
         depth,
+        units,
       );
 
       // Wait until scroll completes. @see https://stackoverflow.com/a/57867348/12064302

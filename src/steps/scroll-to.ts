@@ -3,24 +3,34 @@ import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../proto
 
 export class ScrollTo extends BaseStep implements StepInterface {
 
-  protected stepName: string = 'Scroll to a percentage depth of a web page';
+  protected stepName: string = 'Scroll on a web page';
   // tslint:disable-next-line:max-line-length
-  protected stepExpression: string = 'scroll to (?<depth>\\d+)% of the page';
+  protected stepExpression: string = 'scroll to (?<depth>\\d+)(?<units>px|%) of the page';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
   protected actionList: string[] = ['interact'];
   protected targetObject: string = 'Scroll';
   protected expectedFields: Field[] = [{
     field: 'depth',
     type: FieldDefinition.Type.NUMERIC,
-    description: 'Percent Depth',
+    description: 'Depth',
+  }, {
+    field: 'units',
+    type: FieldDefinition.Type.STRING,
+    optionality: FieldDefinition.Optionality.OPTIONAL,
+    description: 'Units',
   }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
     const stepData: any = step.getData().toJavaScript();
     const depth: number = stepData.depth;
+    const units: string = stepData.units || '%';
+
+    if (!['%', 'px'].includes(units)) {
+      return this.error('Invalid units. Please use either % or px.', [], []);
+    }
 
     try {
-      await this.client.scrollTo(depth);
+      await this.client.scrollTo(depth, units);
       const screenshot = await this.client.client.screenshot({ type: 'jpeg', encoding: 'binary', quality: 60 });
       const binaryRecord = this.binary('screenshot', 'Screenshot', 'image/jpeg', screenshot);
       return this.pass('Successfully scrolled to %s%% of the page', [depth], [binaryRecord]);
