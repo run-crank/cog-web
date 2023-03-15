@@ -44,10 +44,6 @@ describe('ScrollToPage', () => {
       const pageUrl: any = fields.filter(f => f.key === 'depth')[0];
       expect(pageUrl.optionality).to.equal(FieldDefinition.Optionality.REQUIRED);
       expect(pageUrl.type).to.equal(FieldDefinition.Type.NUMERIC);
-
-      const units: any = fields.filter(f => f.key === 'units')[0];
-      expect(units.optionality).to.equal(FieldDefinition.Optionality.OPTIONAL);
-      expect(units.type).to.equal(FieldDefinition.Type.STRING);
     });
   });
 
