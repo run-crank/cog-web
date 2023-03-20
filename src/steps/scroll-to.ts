@@ -28,14 +28,15 @@ export class ScrollTo extends BaseStep implements StepInterface {
       await this.client.scrollTo(depth, units);
       const screenshot = await this.client.client.screenshot({ type: 'jpeg', encoding: 'binary', quality: 60 });
       const binaryRecord = this.binary('screenshot', 'Screenshot', 'image/jpeg', screenshot);
-      return this.pass('Successfully scrolled to %s%% of the page', [depth], [binaryRecord]);
+      return this.pass('Successfully scrolled to %s%s of the page', [depth, units], [binaryRecord]);
     } catch (e) {
       const screenshot = await this.client.client.screenshot({ type: 'jpeg', encoding: 'binary', quality: 60 });
       const binaryRecord = this.binary('screenshot', 'Screenshot', 'image/jpeg', screenshot);
       return this.error(
-        'There was a problem scrolling to %s%% of the page',
+        'There was a problem scrolling to %s%s of the page: %s',
         [
           depth,
+          units,
           e.toString(),
         ],
         [
