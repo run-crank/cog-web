@@ -8,6 +8,20 @@ export class BasicInteractionAware {
   public async focusFrame(domQuerySelector: string) {
     if (domQuerySelector === 'main') {
       this.client['___currentFrame'] = this.client.mainFrame();
+    } else if (domQuerySelector.startsWith('index=')) {
+      const index = domQuerySelector.slice(6);
+      await this.client.waitForSelector('iframe');
+      const frames = await this.client.evaluate(() => Array.from(document.querySelectorAll('iframe'), (el) => {
+        if (el.id) {
+          return `#${el.id}`;
+        } else if (el.className) {
+          return `.${el.className}`;
+        } else {
+          return '';
+        }
+      }));
+      const elementHandle = await this.client.$(`iframe${frames[index]}`);
+      this.client['___currentFrame'] = await elementHandle.contentFrame();
     } else {
       await this.client.waitForSelector(domQuerySelector);
       const elementHandle = await this.client.$(domQuerySelector);
