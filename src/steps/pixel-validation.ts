@@ -56,12 +56,12 @@ export class PixelValidationStep extends BaseStep implements StepInterface {
         pathContains: 'pagead',
       },
       'google analytics ua': {
-        baseUrls: ['https://www.google-analytics.com'],
+        baseUrls: ['https://www.google-analytics.com', 'https://analytics.google.com'],
         pathContains: 'collect',
         params: {v: 1},
       },
       'google analytics ga4': {
-        baseUrls: ['https://www.google-analytics.com'],
+        baseUrls: ['https://www.google-analytics.com', 'https://analytics.google.com'],
         pathContains: 'collect',
         params: {v: 2},
       },
