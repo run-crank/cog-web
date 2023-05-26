@@ -36,7 +36,7 @@ export class PixelValidationStep extends BaseStep implements StepInterface {
         pathContains: 'munchkin.js',
       },
       hubspot: {
-        baseUrls: ['https://hs.analytics'],
+        baseUrls: ['https://hs.analytics', 'https://js.hs-scripts.com', 'https://js.hs-analytics.net'],
         pathContains: '',
       },
       pardot: {
