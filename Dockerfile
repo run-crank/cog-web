@@ -1,4 +1,4 @@
-FROM buildkite/puppeteer:v1.15.0
+FROM buildkite/puppeteer:v3.0.4
 # Note: ^ uses node:10.15.3-slim
 
 # Install dumb-init
