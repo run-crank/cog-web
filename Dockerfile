@@ -1,10 +1,13 @@
-FROM buildkite/puppeteer:v1.15.0
-# Note: ^ uses node:10.15.3-slim
+FROM buildkite/puppeteer:v3.0.4
+# Note: ^ uses node:10.20.1-slim
 
 # Install dumb-init
 RUN wget -O /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.2/dumb-init_1.2.2_amd64 && \
   echo "37f2c1f0372a45554f1b89924fbb134fc24c3756efaedf11e07f599494e0eff9  /usr/local/bin/dumb-init" | sha256sum -c - && \
   chmod 755 /usr/local/bin/dumb-init
+
+# Update repository config - Change deb.debian.org to archive.debian.org
+RUN echo "deb http://archive.debian.org/debian stretch main" > /etc/apt/sources.list
 
 # Install xvfb for running in headful mode
 RUN apt-get update && apt-get install -yq xvfb
