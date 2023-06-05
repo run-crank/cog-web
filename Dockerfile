@@ -1,5 +1,5 @@
-FROM buildkite/puppeteer:v1.15.0
-# Note: ^ uses node:10.15.3-slim
+FROM buildkite/puppeteer:v3.0.4
+# Note: ^ uses node:10.20.1-slim
 
 # Install dumb-init
 RUN wget -O /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.2/dumb-init_1.2.2_amd64 && \
