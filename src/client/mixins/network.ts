@@ -3,7 +3,7 @@ import * as util from '@run-crank/utilities';
 import { URL } from 'url';
 import * as querystring from 'querystring';
 
-const OTHER_REQUEST_METHODS = ['POST', 'PATCH', 'PUT'];
+const OTHER_REQUEST_METHODS = ['POST', 'PATCH', 'PUT', 'OPTIONS'];
 const SUPPORTED_CONTENT_TYPES = ['application/json', 'application/json;charset=UTF-8', 'application/x-www-form-urlencoded', 'text/plain', 'none'];
 
 export class NetworkAware {
