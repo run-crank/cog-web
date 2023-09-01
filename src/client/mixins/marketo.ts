@@ -3,15 +3,6 @@ export class MarketoAware {
   marketoClient: Marketo;
   leadDescription: any;
   delayInSeconds: number;
-  mustHaveFields = [
-    'email',
-    'updatedAt',
-    'createdAt',
-    'lastName',
-    'firstName',
-    'id',
-    'leadPartitionId',
-  ].filter((f) => !!f);
 
   public async findLeadByField(field: string, value: string, justInCaseField: string = null, partitionId: number = null) {
     this.delayInSeconds > 0 ? await this.delay(this.delayInSeconds) : null;
@@ -19,12 +10,23 @@ export class MarketoAware {
     const fieldList: string[] = fields.result.filter((field) => field.rest).map((field: any) => field.rest.name);
     let response: any = {};
 
+    const mustHaveFields = [
+      justInCaseField,
+      'email',
+      'updatedAt',
+      'createdAt',
+      'lastName',
+      'firstName',
+      'id',
+      'leadPartitionId',
+    ].filter((f) => !!f);
+
     if (fieldList.join(',').length > 7168 && fieldList.length >= 1000) {
       // If the length of the get request would be over 7KB, then the request
       // would fail. And if the amount of fields is over 1000, it is likely
       // not worth it to cache with the if statement below.
       // Instead, we will only request the needed fields.
-      response = await this.marketoClient.lead.find(field, [value], { fields: [justInCaseField, ...this.mustHaveFields, partitionId ? 'leadPartitionId' : null] });
+      response = await this.marketoClient.lead.find(field, [value], { fields: mustHaveFields });
     } else if (fieldList.join(',').length > 7168) {
       // If the length of the get request would be over 7KB, then the request
       // would fail. Instead, we will split the request every 200 fields, and
