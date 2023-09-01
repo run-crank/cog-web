@@ -19,7 +19,7 @@ export class MarketoAware {
       'firstName',
       'id',
       'leadPartitionId',
-    ].filter(f => !!f);
+    ].filter((f) => !!f);
 
     if (fieldList.join(',').length > 7168 && fieldList.length >= 1000) {
       // If the length of the get request would be over 7KB, then the request
