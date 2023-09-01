@@ -3,15 +3,6 @@ export class MarketoAware {
   marketoClient: Marketo;
   leadDescription: any;
   delayInSeconds: number;
-  mustHaveFields = [
-    'email',
-    'updatedAt',
-    'createdAt',
-    'lastName',
-    'firstName',
-    'id',
-    'leadPartitionId',
-  ].filter((f) => !!f);
 
   public async findLeadByField(field: string, value: string, justInCaseField: string = null, partitionId: number = null) {
     this.delayInSeconds > 0 ? await this.delay(this.delayInSeconds) : null;
