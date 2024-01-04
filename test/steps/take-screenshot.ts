@@ -36,6 +36,7 @@ describe('TakeScreenshot', () => {
   });
 
   describe('ExecuteStep', () => {
+    
     describe('Take a Screenshot', () => {
       beforeEach(() => {
         protoStep.setData(Struct.fromJavaScript({__stepOrder: 2}));
