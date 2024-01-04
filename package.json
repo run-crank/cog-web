@@ -4,19 +4,19 @@
   "description": "A generic web browser Cog for Crank",
   "license": "MIT",
   "cog": {
-    "name": "automatoninc/web",
+    "name": "stackmoxie/web",
     "label": "A Browser",
     "homepage": "https://github.com/run-crank/cog-web",
     "authHelpUrl": ""
   },
   "scripts": {
-    "build-docker": "docker build -t automatoninc/web:$npm_package_version -t automatoninc/web:latest .",
+    "build-docker": "docker build -t stackmoxie/web:$npm_package_version -t stackmoxie/web:latest .",
     "build-proto": "scripts/build-proto.sh",
     "build-ts": "tsc",
     "lint": "tslint -c tslint.json -p tsconfig.json",
     "start": "check-engine package.json && ts-node src/core/grpc-server.ts",
     "test": "nyc mocha -r ts-node/register src/core/grpc-server.ts test/*.ts test/**/*.ts ",
-    "version": "crank cog:readme automatoninc/web && git add README.md"
+    "version": "crank cog:readme stackmoxie/web && git add README.md"
   },
   "nyc": {
     "extension": [
