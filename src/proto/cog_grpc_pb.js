@@ -20,7 +20,7 @@
 //
 // ---
 'use strict';
-var grpc = require('grpc');
+var grpc = require('@grpc/grpc-js');
 var cog_pb = require('./cog_pb.js');
 var google_protobuf_struct_pb = require('google-protobuf/google/protobuf/struct_pb.js');
 

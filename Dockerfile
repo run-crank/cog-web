@@ -1,4 +1,4 @@
-FROM buildkite/puppeteer:v3.0.4
+FROM node:18
 # Note: ^ uses node:10.20.1-slim
 
 # Install dumb-init

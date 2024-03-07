@@ -1,13 +1,14 @@
-import * as grpc from 'grpc';
+import * as grpc from '@grpc/grpc-js';
 import { Cluster } from 'puppeteer-cluster';
 import { CogServiceService as CogService } from '../proto/cog_grpc_pb';
 import { Cog } from './cog';
 import { ClientWrapper } from '../client/client-wrapper';
+import { TypedServerOverride } from './typed-server-override';
 import puppeteerExtra from 'puppeteer-extra';
 import puppeteerExtraPluginRecaptcha from 'puppeteer-extra-plugin-recaptcha';
 const stealthPlugin = require('puppeteer-extra-plugin-stealth'); // needs to use require
 
-const server = new grpc.Server();
+const server = new TypedServerOverride();
 const port = process.env.PORT || 28866;
 const host = process.env.HOST || '0.0.0.0';
 let credentials: grpc.ServerCredentials;
@@ -64,10 +65,14 @@ async function instantiateCluster(): Promise<Cluster> {
 }
 
 instantiateCluster().then((cluster) => {
-  server.addService(CogService, new Cog(cluster, ClientWrapper, {}));
-  server.bind(`${host}:${port}`, credentials);
-  server.start();
-  console.log(`Server started, listening: ${host}:${port}`);
+  server.addServiceTyped(CogService, new Cog(cluster, ClientWrapper, {}));
+  server.bindAsync(`${host}:${port}`, credentials, (err, port) => {
+    if (err) {
+      throw err;
+    }
+    server.start();
+    console.log(`Server started, listening: ${host}:${port}`);
+  });
 
   process.on('SIGINT', () => {
     cluster.close();

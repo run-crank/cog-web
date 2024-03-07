@@ -68,7 +68,7 @@ export class CheckCurrentPageMetaTag extends BaseStep implements StepInterface {
     // If we're here, we should throw an error if no meta content was found.
     // If we reason about a null value, the checks below are invalid.
     if (actual === null) {
-      throw new Error("Can't evaluate meta tag that doesn't exist.");
+      throw new Error('Can\'t evaluate meta tag that doesn\'t exist.');
     }
 
     if (operator === 'contain') {

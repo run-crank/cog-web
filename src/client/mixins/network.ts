@@ -21,7 +21,7 @@ export class NetworkAware {
     return matchedRequests;
   }
 
-  private convertParamsToObject(params: URLSearchParams) {
+  private convertParamsToObject(params: import('url').URLSearchParams) {
     const result = {};
 
     if (isNullOrUndefined(params)) return result;
