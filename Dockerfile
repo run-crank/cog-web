@@ -16,9 +16,6 @@ RUN apt-get update \
 ADD https://github.com/Yelp/dumb-init/releases/download/v1.2.2/dumb-init_1.2.2_x86_64 /usr/local/bin/dumb-init
 RUN chmod +x /usr/local/bin/dumb-init
 
-# Update repository config - Change deb.debian.org to archive.debian.org
-# RUN echo "deb http://archive.debian.org/debian stretch main" > /etc/apt/sources.list
-
 # Install xvfb for running in headful mode
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4EB27DB2A3B88B8B
 RUN apt-get update && apt-get install -yq xvfb
