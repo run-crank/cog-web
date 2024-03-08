@@ -44,5 +44,4 @@ EXPOSE 28866
 LABEL com.stackmoxie.cog-for="Web"
 
 ENTRYPOINT ["/usr/local/bin/dumb-init", "--", "xvfb-run", "--server-num=99", "--server-args=-screen 0 1280x960x24"]
-# CMD ["node", "build/core/grpc-server.js"]
-CMD ["xvfb-run", "-a", "--server-num=99", "--server-args=-screen 0 1280x960x24", "node", "build/core/grpc-server.js"] > /var/log/xvfb.log 2>&1
+CMD ["node", "build/core/grpc-server.js"]
