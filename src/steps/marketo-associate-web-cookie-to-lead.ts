@@ -71,7 +71,7 @@ export class MarketoAssociateWebCookieStep extends BaseStep implements StepInter
           return this.error('Unable to assocated munchkin cookie %s with Marketo lead %s', [munchkinCookie[0].value, reference]);
         }
       } else {
-        return this.error("Couldn't find a lead associated with %s%s", [
+        return this.error('Couldn\'t find a lead associated with %s%s', [
           reference,
           partitionId ? ` in partition ${partitionId}` : '',
         ]);

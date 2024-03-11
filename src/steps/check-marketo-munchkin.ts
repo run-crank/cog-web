@@ -11,7 +11,7 @@ export class CheckMarketoMunchkin extends BaseStep implements StepInterface {
   protected expectedFields: Field[] = [{
     field: 'id',
     type: FieldDefinition.Type.STRING,
-    description: "Munchkin Account ID associated with the user's Marketo instance (e.g. 460-tdh-945)",
+    description: 'Munchkin Account ID associated with the user\'s Marketo instance (e.g. 460-tdh-945)',
   }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {

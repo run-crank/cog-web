@@ -11,7 +11,7 @@ export class BasicInteractionAware {
     } else if (domQuerySelector.startsWith('index=')) {
       const index = domQuerySelector.slice(6);
       await this.client.waitForSelector('iframe');
-      const frames = await this.client.evaluate(() => Array.from(document.querySelectorAll('iframe'), (el) => {
+      const frames = await this.client.evaluate(() => Array.from(document.querySelectorAll('iframe'), (el) => { // eslint-disable-line no-undef
         if (el.id) {
           return `#${el.id}`;
         } else if (el.className) {
@@ -35,9 +35,9 @@ export class BasicInteractionAware {
       await this.client['___currentFrame'].evaluate(
         (d, units) => {
           const floatValue = d / 100;
-          window.scroll({
+          window.scroll({ // eslint-disable-line no-undef
             left: 0,
-            top: units === '%' ? document.body.scrollHeight * floatValue : d,
+            top: units === '%' ? document.body.scrollHeight * floatValue : d, // eslint-disable-line no-undef
             behavior: 'smooth',
           });
         },
@@ -50,13 +50,13 @@ export class BasicInteractionAware {
         return new Promise((resolve) => {
           let lastPos = null;
           let sameCount = 0;
-          window.requestAnimationFrame(checkScrollY);
+          window.requestAnimationFrame(checkScrollY); // eslint-disable-line no-undef
 
           // This function will be called every painting frame for the duration
           // of the smooth scroll operation.
           function checkScrollY() {
             // Check our current position
-            const newPos = window.scrollY;
+            const newPos = window.scrollY; // eslint-disable-line no-undef
 
             // If the current position is the same as the last, and it was the
             // same as the last for two frames in a row, then scroll completed.
@@ -74,7 +74,7 @@ export class BasicInteractionAware {
             }
 
             // Check again during next painting frame
-            window.requestAnimationFrame(checkScrollY);
+            window.requestAnimationFrame(checkScrollY); // eslint-disable-line no-undef
           }
         });
       });
@@ -127,7 +127,7 @@ export class BasicInteractionAware {
               clickSuccess = await this.client['___currentFrame'].waitForFunction(
                 (selector) => {
                   try {
-                    document.querySelector(selector).click();
+                    document.querySelector(selector).click(); // eslint-disable-line no-undef
                     return true;
                   } catch (e) {
                     return false;
@@ -245,7 +245,7 @@ export class BasicInteractionAware {
         try {
           await this.client['___currentFrame'].select(selector, value);
         } catch (e) {
-          throw Error("Drop down may not be visible or isn't selectable.");
+          throw Error('Drop down may not be visible or isn\'t selectable.');
         }
         break;
 
@@ -254,16 +254,16 @@ export class BasicInteractionAware {
           try {
             await this.client['___currentFrame'].evaluate(
               (selector) => {
-                document.querySelector(selector).click();
-                if (!document.querySelector(selector).checked) {
-                  document.querySelector(selector).checked = true;
+                document.querySelector(selector).click(); // eslint-disable-line no-undef
+                if (!document.querySelector(selector).checked) { // eslint-disable-line no-undef
+                  document.querySelector(selector).checked = true; // eslint-disable-line no-undef
                 }
                 return true;
               },
               selector,
             );
           } catch (e) {
-            throw Error("Checkbox may not be visible or isn't checkable.");
+            throw Error('Checkbox may not be visible or isn\'t checkable.');
           }
         }
         break;
@@ -272,16 +272,16 @@ export class BasicInteractionAware {
         try {
           await this.client['___currentFrame'].evaluate(
             (selector) => {
-              document.querySelector(selector).click();
-              if (!document.querySelector(selector).checked) {
-                document.querySelector(selector).checked = true;
+              document.querySelector(selector).click(); // eslint-disable-line no-undef
+              if (!document.querySelector(selector).checked) { // eslint-disable-line no-undef
+                document.querySelector(selector).checked = true; // eslint-disable-line no-undef
               }
               return true;
             },
             `${selector}[value="${value}"]`,
           );
         } catch (e) {
-          throw Error("Radio button may not be visible or isn't selectable.");
+          throw Error('Radio button may not be visible or isn\'t selectable.');
         }
         break;
 
@@ -291,7 +291,7 @@ export class BasicInteractionAware {
           await this.client['___currentFrame'].type(selector, value);
           await this.client['___currentFrame'].evaluate(
             (selector, value) => {
-              document.querySelector(selector).blur();
+              document.querySelector(selector).blur(); // eslint-disable-line no-undef
               return true;
             },
             selector, value,
@@ -300,15 +300,15 @@ export class BasicInteractionAware {
           try {
             await this.client['___currentFrame'].evaluate(
               (selector, value) => {
-                document.querySelector(selector).focus();
-                document.querySelector(selector).value = value;
-                document.querySelector(selector).blur();
+                document.querySelector(selector).focus(); // eslint-disable-line no-undef
+                document.querySelector(selector).value = value; // eslint-disable-line no-undef
+                document.querySelector(selector).blur(); // eslint-disable-line no-undef
                 return true;
               },
               selector, value,
             );
           } catch (e) {
-            throw Error("Field may not be visible, or exist, or it can't be typed in.");
+            throw Error('Field may not be visible, or exist, or it can\'t be typed in.');
           }
         }
         break;
@@ -347,7 +347,7 @@ export class BasicInteractionAware {
         new Promise((res, rej) => {
           this.client['___currentFrame'].waitForFunction(
             (selector) => {
-              const el = document.querySelector(selector);
+              const el = document.querySelector(selector); // eslint-disable-line no-undef
               return !el || el.offsetParent === null;
             },
             { timeout: 15000 },
@@ -360,7 +360,7 @@ export class BasicInteractionAware {
           this.client['___currentFrame'].waitForFunction(
             (selector) => {
               try {
-                document.querySelector(selector).click();
+                document.querySelector(selector).click(); // eslint-disable-line no-undef
                 return true;
               } catch (e) {
                 return false;
@@ -394,7 +394,7 @@ export class BasicInteractionAware {
     return await this.client['___currentFrame'].evaluate(
       (selector) => {
         let method: string;
-        const element = document.querySelector(selector);
+        const element = document.querySelector(selector); // eslint-disable-line no-undef
         const tagName = (element.tagName || '').toLowerCase();
         if (tagName === 'select') {
           method = 'choose';

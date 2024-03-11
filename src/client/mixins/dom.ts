@@ -14,7 +14,7 @@ export class DomAware {
     if (metaName === 'title') {
       return await this.client['___currentFrame'].evaluate(() => {
         try {
-          return document.querySelector('title').innerText;
+          return document.querySelector('title').innerText; // eslint-disable-line no-undef
         } catch (e) {
           return null;
         }
@@ -24,11 +24,11 @@ export class DomAware {
     return await this.client['___currentFrame'].evaluate(
       (name) => {
         try {
-          return document.querySelector(`meta[name="${name}"]`)['content'];
+          return document.querySelector(`meta[name="${name}"]`)['content']; // eslint-disable-line no-undef
         } catch (e) {
           // If the meta[name] didn't exist, try [property] (open graph support).
           try {
-            return document.querySelector(`meta[property="${name}"]`)['content'];
+            return document.querySelector(`meta[property="${name}"]`)['content']; // eslint-disable-line no-undef
           } catch (e) {
             // Always resolve to null so the step can handle it.
             return null;

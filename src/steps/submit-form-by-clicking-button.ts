@@ -14,7 +14,7 @@ export class SubmitFormByClickingButton extends BaseStep implements StepInterfac
   protected expectedFields: Field[] = [{
     field: 'domQuerySelector',
     type: FieldDefinition.Type.STRING,
-    description: "Button's DOM Query Selector",
+    description: 'Button\'s DOM Query Selector',
   }];
   protected expectedRecords: ExpectedRecord[] = [{
     id: 'form',
