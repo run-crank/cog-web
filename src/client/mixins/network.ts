@@ -40,7 +40,7 @@ export class NetworkAware {
       if (request.method === 'GET') {
         actualParams = this.convertParamsToObject(new URL(request.url).searchParams);
       } else if (OTHER_REQUEST_METHODS.includes(request.method)) {
-        const contentType = request.rawRequest._headers['content-type'] || 'none';
+        const contentType = request.rawRequest?._headers?.['content-type'] || 'none';
         const requestHasValidContentType = SUPPORTED_CONTENT_TYPES.filter((f) => f.includes(contentType) || contentType.includes(f)).length > 0;
         const isJsonString = (string) => {
           try {
