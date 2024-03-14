@@ -85,7 +85,7 @@ export class CheckPardotTrackingStep extends BaseStep implements StepInterface {
             tableRecord,
           ]);
       }
-      const record = this.createRecord(evaluatedRequests[0].rawRequest._url);
+      const record = this.createRecord(evaluatedRequests[0].url);
       return this.pass(
         'Successfully detected Pardot Tracking request for account id %d, and campaign id %d.', [aid, cid], [record]);
     } catch (e) {

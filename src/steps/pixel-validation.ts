@@ -187,7 +187,7 @@ export class PixelValidationStep extends BaseStep implements StepInterface {
   }
 
   private getPostRequestParams(request) {
-    if (request.rawRequest._headers['content-type'].includes('application/json')) {
+    if (request.rawRequest?._headers?.['content-type'].includes('application/json')) {
       return JSON.parse(request.postData);
     } else {
       return this.getUrlParams(`${request.url}?${request.postData}`);
