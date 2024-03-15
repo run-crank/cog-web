@@ -9,7 +9,7 @@ export class LighthouseAware {
   async getLighthouseScores(url: string, throttleTo: 'desktop' | 'mobile' = 'desktop', categories: string[] = ['performance']) {
     const browser = this.client.browser();
 
-    const flags: { port: number; output: OutputMode | OutputMode[]; logLevel: "info" | "silent" | "error" | "warn" | "verbose" } = {
+    const flags: { port: number; output: OutputMode | OutputMode[]; logLevel: 'info' | 'silent' | 'error' | 'warn' | 'verbose' } = {
       port: Number((new URL(browser.wsEndpoint())).port),
       output: 'json',
       logLevel: 'info',
