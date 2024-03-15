@@ -103,12 +103,12 @@ export class CheckLighthousePerformance extends BaseStep implements StepInterfac
     const obj = {};
     const entries = record.timing.entries;
     obj['actualScore'] = record.categories.performance.score * 100;
-    obj['firstContentfulPaint'] = entries.find((data) => data.name == 'lh:computed:FirstContentfulPaint').duration;
-    obj['firstMeaningfulPaint'] =  entries.find((data) => data.name == 'lh:computed:FirstMeaningfulPaint').duration;
-    obj['speedIndex'] = entries.find((data) => data.name == 'lh:computed:SpeedIndex').duration;
-    obj['firstCpuIdle'] = entries.find((data) => data.name == 'lh:computed:FirstCPUIdle').duration;
-    obj['timeToInteractive'] = entries.find((data) => data.name == 'lh:computed:Interactive').duration;
-    obj['maxPotentialFirstInputDelay'] = entries.find((data) => data.name == 'lh:computed:MaxPotentialFID').duration;
+    obj['firstContentfulPaint'] = entries.find((data) => data.name == 'lh:computed:FirstContentfulPaint')?.duration || 'unknown';
+    obj['firstMeaningfulPaint'] =  entries.find((data) => data.name == 'lh:computed:FirstMeaningfulPaint')?.duration || 'unknown';
+    obj['speedIndex'] = entries.find((data) => data.name == 'lh:computed:SpeedIndex')?.duration || 'unknown';
+    obj['firstCpuIdle'] = entries.find((data) => data.name == 'lh:computed:FirstCPUIdle')?.duration || 'unknown';
+    obj['timeToInteractive'] = entries.find((data) => data.name == 'lh:computed:Interactive')?.duration || 'unknown';
+    obj['maxPotentialFirstInputDelay'] = entries.find((data) => data.name == 'lh:computed:MaxPotentialFID')?.duration || 'unknown';
 
     return this.keyValue('labData', 'Performance Lab Data', obj);
   }
