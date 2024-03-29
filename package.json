@@ -15,7 +15,7 @@
     "build-ts": "tsc",
     "lint": "eslint --ext .ts src/client src/steps --quiet",
     "start": "check-engine package.json && ts-node src/core/grpc-server.ts",
-    "test": "nyc mocha -r ts-node/register src/core/grpc-server.ts test/*.ts test/**/*.ts ",
+    "test": "nyc mocha -r ts-node/register src/core/grpc-server.ts test/*.ts test/**/*.ts --timeout 15000",
     "version": "crank cog:readme stackmoxie/web && git add README.md"
   },
   "nyc": {

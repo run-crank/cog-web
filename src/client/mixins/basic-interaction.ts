@@ -327,6 +327,9 @@ export class BasicInteractionAware {
     // set to 3/4 to catch as many cases as possible, including:
     // - Click worked, redirected, and therefore button is gone.
     // - Click worked, no redirect, but button is gone and it's been 10s
+    const delayMS = (ms) => {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
     await this.client['___currentFrame'].waitForSelector(selector);
     await Bluebird.some(
       [
@@ -373,7 +376,7 @@ export class BasicInteractionAware {
             .catch((e) => rej(Error('Unable to click submit button')));
         }),
         new Promise((res, rej) => {
-          this.client['___currentFrame'].waitFor(10000)
+          delayMS(10000)
             .then(res)
             .catch((e) => rej(Error('Waited for 10 seconds')));
         }),
