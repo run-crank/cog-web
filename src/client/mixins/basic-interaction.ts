@@ -1,4 +1,4 @@
-import { Page } from 'puppeteer';
+import { Page, PuppeteerLifeCycleEvent } from 'puppeteer';
 import { Promise as Bluebird } from 'bluebird';
 import { keyCodes } from '../_shared/constants/key-codes.constant';
 
@@ -194,7 +194,10 @@ export class BasicInteractionAware {
         latency: 40,
       });
     }
-    const waitUntilSetting = maxInflightRequests === 0 ? 'networkidle0' : 'networkidle2';
+    let waitUntilSetting: PuppeteerLifeCycleEvent = maxInflightRequests === 0 ? 'networkidle0' : 'networkidle2';
+    if (url.endsWith('.pdf')) {
+      waitUntilSetting = 'domcontentloaded';
+    }
     // Make ourselves identifiable and set a more realistic desktop browser size.
     // Note: We do not use "Headless" in our UA name, because Marketo's Cloudfront
     // configuration blocks requests from UAs matching that pattern.
