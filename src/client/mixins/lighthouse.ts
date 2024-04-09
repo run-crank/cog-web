@@ -2,17 +2,12 @@ import { Page } from 'puppeteer';
 import { OutputMode } from 'lighthouse';
 import * as DesktopConfig from 'lighthouse/lighthouse-core/config/lr-desktop-config';
 import * as MobileConfig from 'lighthouse/lighthouse-core/config/lr-mobile-config';
-import pRetry from 'p-retry';
 
 export class LighthouseAware {
   public client: Page;
   public lighthouse: any;
 
   async getLighthouseScores(url: string, throttleTo: 'desktop' | 'mobile' = 'desktop', categories: string[] = ['performance']) {
-    return await pRetry(() => this.runLighthouse(url, throttleTo, categories), {retries: 3});
-  }
-
-  async runLighthouse(url: string, throttleTo: 'desktop' | 'mobile' = 'desktop', categories: string[] = ['performance']) {
     const browser = this.client.browser();
 
     const flags: { port: number; output: OutputMode | OutputMode[]; logLevel: 'info' | 'silent' | 'error' | 'warn' | 'verbose' } = {
