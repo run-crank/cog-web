@@ -48,9 +48,21 @@ class ClientWrapper {
     }
 
     if (this.client.listenerCount('requestfailed') === 0) {
-      this.client.addListener('requestfailed', () => {
+      this.client.addListener('requestfailed', (request: HTTPRequest) => {
         // Used to support this.waitForNetworkIdle() method.
         this.client['__networkRequestsInflight'] = Math.max(0, this.client['__networkRequestsInflight'] - 1);
+
+        if (request.response().status() === 204) {
+          // Used to support this.getFinishedRequests() method.
+          this.client['__networkRequests'] = this.client['__networkRequests'] || [];
+          this.client['__networkRequests'].push({
+            rawRequest: request,
+            method: request.method(),
+            resourceType: request.resourceType(),
+            url: request.url(),
+            postData: request.postData(),
+          });
+        }
       });
     }
 
