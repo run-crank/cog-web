@@ -36,8 +36,10 @@ export class DeleteCookies extends BaseStep implements StepInterface {
         const targetCookie = cookiesArray.find(c => c.name === cookieName);
         if (targetCookie) {
           await this.client.deleteCookie(targetCookie);
-          const record = this.createRecord(cookies[cookieName]);
-          const orderedRecord = this.createOrderedRecord(cookies[cookieName], stepData['__stepOrder']);
+          const cookieRecord = {};
+          cookieRecord[targetCookie.name] = targetCookie.value;
+          const record = this.createRecord(cookieRecord);
+          const orderedRecord = this.createOrderedRecord(cookieRecord, stepData['__stepOrder']);
           return this.pass(`Successfully deleted the ${cookieName} cookie`, [], [record, orderedRecord])
         } else {
           const record = this.keyValue('cookies', 'Cookies on current page', cookies);
