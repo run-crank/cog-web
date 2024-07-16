@@ -14,7 +14,6 @@ export class CheckCookie extends BaseStep implements StepInterface {
     field: 'cookie',
     type: FieldDefinition.Type.STRING,
     description: 'Cookie name to check',
-    bulksupport: true,
   }, {
     field: 'operator',
     type: FieldDefinition.Type.STRING,
@@ -25,7 +24,6 @@ export class CheckCookie extends BaseStep implements StepInterface {
     type: FieldDefinition.Type.ANYSCALAR,
     optionality: FieldDefinition.Optionality.OPTIONAL,
     description: 'Expected field value',
-    bulksupport: true,
   }];
   protected expectedRecords: ExpectedRecord[] = [{
     id: 'cookies',
