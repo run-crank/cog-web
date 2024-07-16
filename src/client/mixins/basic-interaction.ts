@@ -416,16 +416,4 @@ export class BasicInteractionAware {
       selector,
     );
   }
-
-  /**
-   * Returns an array of cookies that match the given cookieName.
-   *
-   * @param {String} cookieName - The name of the cookie.
-   * @returns {Array} - An array of cookies that match the cookieName.
-   */
-  public async getCookie(cookieName: string) {
-    const cookies = await this.client.cookies();
-    const cookieArray = cookies.filter((cookie) => cookie.name === cookieName);
-    return cookieArray;
-  }
 }

@@ -7,3 +7,4 @@ export * from './lighthouse';
 export * from './linked-in';
 export * from './network';
 export * from './google-ads';
+export * from './cookie';
