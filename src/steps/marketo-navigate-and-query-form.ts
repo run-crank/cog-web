@@ -32,6 +32,7 @@ export class MarketoNavigateAndQueryForm extends BaseStep implements StepInterfa
     const url: string = stepData.webPageUrl;
     const throttle: boolean = stepData.throttle || false;
     const maxInflightRequests: number = stepData.maxInflightRequests || 0;
+    const passOn404: boolean = stepData.passOn404 || false;
 
     // Navigate to URL.
     try {
@@ -45,7 +46,7 @@ export class MarketoNavigateAndQueryForm extends BaseStep implements StepInterfa
       const status = await this.client.client['___lastResponse']['status']();
       console.log('>>>>> checkpoint 7: finished getting status, ending timer');
       console.timeEnd('time');
-      if (status === 404) {
+      if (status === 404 && !passOn404) {
         return this.fail('%s returned an Error: 404 Not Found', [url], [binaryRecord]);
       }
       const record = this.createRecord(url);
