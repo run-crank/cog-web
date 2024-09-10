@@ -27,6 +27,7 @@ jobs:
           name: Install Dependencies
           command: |
             npm install
+          no_output_timeout: 20m  # Increase timeout to 20 minutes
       - save_cache:
           key: v1-npm-deps-{{ checksum "package-lock.json" }}
           paths:
