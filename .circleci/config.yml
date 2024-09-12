@@ -116,6 +116,13 @@ jobs:
             IMAGE_TAG="dev-v${CIRCLE_BUILD_NUM}"
             docker tag $IMAGE_NAME:latest $IMAGE_NAME:$IMAGE_TAG
             docker push $IMAGE_NAME:$IMAGE_TAG
+      - run:
+          name: Publish Docker Image to Azure Container Registry (ACR)
+          command: |
+            echo "$AZURE_ACR_PASSWORD" | docker login "$AZURE_ACR_NAME.azurecr.io" -u "$AZURE_ACR_USERNAME" --password-stdin
+            ACR_IMAGE_TAG="$AZURE_ACR_NAME.azurecr.io/$IMAGE_NAME:dev-v${CIRCLE_BUILD_NUM}"
+            docker tag $IMAGE_NAME:latest $ACR_IMAGE_TAG
+            docker push $ACR_IMAGE_TAG
 
   publish-tag:
     executor: docker-publisher
