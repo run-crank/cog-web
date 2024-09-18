@@ -18,6 +18,7 @@ export class LighthouseAware {
 
     const config: any = throttleTo === 'mobile' ? MobileConfig : DesktopConfig;
     config.settings.onlyCategories = categories;
+    config.settings.maxWaitForLoad = 45000;
 
      // Set the User-Agent based on the throttleTo value
      if (throttleTo === 'mobile') {
@@ -29,7 +30,8 @@ export class LighthouseAware {
     let { lhr } = await this.lighthouse(url, flags, config);
 
     if (lhr.runtimeError) {
-      throw new Error('Check that the URL is correct and the page is up and try again.');
+      console.error('Lighthouse runtime error:', lhr.runtimeError.message);
+      throw new Error(`Lighthouse test failed: ${lhr.runtimeError.message}`);
     }
 
     return lhr;
