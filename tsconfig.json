@@ -2,6 +2,8 @@
   "compilerOptions": {
     "target": "ES6",
     "module": "commonjs",
+    "moduleResolution": "nodenext",
+    "esModuleInterop": true,
     "rootDir": "src",
     "outDir": "build",
     "sourceMap": true,

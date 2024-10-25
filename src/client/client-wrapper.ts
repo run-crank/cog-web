@@ -2,7 +2,6 @@ import * as grpc from '@grpc/grpc-js';
 import { BasicInteractionAware, CookieAware, DomAware, ResponseAware, MarketoAware, GoogleAnalyticsAware, LighthouseAware, LinkedInAwareMixin, NetworkAware, GoogleAdsAware, } from './mixins';
 import { Field } from '../core/base-step';
 import { Page, HTTPRequest } from 'puppeteer';
-import * as Lighthouse from 'lighthouse';
 import * as Marketo from 'node-marketo-rest';
 
 class ClientWrapper {
@@ -10,16 +9,14 @@ class ClientWrapper {
   public static expectedAuthFields: Field[] = [];
 
   public client: Page;
-  public lighthouse: any;
   public idMap: any;
   public marketoClient: Marketo;
   public marketoConnected: boolean = false;
   public delayInSeconds: number;
 
-  constructor (page: Page, auth: grpc.Metadata, idMap: any, lighthouse = Lighthouse, delayInSeconds = 3) {
+  constructor (page: Page, auth: grpc.Metadata, idMap: any, delayInSeconds = 3) {
     this.client = page;
     this.idMap = idMap;
-    this.lighthouse = lighthouse;
 
     // Make a marketo connection if the auth metadata is passed.
     if (auth.get('endpoint').length && auth.get('clientId').length && auth.get('clientSecret').length) {

@@ -66,18 +66,18 @@
     "typescript": "^5.4.2"
   },
   "dependencies": {
-    "@grpc/grpc-js": "^1.9.11",
+    "@grpc/grpc-js": "^1.11.3",
     "@run-crank/utilities": "^0.5.2",
     "bluebird": "^3.5.5",
     "google-protobuf": "^3.8.0",
-    "lighthouse": "^9.6.8",
+    "lighthouse": "^12.2.1",
     "moment": "^2.29.1",
     "node-marketo-rest": "^0.7.8",
     "psl": "^1.8.0",
     "puppeteer": "^20.9.0",
     "puppeteer-cluster": "^0.23.0",
-    "puppeteer-extra": "^3.2.3",
-    "puppeteer-extra-plugin-recaptcha": "^3.5.0",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-recaptcha": "^3.6.8",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
     "ts-node": "^8.3.0"
   }
