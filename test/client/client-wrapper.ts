@@ -3,11 +3,9 @@ import { NavigateToPage } from './../../src/steps/navigate-to-page';
 import * as chai from 'chai';
 import { Metadata } from '@grpc/grpc-js';
 import { default as sinon } from 'ts-sinon';
-import * as sinonChai from 'sinon-chai';
+import sinonChai from 'sinon-chai';
 import * as justForIdeTypeHinting from 'chai-as-promised';
 import 'mocha';
-
-import * as DesktopConfig from 'lighthouse/lighthouse-core/config/lr-desktop-config';
 
 import { ClientWrapper } from '../../src/client/client-wrapper';
 import { EventEmitter } from 'events';

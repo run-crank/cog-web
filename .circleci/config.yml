@@ -9,7 +9,7 @@ executors:
     environment:
       IMAGE_NAME: stackmoxie/web
     machine:
-      image: ubuntu-2004:202201-02
+      image: ubuntu-2204:2024.08.1
 
 jobs:
   test:

@@ -1,7 +1,7 @@
 import { Struct } from 'google-protobuf/google/protobuf/struct_pb';
 import * as chai from 'chai';
 import { default as sinon } from 'ts-sinon';
-import * as sinonChai from 'sinon-chai';
+import sinonChai from 'sinon-chai';
 import 'mocha';
 
 import { Step as ProtoStep, StepDefinition, FieldDefinition, RunStepResponse } from '../../src/proto/cog_pb';
@@ -29,7 +29,7 @@ describe('CheckLighthousePerformance', () => {
       const stepDef: StepDefinition = stepUnderTest.getDefinition();
       expect(stepDef.getStepId()).to.equal('CheckLighthousePerformance');
       expect(stepDef.getName()).to.equal('Check a page\'s Lighthouse performance score');
-      expect(stepDef.getExpression()).to.equal('the (?<throttleTo>mobile|desktop) lighthouse performance score should be (?<expectedScore>\\d{1,3}) or higher');
+      expect(stepDef.getExpression()).to.equal('the (?<throttleTo>mobile|desktop) lighthouse (?<category>performance|accessibility|best-practices|seo) score should be (?<expectedScore>\\d{1,3}) or higher');
       expect(stepDef.getType()).to.equal(StepDefinition.Type.VALIDATION);
     });
 
