@@ -2,7 +2,6 @@
   "compilerOptions": {
     "target": "ES6",
     "module": "commonjs",
-    "moduleResolution": "nodenext",
     "esModuleInterop": true,
     "rootDir": "src",
     "outDir": "build",
@@ -12,6 +11,22 @@
     "emitDecoratorMetadata": true,
     "allowJs": true,
     "skipLibCheck": true
+  },
+  "ts-node": {
+    "compilerOptions": {
+      "target": "ES6",
+      "module": "commonjs",
+      "moduleResolution": "nodenext",
+      "esModuleInterop": true,
+      "rootDir": "src",
+      "outDir": "build",
+      "sourceMap": true,
+      "removeComments": true,
+      "experimentalDecorators": true,
+      "emitDecoratorMetadata": true,
+      "allowJs": true,
+      "skipLibCheck": true
+    }
   },
   "include": [
     "src/**/*"
