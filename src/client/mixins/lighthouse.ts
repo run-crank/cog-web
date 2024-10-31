@@ -1,4 +1,6 @@
+import { Flags } from 'lighthouse';
 import { Page } from 'puppeteer';
+const loadLighthouse = require('../../../esm-imports/lighthouse-import');
 
 export class LighthouseAware {
   public client: Page;
@@ -6,17 +8,13 @@ export class LighthouseAware {
   async getLighthouseScores(url: string, throttleTo: 'desktop' | 'mobile' = 'desktop', categories: string[] = ['performance']) {
     const browser = this.client.browser();
 
-    const flags: { 
-      port: number; 
-      output: any; 
-      logLevel: 'info' | 'silent' | 'error' | 'warn' | 'verbose' 
-    } = {
+    const flags: Flags = {
       port: Number(new URL(browser.wsEndpoint()).port),
       output: 'json',
       logLevel: 'info',
     };
 
-    const config: any = {
+    const config = {
       extends: 'lighthouse:default',
       settings: {
         onlyCategories: categories,
@@ -38,13 +36,11 @@ export class LighthouseAware {
         // Set the User-Agent based on the throttleTo value
         emulatedUserAgent: throttleTo === 'mobile'
           ? 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1 AutomatonChrome'
-          : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) AutomatonChrome/91.0.4472.124 Safari/537.36'
+            : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) AutomatonChrome/91.0.4472.124 Safari/537.36',
       },
     };
 
-    // Use dynamic import for Lighthouse
-    const { default: lighthouse } = await import('lighthouse'); // Change to dynamic import
-
+    const lighthouse = await loadLighthouse();
     const { lhr } = await lighthouse(url, flags, config);
 
     if (lhr.runtimeError) {
