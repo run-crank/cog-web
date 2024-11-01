@@ -178,7 +178,7 @@ export class CheckLighthousePerformance extends BaseStep implements StepInterfac
         .filter((audit) => audit.score !== 1)  // Only include audits that didn't pass perfectly
         .map((audit) => ({
           title: audit.title,
-          description: audit.description ? audit.description.replace(/[`]|[^\u0000-\u007F]/g, '') : 'No details available', // Remove non-ASCII characters and backticks
+          description: audit.description ? audit.description.replace(/[`]|[^\u0000-\u007F]/g, '') : 'No details available',
         }));
     } else {
       headers = {
@@ -192,7 +192,7 @@ export class CheckLighthousePerformance extends BaseStep implements StepInterfac
         .map((audit) => ({
           score: audit.score !== null ? audit.score : 'N/A',
           title: audit.title,
-          description: audit.description ? audit.description.replace(/[`]|[^\u0000-\u007F]/g, '') : 'No details available', // Remove non-ASCII characters and backticks
+          description: audit.description ? audit.description.replace(/[`]|[^\u0000-\u007F]/g, '') : 'No details available',
         }));
     }
   
