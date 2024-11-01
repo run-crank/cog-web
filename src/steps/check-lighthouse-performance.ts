@@ -69,11 +69,10 @@ export class CheckLighthousePerformance extends BaseStep implements StepInterfac
       const lhr = await this.client.getLighthouseScores(currentUrl.toString(), throttleTo, [category]);
       const categoryResults: any = Object.values(lhr.categories)[0];
       const actualScore = Math.round(categoryResults.score * 100);
+      const audits = Object.values(lhr.audits);
+      const recordTable = this.createFailRecord(audits, category);
+      const recordKeyValue = this.createSuccessRecord(lhr, category);
       if (actualScore < expectedScore) {
-        const audits = Object.values(lhr.audits);
-        const recordTable = this.createFailRecord(audits, category);
-        const recordKeyValue = this.createSuccessRecord(lhr, category);
-
         return this.fail(
           'The page\'s %s score of %d was lower than the expected score of %d in %s.\n',
           [
@@ -97,7 +96,8 @@ export class CheckLighthousePerformance extends BaseStep implements StepInterfac
           throttleTo,
         ],
         [
-          record,
+          recordTable,
+          recordKeyValue,
         ]);
     } catch (e) {
       console.error('Error during Lighthouse check:', e);
