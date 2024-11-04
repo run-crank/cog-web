@@ -1,11 +1,22 @@
-import { Flags } from 'lighthouse';
+import * as lighthouse from 'lighthouse';
+import { Flags, Config } from 'lighthouse';
 import { Page } from 'puppeteer';
-const loadLighthouse = require('../../../esm-imports/lighthouse-import');
 
 export class LighthouseAware {
   public client: Page;
 
-  async getLighthouseScores(url: string, throttleTo: 'desktop' | 'mobile' = 'desktop', categories: string[] = ['performance']) {
+  /**
+   * Runs a Lighthouse audit and retrieves the Lighthouse scores.
+   * @param url - The URL to run the Lighthouse audit on.
+   * @param throttleTo - Set throttling mode to 'desktop' or 'mobile'.
+   * @param categories - Categories to include in the Lighthouse report.
+   * @returns The Lighthouse report as JSON.
+   */
+  async getLighthouseScores(
+    url: string,
+    throttleTo: 'desktop' | 'mobile' = 'desktop',
+    categories: string[] = ['performance']
+  ) {
     const browser = this.client.browser();
 
     const flags: Flags = {
@@ -14,7 +25,7 @@ export class LighthouseAware {
       logLevel: 'info',
     };
 
-    const config = {
+    const config: Config = {
       extends: 'lighthouse:default',
       settings: {
         onlyCategories: categories,
@@ -40,7 +51,6 @@ export class LighthouseAware {
       },
     };
 
-    const lighthouse = await loadLighthouse();
     const { lhr } = await lighthouse(url, flags, config);
 
     if (lhr.runtimeError) {

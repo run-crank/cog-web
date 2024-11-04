@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as chai from 'chai';
 import { default as sinon } from 'ts-sinon';
-import sinonChai from 'sinon-chai';
+import * as sinonChai from 'sinon-chai';
 import 'mocha';
 
 import { Step as ProtoStep, StepDefinition, FieldDefinition, RunStepResponse, RunStepRequest } from '../../src/proto/cog_pb';

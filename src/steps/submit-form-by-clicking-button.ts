@@ -1,7 +1,7 @@
 import { BaseStep, ExpectedRecord, Field, StepInterface } from '../core/base-step';
 import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition, StepRecord } from '../proto/cog_pb';
 
-import moment from 'moment';
+import * as moment from 'moment';
 
 export class SubmitFormByClickingButton extends BaseStep implements StepInterface {
 
