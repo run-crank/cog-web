@@ -3,7 +3,7 @@ import { NavigateToPage } from './../../src/steps/navigate-to-page';
 import * as chai from 'chai';
 import { Metadata } from '@grpc/grpc-js';
 import { default as sinon } from 'ts-sinon';
-import sinonChai from 'sinon-chai';
+import * as sinonChai from 'sinon-chai';
 import * as justForIdeTypeHinting from 'chai-as-promised';
 import 'mocha';
 
