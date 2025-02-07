@@ -13,7 +13,7 @@ export class CheckGoogleAnalyticsPageView extends BaseStep implements StepInterf
     {
       field: 'id',
       type: FieldDefinition.Type.STRING,
-      description: 'Tracking / Measurement ID associated with the GA instance/property (e.g. UA-75228722-5)',
+      description: 'Tracking / Measurement ID associated with the GA instance/property (e.g. UA-XXXX-Y or G-XXXXXXX)',
     },
     {
       field: 'withParameters',
@@ -38,15 +38,22 @@ export class CheckGoogleAnalyticsPageView extends BaseStep implements StepInterf
     const stepData: any = step.getData().toJavaScript();
     const id: any = stepData.id;
     const expectedParams: any = stepData.withParameters;
-    const requiredParams = {
-      t: 'pageview',
-      tid: id,
-    };
+
+    // Support both UA and GA4 pageviews by checking either `t=pageview` or `en=page_view`
+    const requiredParamsList = [
+      { tid: id, t: 'pageview' },     // UA Pageview
+      { tid: id, en: 'page_view' },   // GA4 Pageview
+    ];
+
     let result;
     try {
       await this.client.waitForNetworkIdle(10000, false);
       const requests = await this.client.getNetworkRequests('https://www.google-analytics.com', '/collect');
-      const filteredRequest = this.client.evaluateRequests(requests, requiredParams).map((r) => r.url);
+      // Filter requests to match either UA or GA4 pageviews
+      const filteredRequest = requests.filter(request => 
+        this.client.evaluateRequests([request], requiredParamsList[0]).length > 0 ||  // UA match
+        this.client.evaluateRequests([request], requiredParamsList[1]).length > 0     // GA4 match
+      ).map((r) => r.url);
       result = filteredRequest;
 
       let records = [];
