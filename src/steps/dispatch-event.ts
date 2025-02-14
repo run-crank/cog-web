@@ -22,6 +22,7 @@ export class DispatchEvent extends BaseStep implements StepInterface {
     {
       field: 'eventOptions',
       type: FieldDefinition.Type.STRING,
+      optionality: FieldDefinition.Optionality.OPTIONAL,
       description: 'JSON string of event options (e.g., {"key": "ArrowDown"})',
     },
   ];
