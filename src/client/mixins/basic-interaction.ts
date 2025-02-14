@@ -83,6 +83,13 @@ export class BasicInteractionAware {
     }
   }
 
+  /**
+   * Simulates pressing a keyboard key by converting a key code to its character
+   * and typing it using Puppeteer's keyboard API.
+   * 
+   * @param {string} key - The key to press (must exist in keyCodes constant)
+   * @throws {Error} If the key is not found in keyCodes or if typing fails
+   */
   public async pressKey(key: string) {
     if (!keyCodes[key]) throw Error('Key is invalid');
 
@@ -93,11 +100,50 @@ export class BasicInteractionAware {
     }
   }
 
+   /**
+   * Moves the mouse cursor over the specified element.
+   * 
+   * @param {string} domQuerySelector - The DOM query selector of the element to hover over
+   * @throws {Error} If the element cannot be found or hovered over
+   */
   public async hoverMouse(domQuerySelector: string) {
     try {
       await this.client.hover(domQuerySelector);
     } catch (e) {
       throw e;
+    }
+  }
+
+  /**
+   * Dispatches a custom event on a specified DOM element.
+   * 
+   * @param {string} selector - The CSS selector of the element to trigger the event on.
+   * @param {string} eventType - The type of event (e.g., 'keydown', 'click', 'input').
+   * @param {Object} eventOptions - Additional properties for the event (e.g., `{ key: 'ArrowDown' }` for keyboard events).
+   */
+  public async dispatchEvent(selector: string, eventType: string, eventOptions: any = {}) {
+    try {
+      await this.client['___currentFrame'].waitForSelector(selector);
+      await this.client['___currentFrame'].evaluate(
+        (sel, evtType, evtOptions) => {
+          const element = document.querySelector(sel);
+          if (!element) throw new Error(`Element not found: ${sel}`);
+
+          const event = new Event(evtType, { bubbles: true, cancelable: true, ...evtOptions });
+
+          if (evtType.startsWith('key')) {
+            Object.assign(event, evtOptions);
+          }
+
+          element.dispatchEvent(event);
+        },
+        selector,
+        eventType,
+        eventOptions
+      );
+      console.log(`Dispatched ${eventType} event on ${selector}`);
+    } catch (e) {
+      throw Error(`Unable to dispatch event '${eventType}' on '${selector}': ${e}`);
     }
   }
 
