@@ -53,7 +53,7 @@ describe('DispatchEvent', () => {
 
       // Event Options field
       const eventOptions: any = fields.filter(f => f.key === 'eventOptions')[0];
-      expect(eventOptions.optionality).to.equal(FieldDefinition.Optionality.REQUIRED);
+      expect(eventOptions.optionality).to.equal(FieldDefinition.Optionality.OPTIONAL);
       expect(eventOptions.type).to.equal(FieldDefinition.Type.STRING);
     });
   });
