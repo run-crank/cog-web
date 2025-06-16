@@ -217,7 +217,11 @@ export class BasicInteractionAware {
    *
    * @param {String} url - The URL of the page to nagivate to.
    * @param {Boolean} throttle - Will throttle down the browser speed. Defaults to false.
-   * @param {Number} maxInflightRequests - Max number of network connections in flight before navigation is considered done. Defaults to 0.
+   * @param {Number} maxInflightRequests - Max number of network connections in flight before navigation is considered done. 
+   *   - 0: Wait for no network requests (networkidle0)
+   *   - >0: Wait for no more than N network requests (networkidle2) 
+   *   - -1: Wait for DOM content loaded only (domcontentloaded)
+   *   Defaults to 0.
    * @param {Number} networkIdleTime - Time in ms that the network must be idle before navigation is considered done. Defaults to 500.
    */
   public async navigateToUrl(url: string, throttle: boolean = false, maxInflightRequests: number = 0) {
@@ -240,7 +244,14 @@ export class BasicInteractionAware {
         latency: 40,
       });
     }
-    let waitUntilSetting: PuppeteerLifeCycleEvent = maxInflightRequests === 0 ? 'networkidle0' : 'networkidle2';
+    let waitUntilSetting: PuppeteerLifeCycleEvent;
+    if (maxInflightRequests === -1) {
+      waitUntilSetting = 'domcontentloaded';
+    } else if (maxInflightRequests === 0) {
+      waitUntilSetting = 'networkidle0';
+    } else {
+      waitUntilSetting = 'networkidle2';
+    }
     if (url.endsWith('.pdf')) {
       waitUntilSetting = 'domcontentloaded';
     }
